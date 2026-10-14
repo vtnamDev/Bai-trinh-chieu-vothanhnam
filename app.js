@@ -14,7 +14,19 @@
   let currentDeck = null;
   let slideIndex = 0;
   let motionEnabled = !reducedMotion.matches;
+  let soundEnabled = true;
   let previousFocus = null;
+  let quizSession = { deckId: null, slideIndex: -1, questionIndex: 0, answers: {}, score: 0 };
+  let quizAudioContext = null;
+  let atmosphereRunning = false;
+  let atmosphereFrame = 0;
+  let atmosphereLastPaint = 0;
+  let atmosphereWidth = 0;
+  let atmosphereHeight = 0;
+  let atmosphereDpr = 1;
+  let atmosphereParticles = [];
+  let atmospherePointer = { x: 0.5, y: 0.5 };
+  let atmosphereCanvasContext = null;
 
   function loadDecks() {
     try {
@@ -217,6 +229,7 @@
     slideIndex = 0;
     $('#presentationViewer').hidden = false;
     document.body.style.overflow = 'hidden';
+    startStageAtmosphere();
     $('#viewerDeckTitle').textContent = currentDeck.title;
     renderSlide();
     if (location.hash !== '#present/' + encodeURIComponent(currentDeck.id)) {
@@ -231,7 +244,8 @@
     const credit = slide.imageCredit || 'Nguồn ảnh được ghi kèm';
     const source = slide.imageSourceUrl || url;
     const palette = slide.palette || 'ocean';
-    const photoNo = String(slideIndex + 1).padStart(2, '0');
+    const photoTotal = currentDeck?.slides?.length || 20;
+    const photoNo = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(photoTotal).padStart(2, '0');
     const supports = Array.isArray(slide.supportImages) ? slide.supportImages.slice(0, 2) : [];
     const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
       '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(item.sourceUrl || item.url || source) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
@@ -243,7 +257,7 @@
       '<div class="photo-frame">' +
         '<img class="live-photo" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
         '<div class="photo-color-wash"></div><div class="photo-vignette"></div>' +
-        '<div class="photo-topline"><span><i></i> ẢNH THỰC / LIVE SOURCE</span><b>' + photoNo + ' / 20</b></div>' +
+        '<div class="photo-topline"><span><i></i> ẢNH THỰC / LIVE SOURCE</span><b>' + photoNo + '</b></div>' +
         '<div class="photo-bottomline"><div class="photo-caption-copy"><span>FIELD VISUAL</span><strong>' + escapeHTML(slide.imageAlt || 'Ảnh minh họa') + '</strong></div>' +
         '<a class="photo-source-link" href="' + escapeHTML(source) + '" target="_blank" rel="noopener noreferrer" aria-label="Mở nguồn ảnh: ' + escapeHTML(credit) + '">Nguồn ảnh <span>↗</span></a></div>' +
         '<div class="photo-focus-ring"></div>' +
@@ -283,15 +297,244 @@
     });
   }
 
+  function renderQuiz(slide) {
+    const questions = Array.isArray(slide.quizQuestions) ? slide.quizQuestions : [];
+    if (!questions.length) return '';
+    if (quizSession.deckId !== currentDeck.id || quizSession.slideIndex !== slideIndex) {
+      quizSession = { deckId: currentDeck.id, slideIndex, questionIndex: 0, answers: {}, score: 0 };
+    }
+    const total = questions.length;
+    const index = quizSession.questionIndex;
+    if (index >= total) {
+      const percent = Math.round((quizSession.score / total) * 100);
+      const resultLabel = percent === 100 ? 'Xuất sắc — cả lớp nắm bài rất chắc!' : percent >= 60 ? 'Tốt lắm — cùng xem lại những câu còn sai nhé.' : 'Chưa sao — mình xem lời giải, rồi thử lại nhé!';
+      const recap = questions.map((question, i) => {
+        const chosen = quizSession.answers[i];
+        const right = chosen === question.correctIndex;
+        return '<div class="quiz-recap-row ' + (right ? 'is-correct' : 'is-wrong') + '"><span class="quiz-recap-icon">' + (right ? '✓' : '↺') + '</span><div><strong>Câu ' + (i + 1) + '</strong><p>' + escapeHTML(question.options[question.correctIndex]) + '</p></div></div>';
+      }).join('');
+      return '<section class="quiz-panel quiz-results"><div class="quiz-panel-top"><span><i></i> KẾT QUẢ THỬ THÁCH</span><b>' + total + ' CÂU</b></div>' +
+        '<div class="quiz-score-orb"><span>ĐIỂM CỦA EM</span><strong>' + quizSession.score + '<small>/' + total + '</small></strong><div class="quiz-score-meter"><i style="width:' + percent + '%"></i></div></div>' +
+        '<h3>' + resultLabel + '</h3><p class="quiz-result-subtitle">Mỗi câu trả lời là một cơ hội để nhớ kiến thức lâu hơn.</p>' +
+        '<div class="quiz-recap-list">' + recap + '</div><button class="quiz-action quiz-action-primary" data-quiz-restart><span>↻</span> Chơi lại từ đầu</button></section>';
+    }
+    const question = questions[index];
+    const hasAnswer = Object.prototype.hasOwnProperty.call(quizSession.answers, index);
+    const selected = hasAnswer ? quizSession.answers[index] : null;
+    const correct = hasAnswer && selected === question.correctIndex;
+    const options = question.options.map((option, optionIndex) => {
+      const isCorrect = hasAnswer && optionIndex === question.correctIndex;
+      const isSelected = hasAnswer && optionIndex === selected;
+      const stateClass = isCorrect ? ' is-correct' : isSelected ? ' is-wrong' : '';
+      const symbol = isCorrect ? '<span class="quiz-option-result">✓</span>' : isSelected ? '<span class="quiz-option-result">×</span>' : '<span class="quiz-option-letter">' + String.fromCharCode(65 + optionIndex) + '</span>';
+      return '<button class="quiz-answer' + stateClass + '" data-quiz-answer="' + optionIndex + '" ' + (hasAnswer ? 'disabled ' : '') + 'aria-pressed="' + String(isSelected) + '">' + symbol + '<span class="quiz-answer-text">' + escapeHTML(option) + '</span><span class="quiz-answer-shimmer"></span></button>';
+    }).join('');
+    const feedback = hasAnswer
+      ? '<div class="quiz-feedback ' + (correct ? 'is-correct' : 'is-wrong') + '" role="status"><span class="quiz-feedback-icon">' + (correct ? '✓' : '↺') + '</span><div><strong>' + (correct ? 'Chính xác! +1 điểm' : 'Chưa đúng — cùng xem đáp án nhé') + '</strong><p>' + escapeHTML(question.explanation) + '</p></div></div>' +
+        '<button class="quiz-action quiz-action-primary" data-quiz-next>' + (index === total - 1 ? 'Xem kết quả' : 'Câu tiếp theo') + ' <span>→</span></button>'
+      : '<div class="quiz-encouragement"><span>◉</span> Chọn A, B, C hoặc D — đáp án sẽ được mở sau khi em chọn.</div>';
+    return '<section class="quiz-panel" aria-label="Câu hỏi tương tác">' +
+      '<div class="quiz-panel-top"><span><i></i> LỚP HỌC TƯƠNG TÁC</span><b>CÂU ' + String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0') + '</b></div>' +
+      '<div class="quiz-progress"><i style="width:' + (((index + (hasAnswer ? 1 : 0)) / total) * 100) + '%"></i></div>' +
+      '<div class="quiz-question-label"><span>THỬ THÁCH KIẾN THỨC</span><strong>' + escapeHTML(question.question) + '</strong></div>' +
+      '<div class="quiz-answers">' + options + '</div>' + feedback +
+      '<div class="quiz-score-strip"><span><i>✦</i> ĐIỂM HIỆN TẠI</span><strong>' + quizSession.score + ' <small>/ ' + total + '</small></strong><span class="quiz-sound-hint">' + (soundEnabled ? '♫ Âm thanh bật' : '♪ Âm thanh tắt') + '</span></div>' +
+    '</section>';
+  }
+
+  function answerQuiz(optionIndex) {
+    const slide = currentDeck?.slides?.[slideIndex];
+    if (!slide?.interactiveQuiz || !Array.isArray(slide.quizQuestions)) return;
+    const index = quizSession.questionIndex;
+    const question = slide.quizQuestions[index];
+    if (!question || Object.prototype.hasOwnProperty.call(quizSession.answers, index)) return;
+    const isCorrect = Number(optionIndex) === question.correctIndex;
+    quizSession.answers[index] = Number(optionIndex);
+    if (isCorrect) quizSession.score += 1;
+    playQuizSound(isCorrect);
+    renderSlide();
+  }
+
+  function nextQuizQuestion() {
+    const slide = currentDeck?.slides?.[slideIndex];
+    if (!slide?.interactiveQuiz) return;
+    quizSession.questionIndex = Math.min(quizSession.questionIndex + 1, slide.quizQuestions.length);
+    renderSlide();
+  }
+
+  function restartQuiz() {
+    const slide = currentDeck?.slides?.[slideIndex];
+    if (!slide?.interactiveQuiz) return;
+    quizSession = { deckId: currentDeck.id, slideIndex, questionIndex: 0, answers: {}, score: 0 };
+    playQuizSound(true, true);
+    renderSlide();
+  }
+
+  function playQuizSound(correct, soft = false) {
+    if (!soundEnabled) return;
+    try {
+      const AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return;
+      quizAudioContext ||= new AudioCtor();
+      const context = quizAudioContext;
+      if (context.state === 'suspended') context.resume();
+      const now = context.currentTime;
+      const tones = correct ? (soft ? [523, 659] : [523, 659, 784]) : [246, 185];
+      tones.forEach((frequency, i) => {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        const startAt = now + i * (correct ? 0.105 : 0.09);
+        oscillator.type = correct ? 'sine' : 'triangle';
+        oscillator.frequency.setValueAtTime(frequency, startAt);
+        gain.gain.setValueAtTime(0.0001, startAt);
+        gain.gain.exponentialRampToValueAtTime(soft ? 0.026 : 0.045, startAt + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.16);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start(startAt);
+        oscillator.stop(startAt + 0.18);
+      });
+    } catch {
+      // Browsers may block audio until the first user gesture; the quiz still works silently.
+    }
+  }
+
+  function toggleQuizSound() {
+    soundEnabled = !soundEnabled;
+    try { localStorage.setItem('biosphere-quiz-sound', soundEnabled ? 'on' : 'off'); } catch { /* session-only toggle */ }
+    const button = $('#viewerSound');
+    button?.setAttribute('aria-pressed', String(soundEnabled));
+    if (button) button.textContent = soundEnabled ? '♫' : '♪';
+    button?.setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh phản hồi' : 'Bật âm thanh phản hồi');
+    button?.setAttribute('title', soundEnabled ? 'Âm thanh phản hồi đang bật' : 'Âm thanh phản hồi đang tắt');
+    renderSlide();
+    if (soundEnabled) playQuizSound(true, true);
+  }
+
+  function initStageAtmosphere() {
+    const canvas = $('#stageAtmosphere');
+    if (!canvas || typeof canvas.getContext !== 'function') return;
+    atmosphereCanvasContext = canvas.getContext('2d', { alpha: true, desynchronized: true });
+    if (!atmosphereCanvasContext) return;
+    resizeStageAtmosphere();
+    window.addEventListener('resize', resizeStageAtmosphere, { passive: true });
+    $('#presentationViewer').addEventListener('pointermove', event => {
+      const bounds = $('#presentationViewer').getBoundingClientRect();
+      atmospherePointer.x = Math.max(0, Math.min(1, (event.clientX - bounds.left) / Math.max(1, bounds.width)));
+      atmospherePointer.y = Math.max(0, Math.min(1, (event.clientY - bounds.top) / Math.max(1, bounds.height)));
+      $('#slideStage').style.setProperty('--parallax-x', ((atmospherePointer.x - 0.5) * 2).toFixed(3));
+      $('#slideStage').style.setProperty('--parallax-y', ((atmospherePointer.y - 0.5) * 2).toFixed(3));
+    }, { passive: true });
+  }
+
+  function resizeStageAtmosphere() {
+    const canvas = $('#stageAtmosphere');
+    if (!canvas || !atmosphereCanvasContext) return;
+    const viewer = $('#presentationViewer');
+    atmosphereWidth = Math.max(1, viewer.clientWidth);
+    atmosphereHeight = Math.max(1, viewer.clientHeight);
+    atmosphereDpr = Math.min(window.devicePixelRatio || 1, 1.25);
+    canvas.width = Math.round(atmosphereWidth * atmosphereDpr);
+    canvas.height = Math.round(atmosphereHeight * atmosphereDpr);
+    atmosphereCanvasContext.setTransform(atmosphereDpr, 0, 0, atmosphereDpr, 0, 0);
+    const mobile = window.matchMedia('(max-width: 650px)').matches;
+    const count = mobile ? 24 : 54;
+    atmosphereParticles = Array.from({ length: count }, (_, i) => ({
+      x: Math.random() * atmosphereWidth,
+      y: Math.random() * atmosphereHeight,
+      vx: (Math.random() - 0.5) * (mobile ? 0.14 : 0.24),
+      vy: (Math.random() - 0.5) * (mobile ? 0.12 : 0.19),
+      r: Math.random() * 1.4 + 0.5,
+      phase: Math.random() * Math.PI * 2,
+      index: i
+    }));
+  }
+
+  function drawStageAtmosphere(timestamp) {
+    if (!atmosphereRunning || !atmosphereCanvasContext) return;
+    if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden) {
+      atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
+      return;
+    }
+    if (timestamp - atmosphereLastPaint < 33) {
+      atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
+      return;
+    }
+    atmosphereLastPaint = timestamp;
+    const context = atmosphereCanvasContext;
+    const stage = $('#slideStage');
+    const palette = stage?.dataset.palette || 'spectrum';
+    const colors = {
+      ocean: ['91,229,231','113,142,255'], coral: ['255,143,166','255,206,146'],
+      violet: ['210,160,255','123,145,255'], amber: ['255,197,108','255,130,158'],
+      cyan: ['104,231,243','164,166,255'], magenta: ['242,160,231','125,223,247'],
+      lime: ['193,239,145','106,220,202'], rose: ['255,159,181','255,210,143'],
+      pink: ['255,159,198','188,160,255'], ruby: ['255,150,157','197,165,255'],
+      blue: ['117,182,255','140,228,245'], aqua: ['118,240,243','141,185,255'],
+      orange: ['255,194,119','255,135,157'], gold: ['255,218,125','155,237,183'],
+      indigo: ['155,169,255','255,159,208'], teal: ['118,232,207','123,184,255'],
+      spectrum: ['139,232,244','231,161,255']
+    };
+    const pair = colors[palette] || colors.spectrum;
+    context.clearRect(0, 0, atmosphereWidth, atmosphereHeight);
+    const time = timestamp * 0.00025;
+    const mobile = atmosphereWidth < 700;
+    const linkDistance = mobile ? 74 : 116;
+    for (let i = 0; i < atmosphereParticles.length; i++) {
+      const particle = atmosphereParticles[i];
+      particle.x += particle.vx + (atmospherePointer.x * atmosphereWidth - particle.x) * 0.000008;
+      particle.y += particle.vy + Math.sin(time + particle.phase) * 0.12;
+      if (particle.x < -8) particle.x = atmosphereWidth + 8;
+      if (particle.x > atmosphereWidth + 8) particle.x = -8;
+      if (particle.y < -8) particle.y = atmosphereHeight + 8;
+      if (particle.y > atmosphereHeight + 8) particle.y = -8;
+      for (let j = i + 1; j < atmosphereParticles.length; j++) {
+        const other = atmosphereParticles[j];
+        const dx = particle.x - other.x;
+        const dy = particle.y - other.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < linkDistance) {
+          context.strokeStyle = 'rgba(' + pair[(i + j) % 2] + ',' + ((1 - distance / linkDistance) * 0.14).toFixed(3) + ')';
+          context.lineWidth = 0.6;
+          context.beginPath();
+          context.moveTo(particle.x, particle.y);
+          context.lineTo(other.x, other.y);
+          context.stroke();
+        }
+      }
+      context.beginPath();
+      context.fillStyle = 'rgba(' + pair[particle.index % 2] + ',' + (0.38 + Math.sin(time * 3 + particle.phase) * 0.12).toFixed(3) + ')';
+      context.arc(particle.x + (atmospherePointer.x - 0.5) * 5, particle.y + (atmospherePointer.y - 0.5) * 5, particle.r, 0, Math.PI * 2);
+      context.fill();
+    }
+    atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
+  }
+
+  function startStageAtmosphere() {
+    if (!atmosphereCanvasContext || atmosphereRunning || !motionEnabled || reducedMotion.matches) return;
+    atmosphereRunning = true;
+    atmosphereLastPaint = 0;
+    atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
+  }
+
+  function stopStageAtmosphere() {
+    atmosphereRunning = false;
+    if (atmosphereFrame) window.cancelAnimationFrame(atmosphereFrame);
+    atmosphereFrame = 0;
+    if (atmosphereCanvasContext) atmosphereCanvasContext.clearRect(0, 0, atmosphereWidth, atmosphereHeight);
+  }
+
   function renderSlide() {
     if (!currentDeck) return;
     const slides = Array.isArray(currentDeck.slides) && currentDeck.slides.length ? currentDeck.slides : seedDeck.slides;
     slideIndex = Math.max(0, Math.min(slideIndex, slides.length - 1));
     const slide = slides[slideIndex];
-    const pointHtml = slide.points?.length
+    if (!slide.interactiveQuiz) quizSession = { deckId: null, slideIndex: -1, questionIndex: 0, answers: {}, score: 0 };
+    const pointHtml = !slide.interactiveQuiz && slide.points?.length
       ? '<div class="slide-points">' + slide.points.map((point, i) => '<div class="slide-point"><b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span></div>').join('') + '</div>'
       : '';
-    const sourceHtml = slide.note ? '<div class="slide-source">' + escapeHTML(slide.note) + '</div>' : '';
+    const quizHtml = slide.interactiveQuiz ? renderQuiz(slide) : '';
+    const sourceHtml = slide.note && !slide.interactiveQuiz ? '<div class="slide-source">' + escapeHTML(slide.note) + '</div>' : '';
     const linksHtml = slide.links?.length
       ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + slide.links.map(link => '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
       : '';
@@ -304,7 +547,7 @@
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
-            pointHtml + sourceHtml + linksHtml +
+            pointHtml + quizHtml + sourceHtml + linksHtml +
           '</section>' +
           '<div class="slide-side-content">' + (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : '')) + '</div>' +
         '</div>' +
@@ -314,10 +557,16 @@
     const label = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
     $('#viewerSlideCaption').textContent = label;
     $('#viewerProgress').style.width = ((slideIndex + 1) / slides.length * 100) + '%';
+    $('#viewerProgress').setAttribute('aria-valuenow', String(slideIndex + 1));
+    $('#viewerProgress').setAttribute('aria-valuemax', String(slides.length));
+    $('#viewerSound')?.setAttribute('aria-pressed', String(soundEnabled));
+    if ($('#viewerSound')) $('#viewerSound').textContent = soundEnabled ? '♫' : '♪';
     $('#slidePrev').disabled = slideIndex === 0;
     $('#slideNext').disabled = slideIndex === slides.length - 1;
     $('#viewerPlayMotion').setAttribute('aria-pressed', String(motionEnabled));
     $('#presentationViewer').classList.toggle('motion-off', !motionEnabled);
+    if (motionEnabled) startStageAtmosphere();
+    else stopStageAtmosphere();
   }
 
   function goNext() {
@@ -340,6 +589,7 @@
     }
     viewer.hidden = true;
     document.body.style.overflow = '';
+    stopStageAtmosphere();
     currentDeck = null;
     if (!['library', 'templates', 'settings'].includes(location.hash.slice(1))) {
       history.replaceState({ view: activeView }, '', '#' + activeView);
@@ -476,6 +726,10 @@
       setMotion(!motionEnabled);
       toast(motionEnabled ? 'Đã bật chuyển động' : 'Đã giảm chuyển động');
     }
+    if (target.matches('[data-quiz-answer]')) answerQuiz(Number(target.dataset.quizAnswer));
+    if (target.matches('[data-quiz-next]')) nextQuizQuestion();
+    if (target.matches('[data-quiz-restart]')) restartQuiz();
+    if (target.id === 'viewerSound') toggleQuizSound();
     if (target.id === 'slidePrev') goPrevious();
     if (target.id === 'slideNext') goNext();
     if (target.id === 'viewerClose' || target.id === 'viewerExit') exitPresentation();
@@ -553,6 +807,7 @@
     if (!$('#presentationViewer').hidden) {
       $('#presentationViewer').hidden = true;
       document.body.style.overflow = '';
+      stopStageAtmosphere();
       currentDeck = null;
     }
     if (hash.startsWith('present/')) {
@@ -576,6 +831,13 @@
     setTheme('dark');
   }
   renderDecks();
+  try { soundEnabled = localStorage.getItem('biosphere-quiz-sound') !== 'off'; } catch { soundEnabled = true; }
+  if ($('#viewerSound')) {
+    $('#viewerSound').textContent = soundEnabled ? '♫' : '♪';
+    $('#viewerSound').setAttribute('aria-pressed', String(soundEnabled));
+    $('#viewerSound').setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh phản hồi' : 'Bật âm thanh phản hồi');
+  }
+  initStageAtmosphere();
 
   const initialHash = location.hash.slice(1);
   if (initialHash.startsWith('present/')) {
