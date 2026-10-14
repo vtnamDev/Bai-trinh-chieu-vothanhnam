@@ -28,6 +28,8 @@ try {
   await page.locator('[data-performance-mode="smooth"]').click();
   assert.equal(await page.locator('html').getAttribute('data-performance-mode'), 'smooth');
   assert.equal(await page.locator('html').getAttribute('data-performance-lite'), 'true');
+  assert.equal(await page.locator('#toastRegion .toast').count(), 1, 'Rapid setting changes must reuse one toast instead of stacking notifications.');
+  assert.equal(await page.locator('#toastRegion .toast').textContent(), 'Đã ưu tiên độ mượt và tiết kiệm dữ liệu.');
   await page.screenshot({ path: `${outputDir}/mobile-performance-settings.png`, fullPage: true });
 
   // The setting must survive reload and remain responsive on a phone-sized viewport.
