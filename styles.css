@@ -2100,3 +2100,15 @@ body{
   #presentationViewer .contents-item{transition:none}
   #presentationViewer .classroom-prompt,.contents-overlay{scroll-behavior:auto}
 }
+
+/* Closing scene actions and remove any persistent slide-number micro-label from the visual. */
+#presentationViewer .photo-topline b{display:none!important}
+#presentationViewer .viewer-corner-mark{display:none!important}
+#presentationViewer .ending-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(14px,2vh,25px)}
+#presentationViewer .ending-action{display:inline-flex;align-items:center;justify-content:center;gap:15px;min-height:44px;padding:0 17px;border:1px solid #ffffff2a;border-radius:999px;color:#f2f8ff;background:#ffffff08;font-size:clamp(12px,.95vw,15px);font-weight:700;transition:transform .18s,background .18s,border-color .18s}
+#presentationViewer .ending-action:hover{transform:translateY(-2px);background:#ffffff12;border-color:#b2edff77}
+#presentationViewer .ending-action-primary{color:#07131c;background:linear-gradient(110deg,#9debd9,#a8caff);border-color:transparent}
+#presentationViewer .ending-action-primary:hover{background:linear-gradient(110deg,#b4f7e7,#c2d8ff)}
+#presentationViewer .ending-action span{font-size:16px;opacity:.8}
+@media(max-width:600px){#presentationViewer .ending-actions{gap:7px}#presentationViewer .ending-action{min-height:40px;padding:0 12px}}
+@media(prefers-reduced-motion:reduce){#presentationViewer .ending-action{transition:none}}
