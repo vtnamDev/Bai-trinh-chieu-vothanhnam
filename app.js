@@ -279,6 +279,29 @@
         if (fallback && img.dataset.fallbackUsed !== '1' && img.src !== fallback) {
           img.dataset.fallbackUsed = '1';
           img.src = fallback;
+          const scene = img.closest('.photo-scene');
+          if (img.classList.contains('live-photo') && scene) {
+            img.alt = 'Ảnh thực dự phòng từ Unsplash';
+            scene.dataset.imageFallback = 'true';
+            const caption = $('.photo-caption-copy strong', scene);
+            if (caption) caption.textContent = 'Ảnh dự phòng · Unsplash';
+            const credit = $('.photo-credit-line strong', scene);
+            if (credit) credit.textContent = 'Ảnh dự phòng · Unsplash';
+            const sourceLink = $('.photo-source-link', scene);
+            if (sourceLink) {
+              sourceLink.href = 'https://unsplash.com/license';
+              sourceLink.setAttribute('aria-label', 'Xem giấy phép ảnh dự phòng Unsplash');
+              sourceLink.innerHTML = 'Unsplash <span>↗</span>';
+            }
+          }
+          if (img.classList.contains('photo-support-image')) {
+            img.alt = 'Ảnh phụ dự phòng từ Unsplash';
+            const card = img.closest('.photo-support-card');
+            if (card) {
+              card.href = 'https://unsplash.com/license';
+              card.setAttribute('aria-label', 'Xem giấy phép ảnh phụ dự phòng Unsplash');
+            }
+          }
           return;
         }
         img.classList.add('photo-load-failed');
