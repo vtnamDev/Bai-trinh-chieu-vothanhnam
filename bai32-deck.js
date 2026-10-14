@@ -46,7 +46,7 @@ window.BIOSPHERE_BAI32_SEED = {
       subtitle: 'Ống tiêu hóa là một chuỗi cơ quan phối hợp liên tục, từ miệng đến hậu môn.',
       points: ['Miệng → hầu → thực quản → dạ dày.', 'Ruột non là nơi tiêu hóa và hấp thụ phần lớn chất dinh dưỡng.', 'Ruột già hấp thụ thêm một số chất, chủ yếu là nước; chất bã tạo thành phân.', 'Gan, túi mật, tuyến tụy và tuyến nước bọt hỗ trợ tiêu hóa bằng dịch tiết.'],
       note: 'SGK KHTN 8 · BÀI 32 · TR. 129–130',
-      visual: 'digestive'
+      visual: 'absorption'
     },
     {
       kicker: 'LIÊN HỆ KIẾN THỨC',
