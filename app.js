@@ -582,7 +582,11 @@
     attachLiveImageFallbacks($('#slideStage'));
     warmAdjacentPhotos();
     const label = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    $('#slideStage').dataset.slideIndex = String(slideIndex + 1);
+    $('#slideStage').dataset.slideCount = String(slides.length);
     $('#viewerSlideCaption').textContent = label;
+    const photoCounter = $('#slideStage .photo-topline b');
+    if (photoCounter) photoCounter.textContent = label;
     $('#viewerProgress').style.width = ((slideIndex + 1) / slides.length * 100) + '%';
     $('#viewerProgress').setAttribute('aria-valuenow', String(slideIndex + 1));
     $('#viewerProgress').setAttribute('aria-valuemax', String(slides.length));
