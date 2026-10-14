@@ -153,6 +153,52 @@ window.BIOSPHERE_BAI32_SEED = {
       visual: 'habits', image: "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600", imageAlt: "Rửa tay bằng xà phòng dưới vòi nước", imageCredit: "Ivan S / Pexels · Free to use", imageSourceUrl: "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/", palette: "teal", supportImages: [{"url":"https://images.pexels.com/photos/7979784/pexels-photo-7979784.jpeg?auto=compress&cs=tinysrgb&w=700","alt":"Chăm sóc răng miệng"},{"url":"https://images.pexels.com/photos/6336644/pexels-photo-6336644.jpeg?auto=compress&cs=tinysrgb&w=700","alt":"Trẻ chải răng"}]
     },
     {
+      kicker: 'THỬ THÁCH TƯƠNG TÁC · CẢ LỚP CÙNG CHƠI',
+      title: '5 câu hỏi — em ghi được bao nhiêu điểm?',
+      subtitle: 'Mời cả lớp chọn đáp án. Trả lời đúng sẽ nhận điểm và âm thanh khen thưởng; trả lời sai sẽ hiện đáp án chuẩn cùng lời giải thích để mình nhớ lâu hơn.',
+      points: [],
+      note: 'CHỌN MỘT ĐÁP ÁN · NHẬN PHẢN HỒI NGAY · CÓ THỂ CHƠI LẠI',
+      visual: 'team',
+      image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1600&q=85",
+      imageAlt: "Học sinh trong lớp học cùng trao đổi bài",
+      imageCredit: "Unsplash · ảnh lớp học",
+      imageSourceUrl: "https://unsplash.com/license",
+      palette: "indigo",
+      interactiveQuiz: true,
+      quizQuestions: [
+        {
+          question: "1. Sâu răng hình thành chủ yếu do điều gì?",
+          options: ["Uống nước lạnh", "Vi khuẩn trong mảng bám sử dụng đường và tạo axit", "Ăn rau xanh", "Đánh răng đúng cách"],
+          correctIndex: 1,
+          explanation: "Vi khuẩn trong mảng bám sử dụng đường từ thức ăn, đồ uống và tạo axit làm mất khoáng men răng. Vì vậy, vệ sinh răng và hạn chế đường rất quan trọng."
+        },
+        {
+          question: "2. Hai nguyên nhân thường gặp của viêm loét dạ dày – tá tràng là gì?",
+          options: ["Thiếu ngủ và uống nước lạnh", "Chỉ do ăn cay", "Nhiễm H. pylori và một số thuốc kháng viêm không steroid", "Chỉ do ăn không đúng giờ"],
+          correctIndex: 2,
+          explanation: "H. pylori và một số thuốc kháng viêm không steroid (NSAID) là những nguyên nhân thường gặp. Không tự ý dùng kháng sinh hoặc thuốc điều trị khi chưa được hướng dẫn."
+        },
+        {
+          question: "3. Nguy cơ đáng chú ý khi bị tiêu chảy nhiều lần là gì?",
+          options: ["Mất nước và chất điện giải", "Tăng chiều cao ngay lập tức", "Răng mọc nhanh hơn", "Không ảnh hưởng đến cơ thể"],
+          correctIndex: 0,
+          explanation: "Đi ngoài phân lỏng nhiều lần có thể làm cơ thể mất nước và chất điện giải. Cần báo người lớn, bù nước đúng hướng dẫn và tìm trợ giúp y tế khi có dấu hiệu nặng."
+        },
+        {
+          question: "4. Cách nào giúp giảm nguy cơ ngộ độc thực phẩm?",
+          options: ["Để thức ăn chín cạnh đồ sống", "Dùng thực phẩm có mùi lạ nếu chưa hết hạn", "Rửa tay, nấu chín và bảo quản thực phẩm đúng cách", "Nếm thử đồ ăn nghi ôi thiu"],
+          correctIndex: 2,
+          explanation: "Rửa tay, làm sạch dụng cụ, nấu chín, giữ riêng đồ sống và đồ chín, bảo quản phù hợp và bỏ thực phẩm đã biến chất là các bước quan trọng."
+        },
+        {
+          question: "5. Thói quen nào hỗ trợ phòng táo bón?",
+          options: ["Nhịn đi vệ sinh", "Ăn ít rau, quả", "Ngồi yên cả ngày", "Ăn thực phẩm giàu chất xơ, uống đủ nước và vận động"],
+          correctIndex: 3,
+          explanation: "Chất xơ, đủ nước, vận động và thói quen đi vệ sinh đều đặn có thể hỗ trợ phòng táo bón. Nếu kéo dài hoặc có dấu hiệu cảnh báo, cần báo người lớn và đi khám."
+        }
+      ]
+    },
+    {
       kicker: 'KẾT LUẬN · NGUỒN THAM KHẢO',
       title: 'Ba điều cần ghi nhớ',
       subtitle: 'Hệ tiêu hóa biến đổi thức ăn thành chất dinh dưỡng cơ thể hấp thụ được; bảo vệ hệ tiêu hóa bắt đầu từ việc làm hằng ngày; dấu hiệu nặng cần được nhân viên y tế đánh giá.',
