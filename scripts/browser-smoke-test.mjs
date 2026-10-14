@@ -72,9 +72,14 @@ try {
   // Reach a curated 3D scene, then verify the image/model switch exposes the 3D panel.
   let modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) [data-media-mode="model"]');
   for (let index = 0; index < 32 && await modelToggle.count() === 0; index += 1) {
-    const next = page.locator('#slideNext');
-    if (await next.isDisabled()) break;
-    await next.click();
+    const unansweredQuizChoices = page.locator('#slideStage [data-quiz-answer]:not([disabled])');
+    if (await unansweredQuizChoices.count() > 0) {
+      // Answer each question so keyboard navigation can progress through interactive lesson slides.
+      await unansweredQuizChoices.first().click();
+    } else if ((await page.locator('#viewerSlideCaption').textContent()).trim() === '32 / 32') {
+      break;
+    }
+    await page.keyboard.press('ArrowRight');
     await page.waitForTimeout(90);
     modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) [data-media-mode="model"]');
   }
