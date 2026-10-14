@@ -68,6 +68,7 @@ assert.ok(html.includes('data-performance-mode="auto"'), 'The automatic performa
 assert.ok(html.includes('data-performance-mode="smooth"') && html.includes('data-performance-mode="cinema"'), 'All three performance presets must be present.');
 assert.ok(html.includes('id="performanceStatus"'), 'Settings must explain the active performance profile.');
 assert.ok(app.includes('function getPerformanceProfile()'), 'Runtime decisions should use the adaptive performance profile.');
+assert.ok(app.includes("$$('button[data-performance-mode]').forEach"), 'Performance status sync must iterate over the preset buttons, not a single document query result.');
 assert.ok(app.includes('navigator.deviceMemory') && app.includes('navigator.hardwareConcurrency'), 'Adaptive mode should consider hardware signals when supported.');
 const warmupStart = app.indexOf('function warmAdjacentPhotos()');
 const warmupEnd = app.indexOf('\n  function renderQuiz', warmupStart);
