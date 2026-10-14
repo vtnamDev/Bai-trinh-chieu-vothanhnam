@@ -692,6 +692,8 @@
     $('#settingsMotion').setAttribute('aria-checked', String(motionEnabled));
     $('#viewerPlayMotion').setAttribute('aria-pressed', String(motionEnabled));
     $('#presentationViewer').classList.toggle('motion-off', !motionEnabled);
+    if (motionEnabled) startStageAtmosphere();
+    else stopStageAtmosphere();
   }
 
   // Shared event delegation avoids accumulating listeners when the library rerenders.
