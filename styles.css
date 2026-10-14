@@ -1911,3 +1911,67 @@ body{
   .viewer .slide-page:not(.slide-transition-ghost) .photo-scene{animation:none!important}
 }
 .viewer.motion-off .live-photo,.viewer.motion-off .live-video{transform:none!important;animation:none!important}
+
+
+/* Portrait touch edition: remove the small framed card; text becomes the slide. */
+@media(pointer:coarse) and (orientation:portrait){
+  .viewer .slide-page{
+    padding:0!important;overflow-y:auto!important;overflow-x:hidden!important;
+    align-items:stretch!important;justify-content:stretch!important;
+  }
+  .viewer .slide-layout{
+    position:relative!important;display:block!important;width:100%!important;
+    height:100%!important;min-height:100%!important;margin:0!important;padding:0!important;
+  }
+  .viewer .slide-content{
+    box-sizing:border-box!important;position:relative!important;z-index:3!important;
+    display:flex!important;flex-direction:column!important;justify-content:center!important;
+    width:100%!important;max-width:none!important;height:auto!important;min-height:100%!important;
+    margin:0!important;padding:clamp(20px,3.2vw,38px)!important;
+    border:0!important;border-radius:0!important;
+    background:linear-gradient(90deg,#04191dd0 0%,#061c21b5 58%,#071d1b68 100%),
+      linear-gradient(180deg,#06171943,transparent 35%,#04161953)!important;
+    box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  }
+  .viewer .slide-kicker{
+    margin-bottom:clamp(14px,2vh,24px)!important;padding:8px 12px!important;
+    font-size:clamp(9px,.92vw,13px)!important;letter-spacing:.13em!important;
+  }
+  .viewer .slide-title{
+    font-size:clamp(38px,5.9vw,70px)!important;line-height:.98!important;
+    letter-spacing:-.06em!important;margin-bottom:clamp(13px,1.8vh,22px)!important;
+    text-shadow:0 4px 24px #001114e8!important;
+  }
+  .viewer .slide-subtitle{
+    font-size:clamp(18px,2.12vw,26px)!important;line-height:1.45!important;
+    color:#f0faf5!important;text-shadow:0 2px 15px #001114de!important;
+  }
+  .viewer .slide-points{
+    margin-top:clamp(16px,2.2vh,26px)!important;
+    gap:clamp(8px,1.15vh,14px)!important;
+  }
+  .viewer .slide-point{
+    padding:clamp(12px,1.6vh,18px) clamp(13px,1.55vw,19px)!important;
+    gap:12px!important;border-radius:13px!important;
+    font-size:clamp(16px,1.7vw,22px)!important;line-height:1.4!important;
+    background:linear-gradient(110deg,#09272fe8,#081e28d9)!important;
+    border-color:#dffff02c!important;backdrop-filter:blur(3px)!important;
+  }
+  .viewer .slide-point b{font-size:11px!important;min-width:23px!important;padding-top:2px!important}
+  .viewer .slide-source{
+    margin-top:clamp(14px,1.8vh,21px)!important;padding:11px 13px!important;
+    font-size:clamp(8px,.85vw,11px)!important;line-height:1.45!important;
+    background:#071a1bb0!important;
+  }
+  .viewer .slide-links{margin-top:14px!important;gap:7px!important}
+  .viewer .slide-links a{font-size:clamp(12px,1.15vw,15px)!important;padding:9px 11px!important}
+  .viewer .quiz-panel{
+    margin-top:clamp(14px,2vh,23px)!important;padding:clamp(13px,1.8vw,21px)!important;
+    border-radius:16px!important;
+  }
+  .viewer .quiz-question-label strong{font-size:clamp(17px,2vw,24px)!important;line-height:1.3!important}
+  .viewer .quiz-answer-text{font-size:clamp(12px,1.35vw,16px)!important}
+  .viewer .quiz-answer{min-height:58px!important}
+  .viewer .quiz-feedback p{font-size:clamp(12px,1.15vw,15px)!important}
+  .viewer .photo-frame.video-playing .live-video{transform:none!important}
+}
