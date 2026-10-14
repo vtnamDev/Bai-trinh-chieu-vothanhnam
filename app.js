@@ -790,6 +790,21 @@
   document.addEventListener('keydown', event => {
     const viewerOpen = !$('#presentationViewer').hidden;
     if (viewerOpen) {
+      const control = event.target.closest?.('button, a, input, select, textarea, [role="button"]');
+      if (control) {
+        if (control.matches('[data-quiz-answer]') && ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(event.key)) {
+          const choices = $('[data-quiz-answer]', $('#slideStage'));
+          const index = choices.indexOf(control);
+          const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
+          const nextChoice = choices[index + direction];
+          if (nextChoice) {
+            event.preventDefault();
+            nextChoice.focus();
+          }
+        }
+        if (event.key === 'Escape' && !document.fullscreenElement) exitPresentation();
+        return;
+      }
       if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
         event.preventDefault();
         goNext();
@@ -801,7 +816,7 @@
       }
       return;
     }
-    if (event.key === 'Escape') $$('.modal-backdrop:not([hidden])').forEach(closeModal);
+    if (event.key === 'Escape') $('.modal-backdrop:not([hidden])').forEach(closeModal);
   });
 
   window.addEventListener('popstate', () => {
