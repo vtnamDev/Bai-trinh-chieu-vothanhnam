@@ -289,10 +289,19 @@
   }
 
   function attachVideoBackgrounds(root = document) {
-    $$('.live-video', root).forEach(video => {
-      if (video.dataset.motionBound === '1') return;
-      video.dataset.motionBound = '1';
+    $('.live-video', root).forEach(video => {
       const frame = video.closest('.photo-frame');
+      if (video.dataset.motionBound === '1') {
+        if (motionEnabled && !reducedMotion.matches && !document.hidden && !$('#presentationViewer').hidden) {
+          const resume = video.play();
+          if (resume && typeof resume.catch === 'function') resume.catch(() => frame?.classList.remove('video-playing'));
+        } else {
+          video.pause();
+          frame?.classList.remove('video-playing');
+        }
+        return;
+      }
+      video.dataset.motionBound = '1';
       video.addEventListener('playing', () => frame?.classList.add('video-playing'));
       video.addEventListener('pause', () => {
         if (video.ended || video.error) frame?.classList.remove('video-playing');
