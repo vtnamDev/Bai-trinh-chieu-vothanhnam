@@ -1,6 +1,6 @@
 # BioSphere Slides — Bài 32 KHTN 8
 
-Website trình chiếu khoa học tối ưu cho màn hình điện thoại và máy tính. Bài mẫu hiện có 32 trang về **5 bệnh liên quan đến hệ tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
+Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có chế độ xem di động dự phòng. Bài mẫu hiện có 32 trang về **5 bệnh liên quan đến hệ tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
 
 ## Cấu trúc
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
@@ -24,7 +24,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 ## Chuyển cảnh và hỏi đáp
 - Chuyển trang theo hướng tiến/lùi với bốn preset CSS riêng: wipe, depth, focus và rise; tiêu đề, phần mô tả, từng ý chính và ảnh có nhịp xuất hiện riêng.
 - Mỗi bệnh có một tình huống và câu hỏi ở cuối phần; đáp án gợi ý được giấu cho đến khi người thuyết trình bấm nút hiện đáp án.
-- Các cảnh răng, dạ dày, ruột, giun và gan có mô hình 3D dạng sơ đồ để kéo xoay/phóng to. Nếu WebGL hoặc thư viện ngoài không tải được, ảnh dự phòng vẫn hiển thị.
+- Các cảnh có mô hình giữ nguyên ảnh gốc làm chế độ mặc định; chỉ khi chọn **Mô hình 3D** mới tải trình xem và GLB. Mô hình tham chiếu gan/ruột non thuộc Human Reference Atlas / HuBMAP (CC BY 4.0); răng, dạ dày và giun dùng mô hình sơ đồ BioSphere. Nếu WebGL/CDN hoặc GLB không tải được, giao diện chuyển sang mô hình sơ đồ dự phòng; ảnh gốc vẫn luôn có thể mở lại.
 - Âm báo đúng/sai và chuyển slide có thể bật/tắt; chế độ giảm chuyển động vẫn được tôn trọng.
 
 ## Hình ảnh và thiết kế
@@ -52,6 +52,7 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 ## Nguồn tham khảo chính
 - SGK Khoa học Tự nhiên 8, tập 1 — Bài 32, trang in 128–134.
 - WHO: [Diarrhoeal disease](https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease), [Soil-transmitted helminth infections](https://www.who.int/news-room/fact-sheets/detail/soil-transmitted-helminth-infections), [Hepatitis A](https://www.who.int/news-room/fact-sheets/detail/hepatitis-a), [Food safety in Viet Nam](https://www.who.int/vietnam/health-topics/food-safety/food-safety).
+- Human Reference Atlas / HuBMAP: [Small intestine, male v1.2](https://apps.humanatlas.io/kg-explorer/ref-organ/small-intestine-male/v1.2) and [3D Reference Object Library](https://humanatlas.io/3d-reference-library), licensed CC BY 4.0. GLB endpoints: [VH_M_Small_Intestine.glb](https://ccf-ontology.hubmapconsortium.org/objects/v1.2/VH_M_Small_Intestine.glb), [VH_M_Liver.glb](https://ccf-ontology.hubmapconsortium.org/objects/v1.2/VH_M_Liver.glb).
 - CDC: [About Cavities (Tooth Decay)](https://www.cdc.gov/oral-health/about/cavities-tooth-decay.html), [DPDx — Ascariasis](https://www.cdc.gov/dpdx/ascariasis/).
 - NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes).
 
