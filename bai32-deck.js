@@ -676,7 +676,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "modelSrc": "https://ccf-ontology.hubmapconsortium.org/objects/v1.2/VH_M_Liver.glb",
       "modelCredit": "Human Reference Atlas / HuBMAP · mô hình gan nam · CC BY 4.0",
       "modelLicense": "https://creativecommons.org/licenses/by/4.0/",
-      "modelSourceUrl": "https://apps.humanatlas.io/kg-explorer/ref-organ/liver-male/v1.2"
+      "modelSourceUrl": "https://humanatlas.io/3d-reference-library"
     },
     {
       "kicker": "BỆNH 05 · ĐƯỜNG LÂY VÀ DẤU HIỆU",
