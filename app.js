@@ -31,6 +31,7 @@
   let atmosphereCanvasContext = null;
   let activeAnatomy3D = null;
   let threeLoadPromise = null;
+  let modelViewerLoadPromise = null;
 
   function loadDecks() {
     try {
@@ -315,7 +316,19 @@
   function disposeInteractiveModel() {
     const model = activeAnatomy3D;
     if (!model) return;
+    activeAnatomy3D = null;
+    delete model.panel.dataset.modelInitializing;
+    if (model.kind === 'native') {
+      model.viewer.removeEventListener('load', model.onLoad);
+      model.viewer.removeEventListener('error', model.onError);
+      model.viewer.removeEventListener('progress', model.onProgress);
+      model.viewer.removeAttribute('src');
+      model.viewer.remove();
+      model.panel.classList.remove('is-native-loading', 'is-native-ready');
+      return;
+    }
     if (model.frame) cancelAnimationFrame(model.frame);
+    if (model.visibilityHandler) document.removeEventListener('visibilitychange', model.visibilityHandler);
     model.resizeObserver?.disconnect();
     window.removeEventListener('resize', model.onResize);
     model.panel.removeEventListener('pointerdown', model.onPointerDown);
@@ -332,7 +345,7 @@
     });
     model.renderer.dispose();
     model.renderer.domElement.remove();
-    activeAnatomy3D = null;
+    model.panel.classList.remove('is-3d-ready');
   }
 
   function makeTube(THREE, group, points, color, radius = 0.07, tubularSegments = 56) {
@@ -445,9 +458,119 @@
     }
   }
 
+  function ensureModelViewerLibrary() {
+    if (window.customElements?.get('model-viewer')) return Promise.resolve();
+    if (modelViewerLoadPromise) return modelViewerLoadPromise;
+    modelViewerLoadPromise = new Promise((resolve, reject) => {
+      const done = () => window.customElements?.whenDefined('model-viewer').then(resolve, reject);
+      const existing = document.querySelector('script[data-biosphere-model-viewer]');
+      if (existing) {
+        existing.addEventListener('load', done, { once: true });
+        existing.addEventListener('error', () => reject(new Error('Model viewer failed to load')), { once: true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.4.0/model-viewer.min.js';
+      script.dataset.biosphereModelViewer = 'true';
+      script.onload = done;
+      script.onerror = () => reject(new Error('Model viewer CDN unavailable'));
+      document.head.appendChild(script);
+    });
+    return modelViewerLoadPromise;
+  }
+
   function initInteractiveModels(root) {
-    const panel = root.querySelector('.anatomy3d-panel');
+    const panel = root.matches?.('.anatomy3d-panel') ? root : root.querySelector('.anatomy3d-panel');
     if (!panel) return;
+    const view = panel.closest('.media-3d-view');
+    if (view?.hidden || panel.dataset.modelInitializing === '1' || activeAnatomy3D?.panel === panel) return;
+    disposeInteractiveModel();
+    panel.dataset.modelInitializing = '1';
+    const fallback = panel.querySelector('.anatomy3d-fallback');
+    if (fallback && !fallback.getAttribute('src') && fallback.dataset.fallbackSrc) {
+      fallback.src = fallback.dataset.fallbackSrc;
+      fallback.addEventListener('error', () => fallback.classList.add('photo-load-failed'), { once: true });
+    }
+    if (panel.dataset.modelSrc) {
+      initReferenceModelViewer(panel).catch(() => {
+        if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel) return;
+        delete panel.dataset.modelInitializing;
+        const status = panel.querySelector('.anatomy3d-status');
+        if (status) status.textContent = 'Mô hình tham chiếu không tải được · dùng mô hình dự phòng';
+        initCustomThreeModel(panel);
+      });
+    } else {
+      initCustomThreeModel(panel);
+    }
+  }
+
+  async function initReferenceModelViewer(panel) {
+    const source = String(panel.dataset.modelSrc || '').trim();
+    if (!source) throw new Error('No reference model source');
+    await ensureModelViewerLibrary();
+    if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden) return;
+    const slot = panel.querySelector('.anatomy3d-native-slot');
+    if (!slot) throw new Error('3D viewer slot missing');
+    slot.innerHTML = '';
+    const viewer = document.createElement('model-viewer');
+    viewer.className = 'anatomy3d-native-viewer';
+    viewer.setAttribute('src', source);
+    viewer.setAttribute('alt', panel.dataset.modelTitle || 'Mô hình tham chiếu giải phẫu 3D');
+    viewer.setAttribute('camera-controls', '');
+    viewer.setAttribute('touch-action', 'pan-y');
+    viewer.setAttribute('interaction-prompt', 'none');
+    viewer.setAttribute('shadow-intensity', '0.65');
+    viewer.setAttribute('exposure', '1.08');
+    viewer.setAttribute('loading', 'eager');
+    viewer.setAttribute('reveal', 'auto');
+    viewer.setAttribute('camera-orbit', 'auto auto auto');
+    viewer.setAttribute('camera-target', 'auto auto auto');
+    viewer.setAttribute('field-of-view', '30deg');
+    viewer.setAttribute('disable-tap', '');
+    viewer.setAttribute('tone-mapping', 'neutral');
+    const fallback = panel.querySelector('.anatomy3d-fallback');
+    if (fallback?.dataset.fallbackSrc) viewer.setAttribute('poster', fallback.dataset.fallbackSrc);
+    if (motionEnabled && !reducedMotion.matches) {
+      viewer.setAttribute('auto-rotate', '');
+      viewer.setAttribute('rotation-per-second', '12deg');
+    }
+    slot.appendChild(viewer);
+    const model = { kind: 'native', panel, viewer, autoRotate: viewer.hasAttribute('auto-rotate'), onLoad: null, onError: null, onProgress: null };
+    activeAnatomy3D = model;
+    panel.classList.add('is-native-loading');
+    const status = panel.querySelector('.anatomy3d-status');
+    if (status) status.textContent = 'Đang tải mô hình giải phẫu…';
+    const rotate = panel.querySelector('[data-model-action="rotate"]');
+    if (rotate) {
+      rotate.setAttribute('aria-pressed', String(model.autoRotate));
+      rotate.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+    }
+    model.onLoad = () => {
+      if (activeAnatomy3D !== model) return;
+      panel.classList.remove('is-native-loading');
+      panel.classList.add('is-native-ready');
+      if (status) status.textContent = 'Mô hình tham chiếu đã sẵn sàng';
+    };
+    model.onProgress = event => {
+      if (activeAnatomy3D !== model || !status) return;
+      const progress = Math.round((event.detail?.totalProgress || 0) * 100);
+      status.textContent = progress > 0 && progress < 100 ? 'Đang tải mô hình · ' + progress + '%' : 'Đang dựng mô hình 3D…';
+    };
+    model.onError = () => {
+      if (activeAnatomy3D !== model) return;
+      disposeInteractiveModel();
+      panel.classList.remove('is-native-loading', 'is-native-ready');
+      if (status) status.textContent = 'Không tải được mô hình tham chiếu · chuyển sang mô hình dự phòng';
+      delete panel.dataset.modelInitializing;
+      initCustomThreeModel(panel);
+    };
+    viewer.addEventListener('load', model.onLoad);
+    viewer.addEventListener('progress', model.onProgress);
+    viewer.addEventListener('error', model.onError);
+  }
+
+  function initCustomThreeModel(panel) {
     ensureThreeLibrary().then(THREE => {
       if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel) return;
       disposeInteractiveModel();
@@ -456,7 +579,7 @@
         const width = Math.max(220, surface.clientWidth || panel.clientWidth || 420);
         const height = Math.max(240, surface.clientHeight || panel.clientHeight || 420);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
         renderer.setSize(width, height, false);
         renderer.domElement.setAttribute('aria-hidden', 'true');
         surface.appendChild(renderer.domElement);
@@ -476,7 +599,7 @@
         group.scale.setScalar(1.0);
 
         const model = {
-          panel, renderer, scene, camera, group, frame: 0,
+          kind: 'custom', panel, renderer, scene, camera, group, frame: 0, render: null, visibilityHandler: null,
           autoRotate: motionEnabled && !reducedMotion.matches,
           dragging: false, lastX: 0, lastY: 0, resizeObserver: null, onResize: null,
           onPointerDown: null, onPointerMove: null, onPointerUp: null, onWheel: null
@@ -488,6 +611,7 @@
           renderer.setSize(w, h, false);
           camera.aspect = w / h;
           camera.updateProjectionMatrix();
+          model.render?.();
         };
         model.onPointerDown = event => {
           if (event.target.closest('button')) return;
@@ -505,16 +629,19 @@
           model.lastY = event.clientY;
           group.rotation.y += dx * 0.010;
           group.rotation.x = Math.max(-1.0, Math.min(1.0, group.rotation.x + dy * 0.008));
+          model.render?.();
         };
         model.onPointerUp = event => {
           model.dragging = false;
           panel.classList.remove('is-dragging');
           try { panel.releasePointerCapture?.(event.pointerId); } catch { /* pointer capture may already be released */ }
+          model.render?.();
         };
         model.onWheel = event => {
           event.preventDefault();
           const scale = group.scale.x * (event.deltaY < 0 ? 1.08 : 0.92);
           group.scale.setScalar(Math.max(0.68, Math.min(1.7, scale)));
+          model.render?.();
         };
         panel.addEventListener('pointerdown', model.onPointerDown);
         panel.addEventListener('pointermove', model.onPointerMove);
@@ -536,14 +663,32 @@
         model.onResize();
 
         const tick = () => {
+          model.frame = 0;
           if (activeAnatomy3D !== model || !panel.isConnected) return;
+          if (document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden) return;
           if (model.autoRotate && motionEnabled && !reducedMotion.matches && !model.dragging) {
-            group.rotation.y += 0.004;
+            group.rotation.y += 0.0032;
           }
           renderer.render(scene, camera);
+          if (model.dragging || (model.autoRotate && motionEnabled && !reducedMotion.matches)) {
+            model.frame = requestAnimationFrame(tick);
+          }
+        };
+        model.render = () => {
+          if (activeAnatomy3D !== model || model.frame) return;
+          if (document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden) return;
           model.frame = requestAnimationFrame(tick);
         };
-        tick();
+        model.visibilityHandler = () => {
+          if (document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden) {
+            if (model.frame) cancelAnimationFrame(model.frame);
+            model.frame = 0;
+          } else {
+            model.render?.();
+          }
+        };
+        document.addEventListener('visibilitychange', model.visibilityHandler);
+        model.render();
       } catch (error) {
         panel.classList.remove('is-3d-ready');
         const status = panel.querySelector('.anatomy3d-status');
@@ -565,14 +710,43 @@
     const model = activeAnatomy3D;
     if (!panel || !model || model.panel !== panel) return;
     const action = button.dataset.modelAction;
+    if (model.kind === 'native') {
+      const viewer = model.viewer;
+      if (action === 'rotate') {
+        model.autoRotate = !model.autoRotate;
+        if (model.autoRotate && motionEnabled && !reducedMotion.matches) {
+          viewer.setAttribute('auto-rotate', '');
+          viewer.setAttribute('rotation-per-second', '12deg');
+        } else viewer.removeAttribute('auto-rotate');
+        button.setAttribute('aria-pressed', String(model.autoRotate));
+        button.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      } else if (action === 'zoom-in' || action === 'zoom-out') {
+        const orbit = viewer.getCameraOrbit();
+        const factor = action === 'zoom-in' ? 0.88 : 1.14;
+        const radius = Math.min(1000, Math.max(0.02, orbit.radius * factor));
+        viewer.cameraOrbit = orbit.theta + 'rad ' + orbit.phi + 'rad ' + radius + 'm';
+      } else if (action === 'reset') {
+        viewer.cameraOrbit = 'auto auto auto';
+        viewer.cameraTarget = 'auto auto auto';
+        model.autoRotate = motionEnabled && !reducedMotion.matches;
+        if (model.autoRotate) viewer.setAttribute('auto-rotate', '');
+        else viewer.removeAttribute('auto-rotate');
+        button.setAttribute('aria-pressed', String(model.autoRotate));
+        button.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      }
+      return;
+    }
     if (action === 'rotate') {
       model.autoRotate = !model.autoRotate;
       button.setAttribute('aria-pressed', String(model.autoRotate));
       button.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      model.render?.();
     } else if (action === 'zoom-in') {
       model.group.scale.setScalar(Math.min(1.7, model.group.scale.x * 1.12));
+      model.render?.();
     } else if (action === 'zoom-out') {
       model.group.scale.setScalar(Math.max(0.68, model.group.scale.x * 0.89));
+      model.render?.();
     } else if (action === 'reset') {
       model.group.rotation.set(0, 0, 0);
       model.group.scale.setScalar(1);
@@ -582,6 +756,7 @@
         rotate.setAttribute('aria-pressed', String(model.autoRotate));
         rotate.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
       }
+      model.render?.();
     }
   }
 
@@ -1308,6 +1483,15 @@
       $$('.live-video', $('#slideStage')).forEach(video => video.pause());
       $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
     }
+    if (activeAnatomy3D) {
+      if (activeAnatomy3D.kind === 'native') {
+        if (motionEnabled && !reducedMotion.matches && activeAnatomy3D.autoRotate) activeAnatomy3D.viewer.setAttribute('auto-rotate', '');
+        else activeAnatomy3D.viewer.removeAttribute('auto-rotate');
+      } else {
+        if (!motionEnabled || reducedMotion.matches) activeAnatomy3D.autoRotate = false;
+        activeAnatomy3D.render?.();
+      }
+    }
   }
 
   // Shared event delegation avoids accumulating listeners when the library rerenders.
@@ -1372,6 +1556,26 @@
         closeContents(false);
         renderSlide({ animate: false });
       }
+      return;
+    }
+    if (target.matches('[data-media-mode]')) {
+      const experience = target.closest('.media-experience');
+      if (!experience) return;
+      const mode = target.dataset.mediaMode;
+      const imageView = experience.querySelector('.media-image-view');
+      const modelView = experience.querySelector('.media-3d-view');
+      experience.querySelectorAll('[data-media-mode]').forEach(button => {
+        const active = button.dataset.mediaMode === mode;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      const showModel = mode === 'model';
+      imageView.hidden = showModel;
+      modelView.hidden = !showModel;
+      imageView.classList.toggle('is-active', !showModel);
+      modelView.classList.toggle('is-active', showModel);
+      if (showModel) initInteractiveModels(experience);
+      else if (activeAnatomy3D?.panel === modelView.querySelector('.anatomy3d-panel')) disposeInteractiveModel();
       return;
     }
     if (target.matches('[data-model-action]')) { controlInteractiveModel(target); return; }
