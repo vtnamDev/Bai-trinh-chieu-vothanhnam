@@ -4,6 +4,7 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const STORAGE_KEY = 'biosphere-slides-workspace-v1';
+  const PERFORMANCE_STORAGE_KEY = 'biosphere-performance-mode-v1';
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const seedDeck = window.BIOSPHERE_BAI32_SEED;
@@ -14,6 +15,8 @@
   let currentDeck = null;
   let slideIndex = 0;
   let motionEnabled = !reducedMotion.matches;
+  let performanceMode = readPerformanceMode();
+  let photoWarmTimer = 0;
   let soundEnabled = true;
   let previousFocus = null;
   let transitionCleanupTimer = 0;
@@ -55,6 +58,79 @@
       toast('Không thể lưu: bộ nhớ trình duyệt có thể đã đầy.');
       return false;
     }
+  }
+
+  function readPerformanceMode() {
+    try {
+      const saved = localStorage.getItem(PERFORMANCE_STORAGE_KEY);
+      return ['auto', 'smooth', 'cinema'].includes(saved) ? saved : 'auto';
+    } catch {
+      return 'auto';
+    }
+  }
+
+  function getPerformanceProfile() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+    const effectiveType = String(connection.effectiveType || '').toLowerCase();
+    const online = navigator.onLine !== false;
+    const saveData = Boolean(connection.saveData);
+    const slowConnection = !online || saveData || ['slow-2g', '2g', '3g'].includes(effectiveType);
+    const memory = Number(navigator.deviceMemory) || 0;
+    const cores = Number(navigator.hardwareConcurrency) || 0;
+    const lowPower = (memory > 0 && memory <= 4) || (cores > 0 && cores <= 4);
+    const lite = performanceMode === 'smooth' ||
+      (performanceMode === 'auto' && (slowConnection || lowPower));
+    const allowVideo = performanceMode !== 'smooth' && online && !saveData &&
+      !['slow-2g', '2g', '3g'].includes(effectiveType) &&
+      motionEnabled && !reducedMotion.matches &&
+      (performanceMode === 'cinema' || !lowPower);
+    const maxPixelRatio = lite ? 1 : (performanceMode === 'cinema' ? 1.5 : 1.25);
+    return { connection, effectiveType, online, saveData, slowConnection, memory, cores, lowPower, lite, allowVideo, maxPixelRatio };
+  }
+
+  function updatePerformanceUI() {
+    const profile = getPerformanceProfile();
+    document.documentElement.dataset.performanceMode = performanceMode;
+    document.documentElement.dataset.performanceLite = String(profile.lite);
+    $('[data-performance-mode]').forEach(button => {
+      const active = button.dataset.performanceMode === performanceMode;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    const status = $('#performanceStatus');
+    if (!status) return;
+    const labels = { auto: 'Tự động thông minh', smooth: 'Mượt nhẹ', cinema: 'Điện ảnh' };
+    const signals = [];
+    if (!profile.online) signals.push('đang ngoại tuyến');
+    else if (profile.saveData) signals.push('tiết kiệm dữ liệu đang bật');
+    else if (profile.effectiveType) signals.push('mạng ' + profile.effectiveType.toUpperCase());
+    if (profile.memory) signals.push('RAM thiết bị khoảng ' + profile.memory + ' GB');
+    if (profile.cores) signals.push(profile.cores + ' luồng CPU');
+    const environment = signals.length ? signals.join(' · ') : 'chưa có đủ tín hiệu thiết bị/mạng';
+    const behavior = profile.lite
+      ? 'Ưu tiên độ mượt: giảm hiệu ứng nền, giới hạn tải trước và tắt video nền.'
+      : profile.allowVideo
+        ? 'Cho phép video nền khi phù hợp; mô hình 3D chỉ tải khi bạn mở.'
+        : 'Giữ ảnh tĩnh; tôn trọng cài đặt chuyển động hoặc giới hạn kết nối.';
+    status.textContent = labels[performanceMode] + ' · ' + environment + '. ' + behavior;
+  }
+
+  function setPerformanceMode(mode, announce = true) {
+    if (!['auto', 'smooth', 'cinema'].includes(mode)) return;
+    performanceMode = mode;
+    try { localStorage.setItem(PERFORMANCE_STORAGE_KEY, mode); } catch { /* use this session only */ }
+    updatePerformanceUI();
+    if (atmosphereCanvasContext) resizeStageAtmosphere();
+    const profile = getPerformanceProfile();
+    if (profile.lite || !motionEnabled || reducedMotion.matches) stopStageAtmosphere();
+    else if (!$('#presentationViewer').hidden) startStageAtmosphere();
+    if (!profile.allowVideo) {
+      $('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
+    } else if (!$('#presentationViewer').hidden) {
+      attachVideoBackgrounds($('#slideStage'));
+    }
+    if (announce) toast(mode === 'auto' ? 'Đã bật tối ưu tự động.' : mode === 'smooth' ? 'Đã ưu tiên độ mượt và tiết kiệm dữ liệu.' : 'Đã bật chế độ điện ảnh.');
   }
 
   function escapeHTML(value) {
@@ -678,7 +754,7 @@
         const width = Math.max(220, surface.clientWidth || panel.clientWidth || 420);
         const height = Math.max(240, surface.clientHeight || panel.clientHeight || 420);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, getPerformanceProfile().maxPixelRatio));
         renderer.setSize(width, height, false);
         renderer.domElement.setAttribute('aria-hidden', 'true');
         surface.appendChild(renderer.domElement);
@@ -868,14 +944,15 @@
     if (!url) return renderVisual(slide.visual);
     const videoUrl = safeHttpUrl(slide.video || '');
     const video4kUrl = safeHttpUrl(slide.video4k || '');
-    const saveData = Boolean(navigator.connection?.saveData);
-    const connectionType = String(navigator.connection?.effectiveType || '');
-    const coarsePortrait = window.matchMedia('(pointer: coarse) and (orientation: portrait)').matches;
-    const use4k = Boolean(video4kUrl && window.matchMedia('(min-width: 1800px) and (orientation: landscape)').matches &&
-      !coarsePortrait && !navigator.connection?.saveData &&
-      !saveData && !['slow-2g', '2g', '3g'].includes(connectionType) &&
+    const profile = getPerformanceProfile();
+    const saveData = profile.saveData;
+    const connectionType = profile.effectiveType;
+    const coarsePortrait = window.matchMedia('(pointer: coarse) and (orientation: landscape)').matches;
+    const use4k = Boolean(performanceMode === 'cinema' && profile.allowVideo && !profile.lite && video4kUrl &&
+      window.matchMedia('(min-width: 1800px) and (orientation: landscape)').matches &&
+      !coarsePortrait && !saveData && !['slow-2g', '2g', '3g'].includes(connectionType) &&
       motionEnabled && !reducedMotion.matches);
-    const selectedVideo = use4k ? video4kUrl : videoUrl;
+    const selectedVideo = profile.allowVideo ? (use4k ? video4kUrl : videoUrl) : '';
     const provider = String(slide.videoProvider || '').trim();
     const credit = selectedVideo
       ? (use4k ? (slide.videoCredit || provider + ' · 4K master') : (slide.videoCredit || provider + ' · video'))
@@ -918,7 +995,7 @@
   function attachVideoBackgrounds(root = document) {
     $$('.live-video', root).forEach(video => {
       const frame = video.closest('.photo-frame');
-      const canShowVideo = () => motionEnabled && !reducedMotion.matches &&
+      const canShowVideo = () => getPerformanceProfile().allowVideo && motionEnabled && !reducedMotion.matches &&
         !document.hidden && !$('#presentationViewer').hidden;
 
       const markIfPlaying = () => {
@@ -1012,16 +1089,24 @@
   }
 
   function warmAdjacentPhotos() {
+    if (photoWarmTimer) window.clearTimeout(photoWarmTimer);
     if (!currentDeck || typeof Image === 'undefined') return;
+    const profile = getPerformanceProfile();
+    if (!profile.online || profile.saveData || profile.slowConnection || profile.lite) return;
     const slides = Array.isArray(currentDeck.slides) ? currentDeck.slides : [];
-    [slideIndex - 1, slideIndex + 1].forEach(index => {
-      const url = slides[index]?.image;
-      if (url && index >= 0 && index < slides.length) {
+    photoWarmTimer = window.setTimeout(() => {
+      photoWarmTimer = 0;
+      if (!currentDeck || currentDeck.slides !== slides) return;
+      const indexes = performanceMode === 'cinema' ? [slideIndex + 1, slideIndex - 1] : [slideIndex + 1];
+      indexes.forEach(index => {
+        const url = safeHttpUrl(slides[index]?.image || '');
+        if (!url || index < 0 || index >= slides.length) return;
         const preload = new Image();
         preload.decoding = 'async';
+        try { preload.fetchPriority = 'low'; } catch { /* older browsers */ }
         preload.src = url;
-      }
-    });
+      });
+    }, 260);
   }
 
   function renderQuiz(slide) {
@@ -1194,12 +1279,13 @@
     const viewer = $('#presentationViewer');
     atmosphereWidth = Math.max(1, viewer.clientWidth);
     atmosphereHeight = Math.max(1, viewer.clientHeight);
-    atmosphereDpr = Math.min(window.devicePixelRatio || 1, 1.25);
+    const profile = getPerformanceProfile();
+    atmosphereDpr = Math.min(window.devicePixelRatio || 1, profile.maxPixelRatio);
     canvas.width = Math.round(atmosphereWidth * atmosphereDpr);
     canvas.height = Math.round(atmosphereHeight * atmosphereDpr);
     atmosphereCanvasContext.setTransform(atmosphereDpr, 0, 0, atmosphereDpr, 0, 0);
     const mobile = window.matchMedia('(max-width: 650px)').matches;
-    const count = mobile ? 24 : 54;
+    const count = profile.lite ? 0 : performanceMode === 'cinema' ? (mobile ? 32 : 68) : (mobile ? 18 : 42);
     atmosphereParticles = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * atmosphereWidth,
       y: Math.random() * atmosphereHeight,
@@ -1213,8 +1299,8 @@
 
   function drawStageAtmosphere(timestamp) {
     if (!atmosphereRunning || !atmosphereCanvasContext) return;
-    if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden) {
-      atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
+    if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden || getPerformanceProfile().lite) {
+      atmosphereFrame = 0;
       return;
     }
     if (timestamp - atmosphereLastPaint < 33) {
@@ -1272,7 +1358,7 @@
   }
 
   function startStageAtmosphere() {
-    if (!atmosphereCanvasContext || atmosphereRunning || !motionEnabled || reducedMotion.matches) return;
+    if (!atmosphereCanvasContext || atmosphereRunning || !motionEnabled || reducedMotion.matches || getPerformanceProfile().lite) return;
     atmosphereRunning = true;
     atmosphereLastPaint = 0;
     atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
@@ -1597,6 +1683,7 @@
         activeAnatomy3D.render?.();
       }
     }
+    updatePerformanceUI();
   }
 
   // Shared event delegation avoids accumulating listeners when the library rerenders.
@@ -1604,6 +1691,10 @@
     const target = event.target.closest('button');
     if (!target) return;
 
+    if (target.matches('[data-performance-mode]')) {
+      setPerformanceMode(target.dataset.performanceMode);
+      return;
+    }
     if (target.matches('[data-present]')) present(target.dataset.present);
     if (target.matches('[data-share]')) shareDeck(target.dataset.share);
     if (target.matches('[data-export]')) exportDeck(target.dataset.export);
@@ -1860,6 +1951,11 @@
     if (event.matches) setMotion(false);
   });
 
+  const networkInfo = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  networkInfo?.addEventListener?.('change', () => setPerformanceMode(performanceMode, false));
+  window.addEventListener('online', () => setPerformanceMode(performanceMode, false));
+  window.addEventListener('offline', () => setPerformanceMode(performanceMode, false));
+
   try {
     const savedTheme = localStorage.getItem('biosphere-theme');
     if (savedTheme === 'light' || savedTheme === 'dark') setTheme(savedTheme);
@@ -1875,6 +1971,7 @@
     $('#viewerSound').setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh');
   }
   initStageAtmosphere();
+  updatePerformanceUI();
 
   const initialHash = location.hash.slice(1);
   if (initialHash.startsWith('present/')) {
