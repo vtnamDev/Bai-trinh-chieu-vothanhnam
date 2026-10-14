@@ -76,6 +76,10 @@
     }
   }
 
+  function safeDecodeURIComponent(value) {
+    try { return decodeURIComponent(value); } catch { return ''; }
+  }
+
   function isValidDeckShape(deck) {
     if (!deck || typeof deck !== 'object' || Array.isArray(deck) ||
         typeof deck.title !== 'string' || !deck.title.trim() ||
@@ -1824,10 +1828,17 @@
       $('#presentationViewer').hidden = true;
       document.body.style.overflow = '';
       stopStageAtmosphere();
+      disposeInteractiveModel();
+      closeContents(false);
+      if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
+      transitionCleanupTimer = 0;
+      activeTransitionGhost?.remove();
+      activeTransitionGhost = null;
+      $('#slideStage').innerHTML = '';
       currentDeck = null;
     }
     if (hash.startsWith('present/')) {
-      const id = decodeURIComponent(hash.slice('present/'.length));
+      const id = safeDecodeURIComponent(hash.slice('present/'.length));
       if (decks.some(deck => deck.id === id)) present(id);
       else showView('library', false);
     } else {
@@ -1867,7 +1878,7 @@
 
   const initialHash = location.hash.slice(1);
   if (initialHash.startsWith('present/')) {
-    const id = decodeURIComponent(initialHash.slice('present/'.length));
+    const id = safeDecodeURIComponent(initialHash.slice('present/'.length));
     if (decks.some(deck => deck.id === id)) present(id);
     else showView('library', false);
   } else {
