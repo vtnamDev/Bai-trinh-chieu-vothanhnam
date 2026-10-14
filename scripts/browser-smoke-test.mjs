@@ -47,8 +47,10 @@ try {
   await page.locator('#mobileMenu').click();
   await page.locator('#mainNav [data-view="library"]').click();
   await page.locator('#heroSample').click();
-  await page.locator('#viewerSlideCaption').waitFor({ state: 'visible', timeout: 10000 });
-  assert.equal(await page.locator('#viewerSlideCaption').textContent(), '01 / 32');
+  await page.locator('#presentationViewer').waitFor({ state: 'visible', timeout: 10000 });
+  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 32');
+  // The counter is intentionally visually hidden on narrow phones to preserve slide space.
+  assert.equal((await page.locator('#viewerSlideCaption').textContent()).trim(), '01 / 32');
   assert.equal(await page.evaluate(() => Boolean(document.querySelector('script[data-biosphere-three]'))), false,
     'The 3D library must not load before a user selects a 3D scene.');
   await page.locator('#slideNext').click();
