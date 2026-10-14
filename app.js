@@ -517,29 +517,31 @@
     if (view?.hidden || panel.dataset.modelInitializing === '1' || activeAnatomy3D?.panel === panel) return;
     disposeInteractiveModel();
     panel.dataset.modelInitializing = '1';
+    const requestId = String((Number(panel.dataset.modelRequest) || 0) + 1);
+    panel.dataset.modelRequest = requestId;
     const fallback = panel.querySelector('.anatomy3d-fallback');
     if (fallback && !fallback.getAttribute('src') && fallback.dataset.fallbackSrc) {
       fallback.src = fallback.dataset.fallbackSrc;
       fallback.addEventListener('error', () => fallback.classList.add('photo-load-failed'), { once: true });
     }
     if (panel.dataset.modelSrc) {
-      initReferenceModelViewer(panel).catch(() => {
-        if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel) return;
+      initReferenceModelViewer(panel, requestId).catch(() => {
+        if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.dataset.modelRequest !== requestId) return;
         delete panel.dataset.modelInitializing;
         const status = panel.querySelector('.anatomy3d-status');
         if (status) status.textContent = 'Mô hình tham chiếu không tải được · dùng mô hình dự phòng';
-        initCustomThreeModel(panel);
+        initCustomThreeModel(panel, requestId);
       });
     } else {
-      initCustomThreeModel(panel);
+      initCustomThreeModel(panel, requestId);
     }
   }
 
-  async function initReferenceModelViewer(panel) {
+  async function initReferenceModelViewer(panel, requestId) {
     const source = String(panel.dataset.modelSrc || '').trim();
     if (!source) throw new Error('No reference model source');
     await ensureModelViewerLibrary();
-    if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden) {
+    if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden || panel.dataset.modelRequest !== requestId) {
       delete panel.dataset.modelInitializing;
       return;
     }
@@ -596,16 +598,16 @@
       panel.classList.remove('is-native-loading', 'is-native-ready');
       if (status) status.textContent = 'Không tải được mô hình tham chiếu · chuyển sang mô hình dự phòng';
       delete panel.dataset.modelInitializing;
-      initCustomThreeModel(panel);
+      initCustomThreeModel(panel, requestId);
     };
     viewer.addEventListener('load', model.onLoad);
     viewer.addEventListener('progress', model.onProgress);
     viewer.addEventListener('error', model.onError);
   }
 
-  function initCustomThreeModel(panel) {
+  function initCustomThreeModel(panel, requestId = panel.dataset.modelRequest) {
     ensureThreeLibrary().then(THREE => {
-      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden) {
+      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden || panel.dataset.modelRequest !== requestId) {
         delete panel.dataset.modelInitializing;
         return;
       }
@@ -1614,6 +1616,7 @@
         const modelPanel = modelView.querySelector('.anatomy3d-panel');
         if (activeAnatomy3D?.panel === modelPanel) disposeInteractiveModel();
         else if (modelPanel) delete modelPanel.dataset.modelInitializing;
+        if (modelPanel) modelPanel.dataset.modelRequest = String((Number(modelPanel.dataset.modelRequest) || 0) + 1);
       }
       return;
     }
