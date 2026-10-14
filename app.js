@@ -821,7 +821,6 @@
       toast(motionEnabled ? 'Đã bật chuyển động' : 'Đã giảm chuyển động');
     }
     if (target.matches('[data-quiz-answer]')) answerQuiz(Number(target.dataset.quizAnswer));
-    if (target.matches('[data-quiz-next]')) nextQuizQuestion();
     if (target.matches('[data-quiz-restart]')) restartQuiz();
     if (target.id === 'viewerSound') toggleQuizSound();
     if (target.id === 'slidePrev') goPrevious();
