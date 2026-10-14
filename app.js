@@ -417,6 +417,11 @@
     }
   });
 
+  $('.brand').addEventListener('click', event => {
+    event.preventDefault();
+    showView('library');
+  });
+
   $('#searchDecks').addEventListener('input', renderDecks);
   $('#createForm').addEventListener('submit', event => {
     event.preventDefault();
@@ -425,7 +430,13 @@
   });
   $('#jsonImport').addEventListener('change', () => {
     const file = $('#jsonImport').files?.[0];
-    if (file && file.size > 2 * 1024 * 1024) toast('Tệp vượt quá giới hạn 2 MB.');
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast('Tệp vượt quá giới hạn 2 MB.');
+      $('#jsonImport').value = '';
+      return;
+    }
+    importDeck();
   });
   $('#importModal').addEventListener('click', event => {
     if (event.target.id === 'importModal') closeModal(event.currentTarget);
