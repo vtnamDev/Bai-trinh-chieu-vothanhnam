@@ -69,3 +69,9 @@ GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính
 - Trên kết nối chậm hoặc thiết bị giới hạn, website giảm hiệu ứng nền nặng, giới hạn độ phân giải canvas/3D và bỏ tải trước ảnh láng giềng. Video nền chỉ phát khi phù hợp với cài đặt chuyển động và điều kiện kết nối.
 - Mức Điện ảnh có thể tăng chất lượng hiệu ứng, nhưng không bỏ qua Data Saver, trạng thái ngoại tuyến hoặc tuỳ chọn giảm chuyển động. Mô hình 3D vẫn tải theo yêu cầu; ảnh tĩnh không bị thay thế.
 - Tải trước ảnh slide được trì hoãn một nhịp để nhường ưu tiên mạng cho ảnh đang xem; Tự động chỉ làm ấm ảnh kế tiếp, còn Điện ảnh có thể làm ấm cả slide trước và sau trên mạng phù hợp.
+
+
+## Bộ nhớ đệm ngoại tuyến
+- Trên HTTPS (hoặc localhost), service worker lưu vỏ ứng dụng cùng domain: HTML, CSS, JavaScript, dữ liệu bài học và logo. Lượt mở lại có thể dùng bộ nhớ đệm và trang chính có thể tải lại khi mất mạng sau lần truy cập trực tuyến đầu tiên.
+- Bộ đệm được phiên bản hóa và xóa bản shell cũ khi cập nhật. Không tải trước hay lưu hàng loạt ảnh, video, CDN hoặc mô hình 3D bên ngoài; các tài nguyên đó vẫn cần mạng, còn ảnh mặc định và giao diện dự phòng vẫn được giữ.
+- Nếu trình duyệt chặn service worker, website vẫn hoạt động bình thường khi trực tuyến.
