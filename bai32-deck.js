@@ -1,4 +1,4 @@
-/* BioSphere Slides · Bài 32 · media mapping audited for topic relevance */
+/* BioSphere Slides · Bài 32 · chủ đề hình/video được gắn nhãn đúng với nguồn thực tế */
 window.BIOSPHERE_BAI32_SEED = {
   "id": "khtn8-bai32-scaffold",
   "title": "5 bệnh thường gặp liên quan đến đường tiêu hóa",
@@ -38,7 +38,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Vanessa Loring · healthy foods",
       "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Cận cảnh nhiều loại rau, đậu và hạt trong bữa ăn lành mạnh"
     },
     {
       "kicker": "MỞ ĐẦU",
@@ -61,7 +62,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Yan Krukau · classroom interaction",
       "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Giáo viên và học sinh trong giờ học"
     },
     {
       "kicker": "NHÓM THỰC HIỆN",
@@ -86,7 +88,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Ivan S · students discussing in class",
       "videoSourceUrl": "https://www.pexels.com/video/students-in-a-classroom-5676150/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Học sinh cùng thảo luận và hợp tác"
     },
     {
       "kicker": "CÂU HỎI DẪN NHẬP",
@@ -109,7 +112,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Mixkit · Vegetables into the pan in slow motion",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/vegetables-into-the-pan-in-slow-motion-49231/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Rau củ đang được chế biến trong chảo"
     },
     {
       "kicker": "KIẾN THỨC NỀN",
@@ -158,7 +162,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Các loại thực phẩm tươi trong chế độ ăn cân bằng"
     },
     {
       "kicker": "NỘI DUNG CHÍNH",
@@ -194,7 +199,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Vanessa Loring · healthy foods",
       "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Bữa ăn nhiều màu sắc với rau và thực phẩm tươi"
     },
     {
       "kicker": "BỆNH 01 · SÂU RĂNG",
@@ -218,7 +224,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/doctor-checking-her-patient-teeth-5099678/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5099678/5099678-uhd_3840_2160_30fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Nha sĩ kiểm tra răng cho bệnh nhân"
     },
     {
       "kicker": "BỆNH 01 · NGUYÊN NHÂN",
@@ -243,7 +250,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Mixkit · Dentist hands cleaning teeth",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/dentist-hands-cleaning-teeth-to-a-patient-33256/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Nha sĩ làm sạch răng cho bệnh nhân"
     },
     {
       "kicker": "BỆNH 01 · PHÒNG NGỪA",
@@ -268,7 +276,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-boy-brushing-his-teeth-4554224/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Trẻ đánh răng trước gương"
     },
     {
       "kicker": "BỆNH 01 · NHẬN BIẾT SỚM",
@@ -294,7 +303,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/doctor-checking-her-patient-teeth-5099678/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Nha sĩ khám răng trong phòng khám"
     },
     {
       "kicker": "BỆNH 02 · VIÊM LOÉT DẠ DÀY – TÁ TRÀNG",
@@ -318,7 +328,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng"
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -344,7 +355,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng"
     },
     {
       "kicker": "BỆNH 02 · NGUYÊN NHÂN VÀ XỬ TRÍ",
@@ -368,7 +380,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Mixkit · Doctor explaining a medical condition",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-explaining-the-medical-condition-to-patient-13040/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Bác sĩ giải thích tình trạng sức khỏe cho bệnh nhân"
     },
     {
       "kicker": "BỆNH 02 · PHÒNG NGỪA VÀ ĐIỀU TRỊ",
@@ -393,7 +406,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Mixkit · Doctor talking to a patient in a hospital bed",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-talking-to-a-patient-in-a-hospital-bed-35956/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Bác sĩ trao đổi với người bệnh tại bệnh viện"
     },
     {
       "kicker": "BỆNH 03 · TIÊU CHẢY",
@@ -418,7 +432,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Artem Podrez · drinking water",
       "videoSourceUrl": "https://www.pexels.com/video/a-man-drinking-a-glass-of-water-4731190/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Người uống nước từ cốc thủy tinh"
     },
     {
       "kicker": "BỆNH 03 · MẤT NƯỚC",
@@ -444,7 +459,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Kindel Media · abdominal discomfort",
       "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Người ôm vùng bụng, minh họa triệu chứng đau bụng"
     },
     {
       "kicker": "BỆNH 03 · PHÒNG NGỪA",
@@ -469,7 +485,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Rửa tay với xà phòng ở bồn rửa"
     },
     {
       "kicker": "BỆNH 03 · XỬ TRÍ AN TOÀN",
@@ -546,7 +563,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Kindel Media · abdominal discomfort",
       "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Người có biểu hiện đau vùng bụng, minh họa một triệu chứng có thể gặp khi ngộ độc"
     },
     {
       "kicker": "BỆNH 04 · PHÒNG NGỪA",
@@ -581,7 +599,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Rửa tay để giữ vệ sinh khi chuẩn bị thực phẩm"
     },
     {
       "kicker": "BỆNH 04 · XỬ TRÍ",
@@ -606,7 +625,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Mixkit · Doctor explaining a medical condition",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-explaining-the-medical-condition-to-patient-13040/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Bác sĩ tư vấn cho người bệnh"
     },
     {
       "kicker": "BỆNH 05 · TÁO BÓN",
@@ -631,7 +651,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Rau củ, đậu và các loại hạt giàu chất xơ"
     },
     {
       "kicker": "BỆNH 05 · YẾU TỐ NGUY CƠ",
@@ -656,7 +677,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Tima Miroshnichenko · preparing vegetables",
       "videoSourceUrl": "https://www.pexels.com/video/vegetables-being-taken-with-a-fork-6327114/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Rau củ được chuẩn bị cho bữa ăn"
     },
     {
       "kicker": "SO SÁNH NHANH",
@@ -691,7 +713,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Mixkit · Doctor examining a patient",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-examining-a-patient-7632/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Bác sĩ thăm khám bệnh nhân"
     },
     {
       "kicker": "VẬN DỤNG VÀO ĐỜI SỐNG",
@@ -728,7 +751,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Rửa tay với xà phòng dưới vòi nước"
     },
     {
       "kicker": "BỆNH 05 · KẾ HOẠCH HẰNG NGÀY",
@@ -754,7 +778,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Vanessa Loring · healthy foods",
       "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Bữa ăn lành mạnh với nhiều rau và thực phẩm giàu chất xơ"
     },
     {
       "kicker": "TƯƠNG TÁC CẢ LỚP · THẢO LUẬN NHÓM",
@@ -811,7 +836,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Yan Krukau · classroom interaction",
       "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Học sinh tương tác trong giờ học"
     },
     {
       "kicker": "THỬ THÁCH TƯƠNG TÁC · CẢ LỚP CÙNG CHƠI",
@@ -888,7 +914,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Ivan S · students discussing in class",
       "videoSourceUrl": "https://www.pexels.com/video/students-in-a-classroom-5676150/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Các bạn học sinh thảo luận trong lớp"
     },
     {
       "kicker": "KẾT LUẬN · NGUỒN THAM KHẢO",
@@ -957,7 +984,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Pexels · Yan Krukau · classroom interaction",
       "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "videoAlt": "Học sinh và giáo viên trong lớp học"
     }
   ]
 };
