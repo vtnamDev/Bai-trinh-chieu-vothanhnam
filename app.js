@@ -274,14 +274,15 @@
         '<img class="photo-support-image" src="' + escapeHTML(item.url || '') + '" alt="' + escapeHTML(item.alt || '') + '" loading="eager" decoding="async" data-fallback="' + fallback + '">' +
       '</a>'
     ).join('') + '</div>' : '';
-    return '<aside class="photo-scene" data-palette="' + escapeHTML(palette) + '" data-media-mode="' + (selectedVideo ? 'video' : 'photo') + '" aria-label="' + escapeHTML(slide.imageAlt || 'Ảnh minh họa thực tế') + '">' +
+    const mediaAlt = selectedVideo ? (slide.videoAlt || slide.imageAlt || 'Video minh họa liên quan') : (slide.imageAlt || 'Ảnh minh họa thực tế');
+    return '<aside class="photo-scene" data-palette="' + escapeHTML(palette) + '" data-media-mode="' + (selectedVideo ? 'video' : 'photo') + '" aria-label="' + escapeHTML(mediaAlt) + '">' +
       '<div class="photo-halo photo-halo--one"></div><div class="photo-halo photo-halo--two"></div>' +
       '<div class="photo-frame">' +
         videoMarkup +
         '<img class="live-photo' + (slide.imageFit === 'contain' ? ' is-contained-diagram' : '') + '" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
         '<div class="photo-color-wash"></div><div class="photo-vignette"></div>' +
         '<div class="photo-topline"><span><i></i> ' + (selectedVideo ? 'VIDEO THỰC / ' + escapeHTML(provider.toUpperCase()) + (use4k ? ' · 4K' : '') : 'ẢNH THỰC / LIVE SOURCE') + '</span><b>' + photoNo + '</b></div>' +
-        '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'CINEMATIC FOOTAGE' : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(slide.imageAlt || 'Ảnh minh họa') + '</strong></div>' +
+        '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'LIVE FOOTAGE · ' + escapeHTML(provider.toUpperCase()) : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(mediaAlt) + '</strong></div>' +
         '<a class="photo-source-link" href="' + escapeHTML(source) + '" target="_blank" rel="noopener noreferrer" aria-label="Mở nguồn ' + (selectedVideo ? 'video' : 'ảnh') + ': ' + escapeHTML(credit) + '">' + (selectedVideo ? 'Nguồn video' : 'Nguồn ảnh') + ' <span>↗</span></a></div>' +
         '<div class="photo-focus-ring"></div>' +
       '</div>' + supportMarkup +
