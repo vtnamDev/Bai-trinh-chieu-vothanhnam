@@ -89,5 +89,9 @@ const warmupSource = app.slice(warmupStart, warmupEnd);
 assert.ok(warmupSource.includes('profile.saveData') && warmupSource.includes('profile.slowConnection'), 'Image preloading must respect bandwidth limits.');
 assert.ok(app.includes('getPerformanceProfile().lite) {\n      atmosphereFrame = 0;\n      return;'), 'The background render loop must stop rather than spin while hidden.');
 assert.ok(css.includes('html[data-performance-lite="true"]'), 'Low-power mode must reduce expensive visual effects.');
+const toastStart = app.indexOf('function toast(message)');
+const toastEnd = app.indexOf('function renderDecks()', toastStart);
+const toastSource = app.slice(toastStart, toastEnd);
+assert.ok(app.includes('let toastTimer = 0;') && toastSource.includes("region.querySelector('.toast')") && toastSource.includes('clearTimeout(toastTimer)'), 'Rapid notifications must reuse one toast and clear its previous timer.');
 
 console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, ${quizSlides.length} quiz slides.`);
