@@ -1365,3 +1365,20 @@ body{
 @media(prefers-reduced-motion:reduce){
   .viewer .quiz-feedback,.viewer .quiz-feedback-icon{animation:none!important}
 }
+
+
+/* Freeze the outgoing snapshot itself; only the page-level transition animates. */
+.viewer .slide-transition-ghost .slide-kicker,
+.viewer .slide-transition-ghost .slide-title,
+.viewer .slide-transition-ghost .slide-subtitle,
+.viewer .slide-transition-ghost .slide-point,
+.viewer .slide-transition-ghost .slide-source,
+.viewer .slide-transition-ghost .slide-links,
+.viewer .slide-transition-ghost .photo-scene,
+.viewer .slide-transition-ghost .photo-frame,
+.viewer .slide-transition-ghost .live-photo,
+.viewer .slide-transition-ghost .photo-support-card,
+.viewer .slide-transition-ghost .quiz-panel,
+.viewer .slide-transition-ghost .quiz-answer{
+  animation:none!important;transition:none!important;filter:none!important;
+}
