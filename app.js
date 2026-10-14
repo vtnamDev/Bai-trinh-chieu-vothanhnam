@@ -231,6 +231,8 @@
     slideIndex = 0;
     $('#slideStage').innerHTML = '';
     $('#presentationViewer').hidden = false;
+    setViewerUIHidden(false);
+    closeContents(false);
     document.body.style.overflow = 'hidden';
     startStageAtmosphere();
     $('#viewerDeckTitle').textContent = currentDeck.title;
@@ -241,7 +243,7 @@
   }
 
   function renderPhoto(slide) {
-    const fallback = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85';
+    const fallback = String(slide.imageFallback || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85');
     const url = String(slide.image || '').trim();
     if (!url) return renderVisual(slide.visual);
     const videoUrl = String(slide.video || '').trim();
@@ -690,6 +692,16 @@
       ? '<div class="slide-points">' + slide.points.map((point, i) => '<div class="slide-point"><b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span></div>').join('') + '</div>'
       : '';
     const quizHtml = slide.interactiveQuiz ? renderQuiz(slide) : '';
+    const prompt = slide.classroomPrompt;
+    const promptHtml = prompt
+      ? '<section class="classroom-prompt" aria-label="Tình huống thảo luận">' +
+        '<div class="classroom-prompt-kicker"><span>THẢO LUẬN CÙNG LỚP</span><b>SUY LUẬN · KHÔNG TỰ CHẨN ĐOÁN</b></div>' +
+        '<p class="classroom-scenario">' + escapeHTML(prompt.scenario) + '</p>' +
+        '<h2 class="classroom-question">' + escapeHTML(prompt.question) + '</h2>' +
+        '<button type="button" class="reveal-answer-btn" data-reveal-answer aria-expanded="false">Hiện đáp án gợi ý <span aria-hidden="true">＋</span></button>' +
+        '<div class="classroom-answer" hidden><strong>Gợi ý trả lời</strong><p>' + escapeHTML(prompt.answer) + '</p><small>' + escapeHTML(prompt.explanation) + '</small></div>' +
+      '</section>'
+      : '';
     const sourceHtml = slide.note && !slide.interactiveQuiz ? '<div class="slide-source">' + escapeHTML(slide.note) + '</div>' : '';
     const linksHtml = slide.links?.length
       ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + slide.links.map(link => '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
@@ -707,7 +719,7 @@
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
-            pointHtml + quizHtml + sourceHtml + linksHtml +
+            pointHtml + promptHtml + quizHtml + sourceHtml + linksHtml +
           '</section>' +
           '<div class="slide-side-content">' + (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : '')) + '</div>' +
         '</div>' +
@@ -750,6 +762,44 @@
       $$('.live-video', $('#slideStage')).forEach(video => video.pause());
       $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
     }
+  }
+
+  function setViewerUIHidden(hidden) {
+    const viewer = $('#presentationViewer');
+    const toggle = $('#viewerControlsToggle');
+    viewer.classList.toggle('ui-hidden', Boolean(hidden));
+    if (toggle) {
+      toggle.setAttribute('aria-pressed', String(Boolean(hidden)));
+      toggle.textContent = hidden ? 'Hiện điều khiển' : 'Ẩn điều khiển';
+      toggle.title = 'Ẩn/hiện giao diện điều khiển (phím H)';
+    }
+  }
+
+  function openContents() {
+    if (!currentDeck) return;
+    const overlay = $('#presentationContents');
+    const list = $('#contentsList');
+    const slides = currentDeck.slides || [];
+    $('#contentsDeckTitle').textContent = currentDeck.title || 'Mục lục bài trình chiếu';
+    $('#contentsPosition').textContent = 'Đang ở trang ' + (slideIndex + 1) + ' / ' + slides.length;
+    $('#contentsProgress').style.width = ((slideIndex + 1) / Math.max(1, slides.length) * 100) + '%';
+    list.innerHTML = slides.map((slide, index) =>
+      '<button type="button" class="contents-item' + (index === slideIndex ? ' is-current' : '') + '" data-jump-slide="' + index + '"' + (index === slideIndex ? ' aria-current="page"' : '') + '>' +
+        '<span class="contents-item-number">' + String(index + 1).padStart(2, '0') + '</span>' +
+        '<span class="contents-item-copy"><small>' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</small><strong>' + escapeHTML(slide.title || 'Trang chiếu') + '</strong></span>' +
+        '<span class="contents-item-arrow" aria-hidden="true">↗</span>' +
+      '</button>'
+    ).join('');
+    overlay.hidden = false;
+    setViewerUIHidden(false);
+    $('#contentsClose').focus();
+  }
+
+  function closeContents(returnFocus = true) {
+    const overlay = $('#presentationContents');
+    if (!overlay) return;
+    overlay.hidden = true;
+    if (returnFocus && !$('#presentationViewer').classList.contains('ui-hidden')) $('#viewerContents')?.focus();
   }
 
   function advanceFromStage() {
@@ -940,6 +990,31 @@
       setMotion(!motionEnabled);
       toast(motionEnabled ? 'Đã bật chuyển động' : 'Đã giảm chuyển động');
     }
+    if (target.matches('[data-reveal-answer]')) {
+      const panel = target.closest('.classroom-prompt');
+      const answer = panel?.querySelector('.classroom-answer');
+      if (answer) {
+        answer.hidden = !answer.hidden;
+        target.setAttribute('aria-expanded', String(!answer.hidden));
+        target.innerHTML = answer.hidden ? 'Hiện đáp án gợi ý <span aria-hidden="true">＋</span>' : 'Ẩn đáp án gợi ý <span aria-hidden="true">−</span>';
+      }
+      return;
+    }
+    if (target.id === 'viewerControlsToggle') {
+      setViewerUIHidden(!$('#presentationViewer').classList.contains('ui-hidden'));
+      return;
+    }
+    if (target.id === 'viewerContents') { openContents(); return; }
+    if (target.id === 'contentsClose') { closeContents(); return; }
+    if (target.matches('[data-jump-slide]')) {
+      const nextIndex = Number(target.dataset.jumpSlide);
+      if (Number.isInteger(nextIndex) && currentDeck?.slides?.[nextIndex]) {
+        slideIndex = nextIndex;
+        closeContents(false);
+        renderSlide({ animate: false });
+      }
+      return;
+    }
     if (target.matches('[data-quiz-answer]')) answerQuiz(Number(target.dataset.quizAnswer));
     if (target.matches('[data-quiz-restart]')) restartQuiz();
     if (target.id === 'viewerSound') toggleQuizSound();
@@ -964,6 +1039,10 @@
   $('.brand').addEventListener('click', event => {
     event.preventDefault();
     showView('library');
+  });
+
+  $('#presentationContents').addEventListener('click', event => {
+    if (event.target.id === 'presentationContents') closeContents();
   });
 
   $('#slideStage').addEventListener('click', event => {
@@ -1013,6 +1092,16 @@
   document.addEventListener('keydown', event => {
     const viewerOpen = !$('#presentationViewer').hidden;
     if (viewerOpen) {
+      if (event.key.toLowerCase() === 'h') {
+        event.preventDefault();
+        setViewerUIHidden(!$('#presentationViewer').classList.contains('ui-hidden'));
+        return;
+      }
+      if (event.key === 'Escape' && !$('#presentationContents').hidden) {
+        event.preventDefault();
+        closeContents();
+        return;
+      }
       const quizSlide = currentDeck?.slides?.[slideIndex];
       const quizActive = Boolean(quizSlide?.interactiveQuiz);
       const quizIndex = quizSession.questionIndex;
