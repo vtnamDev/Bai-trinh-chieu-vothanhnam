@@ -523,11 +523,15 @@
         panel.classList.remove('is-3d-ready');
         const status = panel.querySelector('.anatomy3d-status');
         if (status) status.textContent = 'Đang dùng hình minh họa dự phòng';
+        const footnote = panel.querySelector('.anatomy3d-footnote');
+        if (footnote) footnote.textContent = 'Ảnh tĩnh dự phòng · mô hình 3D không khả dụng';
       }
     }).catch(() => {
       if (!panel.isConnected) return;
       const status = panel.querySelector('.anatomy3d-status');
       if (status) status.textContent = 'Không tải được 3D · đang dùng hình minh họa';
+      const footnote = panel.querySelector('.anatomy3d-footnote');
+      if (footnote) footnote.textContent = 'Ảnh tĩnh dự phòng · mô hình 3D không khả dụng';
     });
   }
 
