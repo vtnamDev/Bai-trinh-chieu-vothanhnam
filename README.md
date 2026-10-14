@@ -1,6 +1,6 @@
 # BioSphere Slides — Bài 32 KHTN 8
 
-Website trình chiếu khoa học tối ưu cho màn hình điện thoại và máy tính. Bài mẫu hiện có 32 trang về **5 bệnh thường gặp liên quan đến đường tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
+Website trình chiếu khoa học tối ưu cho màn hình điện thoại và máy tính. Bài mẫu hiện có 32 trang về **5 bệnh liên quan đến hệ tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
 
 ## Cấu trúc
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
@@ -33,6 +33,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 
 ## Cách trình chiếu
 - Mở bài Bài 32 trong thư viện rồi chọn **Trình chiếu**.
+- Trong trình chiếu, mở **Mục lục** để nhảy tới trang cụ thể; dùng nút điều khiển hoặc phím **H** để ẩn/hiện giao diện.
 - Bấm nửa phải để đi tiếp, nửa trái để quay lại; có thể dùng phím mũi tên trên bàn phím.
 - Trang 19 có bài kiểm tra tương tác 5 câu; chọn đáp án để xem phản hồi đúng/sai, lời giải thích và điểm tổng kết. Nút `♫` bật/tắt âm thanh phản hồi; hiệu ứng âm thanh được tạo trong trình duyệt.
 - Bật **Toàn màn hình** khi thuyết trình trên máy tính hoặc trình duyệt hỗ trợ.
