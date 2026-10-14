@@ -14,7 +14,7 @@ window.BIOSPHERE_BAI32_SEED = {
       subtitle: 'Từ kiến thức “Dinh dưỡng và tiêu hóa ở người” đến những thói quen nhỏ giúp bảo vệ sức khỏe mỗi ngày.',
       points: ['Sâu răng', 'Viêm loét dạ dày – tá tràng', 'Tiêu chảy', 'Ngộ độc thực phẩm', 'Táo bón'],
       note: 'BÀI TRÌNH BÀY NHÓM · KHTN 8',
-      visual: 'digestive', image: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Digestive_system_diagram_en.svg", imageAlt: "Sơ đồ giải phẫu hệ tiêu hóa người", imageCredit: "Mariana Ruiz / Wikimedia Commons · public domain", imageSourceUrl: "https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg", palette: "ocean", supportImages: [{"url":"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80","alt":"Bữa ăn nhiều màu sắc"}]
+      visual: 'digestive', image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1600&q=85", imageAlt: "Sơ đồ giải phẫu hệ tiêu hóa người", imageCredit: "Mariana Ruiz / Wikimedia Commons · public domain", imageSourceUrl: "https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg", palette: "ocean", supportImages: [{"url":"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80","alt":"Bữa ăn nhiều màu sắc"}]
     },
     {
       kicker: 'MỞ ĐẦU',
