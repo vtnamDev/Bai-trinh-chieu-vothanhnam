@@ -289,35 +289,55 @@
   }
 
   function attachVideoBackgrounds(root = document) {
-    $('.live-video', root).forEach(video => {
+    $$('.live-video', root).forEach(video => {
       const frame = video.closest('.photo-frame');
+      const canShowVideo = () => motionEnabled && !reducedMotion.matches &&
+        !document.hidden && !$('#presentationViewer').hidden;
+
+      const markIfPlaying = () => {
+        if (canShowVideo() && !video.paused && video.readyState >= 2) {
+          frame?.classList.add('video-playing');
+        }
+      };
+
       if (video.dataset.motionBound === '1') {
-        if (motionEnabled && !reducedMotion.matches && !document.hidden && !$('#presentationViewer').hidden) {
+        if (canShowVideo()) {
           const resume = video.play();
-          if (resume && typeof resume.catch === 'function') resume.catch(() => frame?.classList.remove('video-playing'));
+          if (resume && typeof resume.then === 'function') {
+            resume.then(markIfPlaying).catch(() => frame?.classList.remove('video-playing'));
+          } else {
+            markIfPlaying();
+          }
         } else {
           video.pause();
           frame?.classList.remove('video-playing');
         }
         return;
       }
+
       video.dataset.motionBound = '1';
-      video.addEventListener('playing', () => frame?.classList.add('video-playing'));
+      video.addEventListener('playing', markIfPlaying);
       video.addEventListener('pause', () => {
-        if (video.ended || video.error) frame?.classList.remove('video-playing');
+        if (video.paused) frame?.classList.remove('video-playing');
       });
       video.addEventListener('error', () => {
         frame?.classList.remove('video-playing');
         frame?.classList.add('video-failed');
         video.remove();
       });
+
       const startVideo = () => {
-        if (!motionEnabled || reducedMotion.matches || document.hidden || $('#presentationViewer').hidden) {
+        if (!canShowVideo()) {
           video.pause();
+          frame?.classList.remove('video-playing');
           return;
         }
         const attempt = video.play();
-        if (attempt && typeof attempt.catch === 'function') attempt.catch(() => frame?.classList.remove('video-playing'));
+        if (attempt && typeof attempt.then === 'function') {
+          attempt.then(markIfPlaying).catch(() => frame?.classList.remove('video-playing'));
+        } else {
+          markIfPlaying();
+        }
       };
       video.addEventListener('loadeddata', startVideo, { once: true });
       startVideo();
