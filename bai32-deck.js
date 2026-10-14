@@ -648,7 +648,7 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "PHẦN MỞ RỘNG · WHO: HEPATITIS A",
       "visual": "foodsafety",
-      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Liver.svg/1280px-Liver.svg.png",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Liver.svg/1280px-Liver.svg.png?utm_campaign=index&utm_content=thumbnail&utm_source=commons.wikimedia.org",
       "imageAlt": "Sơ đồ giải phẫu gan người, dùng để định vị cơ quan; không phải ảnh tổn thương viêm gan A.",
       "imageCredit": "Mikael Häggström · Wikimedia Commons · Public domain",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Liver.svg",
@@ -666,7 +666,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "video4k": null,
       "model3D": "liver",
       "modelTitle": "Mô hình gan",
-      "modelDescription": "Sơ đồ gan và túi mật để định vị cơ quan."
+      "modelDescription": "Sơ đồ gan và túi mật để định vị cơ quan.",
+      "modelFallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Liver.svg/1280px-Liver.svg.png?utm_campaign=index&utm_content=thumbnail&utm_source=commons.wikimedia.org",
+      "modelFallbackAlt": "Sơ đồ giải phẫu gan người, dùng để định vị cơ quan; không phải ảnh tổn thương viêm gan A."
     },
     {
       "kicker": "BỆNH 05 · ĐƯỜNG LÂY VÀ DẤU HIỆU",
