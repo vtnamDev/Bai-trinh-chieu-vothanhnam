@@ -2158,3 +2158,5 @@ body{
 @media(prefers-reduced-motion:reduce){
   #presentationViewer .anatomy3d-canvas,#presentationViewer .anatomy3d-fallback{transition:none}
 }
+
+#presentationViewer .anatomy3d-fallback.photo-load-failed{display:none!important}
