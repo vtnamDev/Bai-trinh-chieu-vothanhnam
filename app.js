@@ -947,7 +947,7 @@
     const profile = getPerformanceProfile();
     const saveData = profile.saveData;
     const connectionType = profile.effectiveType;
-    const coarsePortrait = window.matchMedia('(pointer: coarse) and (orientation: landscape)').matches;
+    const coarsePortrait = window.matchMedia('(pointer: coarse) and (orientation: portrait)').matches;
     const use4k = Boolean(performanceMode === 'cinema' && profile.allowVideo && !profile.lite && video4kUrl &&
       window.matchMedia('(min-width: 1800px) and (orientation: landscape)').matches &&
       !coarsePortrait && !saveData && !['slow-2g', '2g', '3g'].includes(connectionType) &&
