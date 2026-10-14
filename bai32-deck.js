@@ -1,25 +1,25 @@
-/* BioSphere Slides · Bài 32 · reviewed visual relevance for nutrition and hydration slides */
+/* BioSphere Slides · KHTN 8 Bài 32 · content refreshed and sources attributed */
 window.BIOSPHERE_BAI32_SEED = {
   "id": "khtn8-bai32-scaffold",
-  "title": "5 bệnh thường gặp liên quan đến đường tiêu hóa",
+  "title": "5 bệnh liên quan đến hệ tiêu hóa",
   "subject": "biology",
   "status": "ready",
   "date": "2026-10-14",
-  "description": "KHTN 8 · Bài 32 · 32 trang · hình/video được chọn sát nội dung từng phần; video Pexels/Mixkit có ghi nguồn, sơ đồ hệ tiêu hóa dùng hình giải phẫu từ Wikimedia Commons.",
+  "description": "KHTN 8 · Bài 32 · 32 trang · nội dung bám SGK, phần y tế mở rộng có nguồn đối chiếu; giao diện điện ảnh cho màn chiếu 16:9.",
   "isSeed": true,
   "slides": [
     {
       "kicker": "KHOA HỌC TỰ NHIÊN 8 · TẬP 1 · BÀI 32",
-      "title": "5 bệnh thường gặp liên quan đến đường tiêu hóa",
-      "subtitle": "Từ kiến thức “Dinh dưỡng và tiêu hóa ở người” đến những thói quen nhỏ giúp bảo vệ sức khỏe mỗi ngày.",
+      "title": "5 bệnh liên quan đến hệ tiêu hóa",
+      "subtitle": "Từ kiến thức “Dinh dưỡng và tiêu hóa ở người” đến những lựa chọn hằng ngày giúp bảo vệ sức khỏe.",
       "points": [
         "Sâu răng",
         "Viêm loét dạ dày – tá tràng",
-        "Tiêu chảy",
-        "Ngộ độc thực phẩm",
-        "Táo bón"
+        "Tiêu chảy do nhiễm trùng",
+        "Nhiễm giun đường ruột",
+        "Viêm gan A"
       ],
-      "note": "BÀI TRÌNH BÀY NHÓM · KHTN 8",
+      "note": "KHOA HỌC TỰ NHIÊN 8 · SGK BÀI 32 + NGUỒN Y TẾ BỔ SUNG",
       "visual": "digestive",
       "image": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1600&q=85",
       "imageAlt": "Bữa ăn nhiều màu sắc với rau, đậu và các loại hạt",
@@ -167,16 +167,16 @@ window.BIOSPHERE_BAI32_SEED = {
     },
     {
       "kicker": "NỘI DUNG CHÍNH",
-      "title": "Năm bệnh, năm cách chủ động bảo vệ mình",
-      "subtitle": "Hai bệnh đầu được trình bày trực tiếp trong mục III của sách. Tiêu chảy và an toàn thực phẩm cũng được đề cập ở Bài 32; phần táo bón được bổ sung từ nguồn y tế chính thống.",
+      "title": "Năm bệnh — năm góc nhìn, một mục tiêu: phòng tránh",
+      "subtitle": "Hai bệnh đầu được nêu trực tiếp trong SGK; ba chủ đề sau mở rộng có kiểm soát từ nguồn y tế đáng tin cậy.",
       "points": [
         "01 · Sâu răng — khoang miệng",
-        "02 · Viêm loét dạ dày – tá tràng — dạ dày/ruột non",
-        "03 · Tiêu chảy — đường ruột",
-        "04 · Ngộ độc thực phẩm — bệnh do ăn/uống thực phẩm không an toàn",
-        "05 · Táo bón — đại tiện khó hoặc phân cứng, khô"
+        "02 · Viêm loét dạ dày – tá tràng — dạ dày và tá tràng",
+        "03 · Tiêu chảy do nhiễm trùng — chú ý nguy cơ mất nước",
+        "04 · Nhiễm giun đường ruột — vòng lây truyền qua môi trường",
+        "05 · Viêm gan A — bệnh do virus gây viêm gan"
       ],
-      "note": "PHÂN BIỆT NỘI DUNG SGK VÀ NGUỒN BỔ SUNG",
+      "note": "TÁCH BẠCH KIẾN THỨC SGK VÀ PHẦN MỞ RỘNG",
       "visual": "overview",
       "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1600&q=85",
       "imageAlt": "Đĩa thức ăn tươi với nhiều loại rau củ",
@@ -204,12 +204,11 @@ window.BIOSPHERE_BAI32_SEED = {
     },
     {
       "kicker": "BỆNH 01 · SÂU RĂNG",
-      "title": "Sâu răng là gì?",
-      "subtitle": "Sâu răng là tình trạng mô cứng của răng bị tổn thương, hình thành lỗ sâu. Nếu tổn thương tiến triển, răng có thể đau và ê buốt.",
+      "title": "Sâu răng: tổn thương nhỏ, thói quen quan trọng",
+      "subtitle": "Sâu răng xảy ra khi mô cứng của răng bị mất khoáng và tổn thương, có thể hình thành lỗ sâu.",
       "points": [
         "Vi khuẩn trong mảng bám sử dụng đường từ thức ăn, đồ uống.",
-        "Axit do vi khuẩn tạo ra làm mất khoáng men răng.",
-        "Dấu hiệu có thể gồm đốm/lỗ sâu, đau răng hoặc ê buốt khi ăn uống."
+        "Axit tạo ra làm mất khoáng men răng; nguy cơ tăng khi quá trình lặp lại thường xuyên."
       ],
       "note": "SGK TR. 130 · BỔ SUNG: CDC, “ABOUT CAVITIES” (2024)",
       "visual": "tooth",
@@ -225,7 +224,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5099678/5099678-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Nha sĩ kiểm tra răng cho bệnh nhân"
+      "videoAlt": "Nha sĩ kiểm tra răng cho bệnh nhân",
+      "classroomPrompt": {
+        "scenario": "Minh thường xuyên nhâm nhi nước ngọt trong ngày. Gần đây, bạn thấy răng ê buốt khi ăn đồ lạnh.",
+        "question": "Thói quen nào nên thay đổi, và vì sao chỉ nhìn triệu chứng chưa đủ để tự kết luận mức độ sâu răng?",
+        "answer": "Hạn chế tần suất dùng đồ uống có đường, làm sạch răng đúng cách và báo người lớn để được khám nha khoa.",
+        "explanation": "Ê buốt có thể có nhiều nguyên nhân. Mảng bám và axit là một cơ chế gây sâu răng, nhưng chẩn đoán và mức độ tổn thương cần được nhân viên nha khoa đánh giá."
+      }
     },
     {
       "kicker": "BỆNH 01 · NGUYÊN NHÂN",
@@ -308,12 +313,11 @@ window.BIOSPHERE_BAI32_SEED = {
     },
     {
       "kicker": "BỆNH 02 · VIÊM LOÉT DẠ DÀY – TÁ TRÀNG",
-      "title": "Khi niêm mạc xuất hiện vết loét",
+      "title": "Viêm loét dạ dày – tá tràng: hiểu cơ chế trước khi kết luận",
       "subtitle": "Viêm loét dạ dày – tá tràng là tình trạng tổn thương, viêm và loét lớp niêm mạc dạ dày hoặc tá tràng.",
       "points": [
-        "Có thể đau vùng bụng trên/rốn, đầy bụng, khó tiêu.",
-        "Một số người có buồn nôn, ợ hơi hoặc ợ chua.",
-        "Triệu chứng không đủ để tự kết luận mắc bệnh; cần khám khi kéo dài hoặc tái diễn."
+        "Có thể đau vùng bụng trên, đầy bụng, khó tiêu hoặc buồn nôn.",
+        "Triệu chứng khác nhau giữa mỗi người và không đủ để tự xác định nguyên nhân."
       ],
       "note": "SGK TR. 130 · ĐỐI CHIẾU: NIDDK, “PEPTIC ULCERS”",
       "visual": "stomach",
@@ -329,7 +333,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng"
+      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng",
+      "classroomPrompt": {
+        "scenario": "Một bạn đau vùng bụng trên vài lần và cho rằng chắc chắn bị loét vì có hôm bỏ bữa.",
+        "question": "Có thể kết luận như vậy không? Hai nguyên nhân phổ biến cần biết là gì?",
+        "answer": "Không thể kết luận chỉ từ triệu chứng. Hai nguyên nhân phổ biến là nhiễm vi khuẩn H. pylori và dùng một số thuốc kháng viêm không steroid.",
+        "explanation": "Ăn uống điều độ có lợi cho sức khỏe nhưng không giải thích mọi trường hợp loét. Không tự dùng kháng sinh hoặc thuốc điều trị; hãy báo người lớn và khám nếu triệu chứng kéo dài hoặc có dấu hiệu cảnh báo."
+      }
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -411,13 +421,11 @@ window.BIOSPHERE_BAI32_SEED = {
     },
     {
       "kicker": "BỆNH 03 · TIÊU CHẢY",
-      "title": "Tiêu chảy: mất nước là nguy cơ đáng chú ý",
-      "subtitle": "Tiêu chảy thường được nhận biết khi đi ngoài phân lỏng/nước từ ba lần trong ngày hoặc thường xuyên hơn hẳn bình thường.",
+      "title": "Tiêu chảy: chú ý nguy cơ mất nước",
+      "subtitle": "Tiêu chảy có nhiều nguyên nhân, trong đó một số nhiễm trùng lây qua nước hoặc thực phẩm nhiễm bẩn.",
       "points": [
-        "Có thể liên quan đến vi khuẩn, virus hoặc ký sinh trùng.",
-        "Thức ăn/nước uống nhiễm bẩn và vệ sinh tay kém có thể làm lây bệnh.",
-        "Bài 32 có mục “Tiêu chảy du lịch”: một số chủng E. coli có thể gây tiêu chảy khi ăn uống ở nơi mới.",
-        "Đi ngoài nhiều lần khiến cơ thể mất nước và chất điện giải."
+        "Đi ngoài phân lỏng nhiều lần có thể khiến cơ thể mất nước và chất điện giải.",
+        "Nguyên nhân có thể là virus, vi khuẩn hoặc ký sinh trùng; triệu chứng không xác định chắc tác nhân."
       ],
       "note": "SGK TR. 134 · WHO: “DIARRHOEAL DISEASE” (7-3-2024)",
       "visual": "water",
@@ -433,7 +441,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-drinking-a-glass-of-water-4731190/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Người uống nước từ cốc thủy tinh"
+      "videoAlt": "Người uống nước từ cốc thủy tinh",
+      "classroomPrompt": {
+        "scenario": "Sau một chuyến đi, Lan bị tiêu chảy nhiều lần, khô miệng và tiểu ít.",
+        "question": "Nguy cơ nào cần chú ý đầu tiên và em nên làm gì an toàn?",
+        "answer": "Cần chú ý mất nước. Báo người lớn, bù nước đúng hướng dẫn; nếu lừ đừ, không uống được, tiểu rất ít hoặc có máu trong phân, cần trợ giúp y tế.",
+        "explanation": "Không tự mua kháng sinh. Dung dịch bù nước đường uống phải pha đúng lượng nước ghi trên gói; dấu hiệu nặng cần được nhân viên y tế đánh giá."
+      }
     },
     {
       "kicker": "BỆNH 03 · MẤT NƯỚC",
@@ -515,74 +529,80 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFit": "cover"
     },
     {
-      "kicker": "BỆNH 04 · NGỘ ĐỘC THỰC PHẨM",
-      "title": "Không phải thực phẩm nào nhìn “bình thường” cũng an toàn",
-      "subtitle": "SGK định nghĩa an toàn vệ sinh thực phẩm là giữ thực phẩm không bị nhiễm khuẩn, nhiễm độc và biến chất.",
+      "kicker": "BỆNH 04 · NHIỄM GIUN ĐƯỜNG RUỘT",
+      "title": "Nhiễm giun đường ruột: đường lây bắt đầu từ đâu?",
+      "subtitle": "Một số loại giun đường ruột lây khi trứng giun từ môi trường nhiễm bẩn đi vào cơ thể.",
       "points": [
-        "Tác nhân có thể là vi sinh vật, độc tố, hóa chất hoặc độc tố tự nhiên.",
-        "Thực phẩm ôi thiu, nguyên liệu nhiễm bẩn và bảo quản sai cách đều có rủi ro.",
-        "Triệu chứng thường gặp: đau bụng, buồn nôn/nôn, tiêu chảy; có thể sốt hoặc mất nước.",
-        "Không nếm thử thực phẩm nghi ôi thiu để “kiểm tra”."
+        "Trứng giun có thể làm bẩn đất, nước hoặc bám trên rau củ nếu vệ sinh môi trường chưa bảo đảm.",
+        "Tay bẩn chạm miệng hoặc ăn thực phẩm chưa được rửa, nấu phù hợp có thể đưa trứng vào cơ thể."
       ],
-      "note": "SGK TR. 133 · BỔ SUNG: WHO, “FOOD SAFETY IN VIET NAM”",
+      "note": "NGUỒN BỔ SUNG · WHO: SOIL-TRANSMITTED HELMINTH INFECTIONS",
       "visual": "food",
-      "image": "https://images.unsplash.com/photo-1694022887658-3f71dcedfe41?auto=format&fit=crop&fm=jpg&q=80&w=1600",
-      "imageAlt": "Thực phẩm có dấu hiệu hư hỏng, cần kiểm tra an toàn trước khi ăn",
-      "imageCredit": "Unsplash · ảnh thực phẩm",
-      "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "blue",
+      "image": "https://www.cdc.gov/dpdx/ascariasis/modules/Ascariasis_LifeCycle_lg.jpg",
+      "imageAlt": "Sơ đồ vòng đời giun đũa Ascaris lumbricoides do CDC DPDx công bố; dùng để giải thích chu trình lây nhiễm.",
+      "imageCredit": "CDC DPDx · Ascaris life cycle · hình ảnh giáo dục y tế",
+      "imageSourceUrl": "https://www.cdc.gov/dpdx/ascariasis/",
+      "palette": "gold",
       "video": null,
       "videoProvider": null,
       "videoCredit": null,
       "videoSourceUrl": null,
       "imageMotionStyle": "cinematic",
       "video4k": null,
-      "imageFit": "cover"
+      "imageFit": "contain",
+      "imageFallback": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Ascaris_lumbricoides1.jpg",
+      "videoAlt": null,
+      "classroomPrompt": {
+        "scenario": "Một học sinh hay ăn rau chưa rửa kỹ và thường quên rửa tay trước bữa ăn.",
+        "question": "Làm thế nào trứng giun có thể đi vào cơ thể, và thói quen nào giúp cắt đường lây?",
+        "answer": "Trứng giun có thể bị nuốt qua tay bẩn, nước hoặc rau củ nhiễm bẩn. Rửa tay, rửa/chế biến thực phẩm phù hợp và dùng nước an toàn giúp giảm nguy cơ.",
+        "explanation": "Đau bụng hoặc mệt không đủ để khẳng định nhiễm giun. Đây là tình huống suy luận về đường lây, không phải công cụ tự chẩn đoán."
+      }
     },
     {
-      "kicker": "BỆNH 04 · NHẬN BIẾT",
-      "title": "Dấu hiệu nghi ngộ độc thực phẩm",
-      "subtitle": "Triệu chứng có thể bắt đầu sau khi ăn hoặc uống thực phẩm bị nhiễm bẩn, nhưng thời điểm và mức độ không giống nhau ở mọi người.",
+      "kicker": "BỆNH 04 · DẤU HIỆU VÀ TÁC ĐỘNG",
+      "title": "Nhiễm giun có phải lúc nào cũng dễ nhận ra?",
+      "subtitle": "Không. Nhiễm nhẹ có thể ít triệu chứng; khi nhiễm nặng hơn, sức khỏe và tình trạng dinh dưỡng có thể bị ảnh hưởng.",
       "points": [
-        "Đau quặn bụng, buồn nôn, nôn, tiêu chảy; đôi khi có sốt.",
-        "Nhiều người cùng ăn một món rồi cùng bị triệu chứng là thông tin cần báo người lớn.",
-        "Nôn liên tục, mất nước, máu trong phân, đau dữ dội hoặc lơ mơ cần được trợ giúp y tế."
+        "Dấu hiệu có thể không đặc hiệu: đau bụng, chán ăn, mệt mỏi hoặc rối loạn tiêu hóa.",
+        "Một số trường hợp nặng có thể ảnh hưởng dinh dưỡng và sự phát triển; cần thăm khám khi có biểu hiện đáng lo.",
+        "Không tự kết luận nhiễm giun chỉ từ đau bụng hay mệt."
       ],
-      "note": "SGK BÀI 32 TR. 133–134 · BỔ SUNG: WHO FOOD SAFETY",
+      "note": "NGUỒN: WHO · SOIL-TRANSMITTED HELMINTH INFECTIONS",
       "visual": "food",
-      "image": "https://images.unsplash.com/photo-1694022887658-3f71dcedfe41?auto=format&fit=crop&fm=jpg&q=80&w=1600",
-      "imageAlt": "Người có biểu hiện đau vùng bụng, minh họa triệu chứng có thể gặp khi ngộ độc",
-      "imageCredit": "Unsplash · ảnh thực",
-      "imageSourceUrl": "https://unsplash.com/s/photos/rotten-food",
-      "palette": "aqua",
+      "image": "https://images.pexels.com/photos/3992806/pexels-photo-3992806.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "imageAlt": "Bác sĩ trao đổi với người bệnh; ảnh minh họa khám sức khỏe, không phải ca nhiễm giun cụ thể.",
+      "imageCredit": "Pexels · ảnh minh họa chăm sóc y tế",
+      "imageSourceUrl": "https://www.pexels.com/photo/woman-having-a-check-up-3992806/",
+      "palette": "orange",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://videos.pexels.com/video-files/7297871/7297871-hd_1920_1080_30fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
-      "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Kindel Media · abdominal discomfort",
-      "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
+      "video": null,
+      "video4k": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Người có biểu hiện đau vùng bụng, minh họa một triệu chứng có thể gặp khi ngộ độc"
+      "videoAlt": null,
+      "imageFallback": "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=1600"
     },
     {
       "kicker": "BỆNH 04 · PHÒNG NGỪA",
-      "title": "Bốn bước để ăn uống an toàn",
-      "subtitle": "Các nguyên tắc trong Bài 32 có thể áp dụng ngay tại nhà, ở trường và khi ăn ngoài.",
+      "title": "Chặn đường lây: tay sạch, thực phẩm sạch, môi trường sạch",
+      "subtitle": "Phòng nhiễm giun cần nhiều lớp bảo vệ, không chỉ dựa vào một thói quen riêng lẻ.",
       "points": [
-        "CHỌN: thực phẩm tươi, nguồn gốc rõ ràng; xem hạn sử dụng và nhãn bao bì.",
-        "LÀM SẠCH: rửa tay, dụng cụ và nguyên liệu phù hợp.",
-        "NẤU CHÍN: giữ riêng đồ sống và đồ chín, tránh lây nhiễm chéo.",
-        "BẢO QUẢN: đậy kín, giữ lạnh thực phẩm dễ hỏng và không dùng đồ đã biến chất."
+        "Rửa tay bằng xà phòng trước khi ăn và sau khi đi vệ sinh.",
+        "Rửa, nấu hoặc gọt rau củ phù hợp; dùng nước an toàn và bảo đảm vệ sinh môi trường.",
+        "Mang giày dép khi tiếp xúc đất ở nơi có nguy cơ giun móc; việc dùng thuốc tẩy giun cần theo hướng dẫn y tế."
       ],
-      "note": "SGK TR. 133–134 · WHO: FOOD SAFETY",
+      "note": "NGUỒN: WHO · SOIL-TRANSMITTED HELMINTH INFECTIONS",
       "visual": "foodsafety",
       "image": "https://www.who.int/images/default-source/searo---images/health-topics/food-safety/infographics/200511-fao-social-media-instagram-v19-no2.jpg?sfvrsn=4d892145_2",
-      "imageAlt": "Rửa tay giúp giảm nguy cơ nhiễm bẩn thực phẩm",
+      "imageAlt": "Infographic WHO/FAO/WFP về các nguyên tắc an toàn thực phẩm; minh họa vai trò của vệ sinh khi chế biến.",
       "imageCredit": "WHO / FAO / WFP · An toàn thực phẩm",
       "imageSourceUrl": "https://www.who.int/indonesia/news/novel-coronavirus/new-infographics/food-safety",
-      "palette": "coral",
+      "palette": "lime",
       "supportImages": [
         {
           "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=700",
@@ -595,103 +615,112 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "video": "https://videos.pexels.com/video-files/4333840/4333840-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Ketut Subiyanto · hand hygiene",
+      "videoCredit": "Pexels · Ivan S · handwashing",
       "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Rửa tay để giữ vệ sinh khi chuẩn bị thực phẩm"
+      "videoAlt": "Rửa tay bằng xà phòng khi chuẩn bị thực phẩm"
     },
     {
-      "kicker": "BỆNH 04 · XỬ TRÍ",
-      "title": "Nếu nghi ngộ độc, làm gì trước tiên?",
-      "subtitle": "Ưu tiên an toàn và báo người có trách nhiệm; đừng cố tự chữa bằng mẹo hoặc thuốc chưa được chỉ định.",
+      "kicker": "BỆNH 05 · VIÊM GAN A",
+      "title": "Viêm gan A: virus ảnh hưởng đến cơ quan nào?",
+      "subtitle": "Viêm gan A là bệnh nhiễm virus gây viêm gan. Gan là cơ quan phụ trợ của hệ tiêu hóa, không phải một đoạn của ống tiêu hóa.",
       "points": [
-        "Ngừng ăn món nghi ngờ, báo người lớn và giữ thông tin về món ăn/nhãn hàng nếu có.",
-        "Nếu còn uống được, dùng từng ngụm nước an toàn; hỏi nhân viên y tế về ORS khi có tiêu chảy/nôn.",
-        "Không tự gây nôn, không tự uống kháng sinh; đi khám ngay khi có dấu hiệu nặng."
+        "Virus viêm gan A (HAV) có thể lây qua thực phẩm hoặc nước bị nhiễm bẩn.",
+        "Sơ đồ gan giúp định vị cơ quan; hình không mô tả tổn thương gan do virus."
       ],
-      "note": "NGUYÊN TẮC AN TOÀN · THÔNG TIN GIÁO DỤC, KHÔNG THAY THẾ KHÁM BỆNH",
+      "note": "PHẦN MỞ RỘNG · WHO: HEPATITIS A",
       "visual": "foodsafety",
-      "image": "https://www.who.int/images/default-source/searo---images/health-topics/food-safety/infographics/200511-fao-social-media-instagram-v19-no2.jpg?sfvrsn=4d892145_2",
-      "imageAlt": "Bác sĩ tư vấn cách xử trí an toàn",
-      "imageCredit": "WHO / FAO / WFP · An toàn thực phẩm",
-      "imageSourceUrl": "https://www.who.int/indonesia/news/novel-coronavirus/new-infographics/food-safety",
-      "palette": "cyan",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Liver.svg/1280px-Liver.svg.png",
+      "imageAlt": "Sơ đồ giải phẫu gan người, dùng để định vị cơ quan; không phải ảnh tổn thương viêm gan A.",
+      "imageCredit": "Mikael Häggström · Wikimedia Commons · Public domain",
+      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Liver.svg",
+      "palette": "coral",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://assets.mixkit.co/videos/13040/13040-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Doctor explaining a medical condition",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-explaining-the-medical-condition-to-patient-13040/",
+      "video": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover",
-      "videoAlt": "Bác sĩ tư vấn cho người bệnh"
+      "imageFit": "contain",
+      "videoAlt": null,
+      "imageFallback": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
+      "video4k": null,
+      "classroomPrompt": {
+        "scenario": "Sau khi ăn uống ở nơi vệ sinh chưa bảo đảm, một người thấy mệt, chán ăn, nước tiểu sẫm màu và mắt vàng.",
+        "question": "Những dấu hiệu này có thể gợi ý vấn đề ở cơ quan nào, và bước an toàn tiếp theo là gì?",
+        "answer": "Có thể liên quan đến gan, nhưng không thể tự xác định là viêm gan A. Cần báo người lớn và đến cơ sở y tế để được đánh giá.",
+        "explanation": "Viêm gan A lây chủ yếu qua đường phân–miệng khi nuốt phải thực phẩm/nước nhiễm virus. Vàng da và nước tiểu sẫm là dấu hiệu cần được đánh giá y tế, không phải bằng chứng đủ để tự chẩn đoán."
+      }
     },
     {
-      "kicker": "BỆNH 05 · TÁO BÓN",
-      "title": "Khi phân khô, cứng và khó đi ngoài",
-      "subtitle": "Táo bón có thể biểu hiện bằng đi ngoài ít hơn thường lệ, phân khô/cứng, đau hoặc khó khi đại tiện, hay cảm giác chưa đi hết.",
+      "kicker": "BỆNH 05 · ĐƯỜNG LÂY VÀ DẤU HIỆU",
+      "title": "Viêm gan A lây truyền ra sao?",
+      "subtitle": "Virus thường lây qua đường phân–miệng: người chưa miễn dịch nuốt phải thực phẩm hoặc nước bị nhiễm virus.",
       "points": [
-        "Một số yếu tố góp phần: ăn ít chất xơ, uống chưa đủ nước hoặc ít vận động.",
-        "Thói quen nhịn đi vệ sinh cũng có thể khiến tình trạng kéo dài.",
-        "Ăn rau, quả, ngũ cốc nguyên hạt; uống đủ nước và vận động thường xuyên.",
-        "Nếu kéo dài, tái diễn hoặc kèm đau liên tục, nôn hay có máu trong phân: báo người lớn và đi khám."
+        "Tay không sạch khi chế biến thức ăn, nước không an toàn và vệ sinh môi trường kém có thể tạo điều kiện lây truyền.",
+        "Triệu chứng có thể gồm mệt mỏi, chán ăn, buồn nôn, khó chịu vùng bụng, nước tiểu sẫm và vàng da; không phải ai cũng có đủ dấu hiệu.",
+        "Vàng mắt/da hoặc nước tiểu sẫm màu cần được báo người lớn và đánh giá y tế."
       ],
-      "note": "PHẦN BỔ SUNG NGOÀI SGK · NGUỒN: NIDDK, CONSTIPATION IN CHILDREN",
+      "note": "NGUỒN: WHO · HEPATITIS A",
       "visual": "fiber",
-      "image": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Rau, trái cây, đậu và ngũ cốc nguyên hạt cung cấp chất xơ",
-      "imageCredit": "Unsplash · ảnh thực",
-      "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "orange",
-      "video": "https://videos.pexels.com/video-files/5866263/5866263-hd_1920_1080_25fps.mp4",
-      "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Vanessa Loring · healthy foods",
-      "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
+      "image": "https://images.pexels.com/photos/3992806/pexels-photo-3992806.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "imageAlt": "Bác sĩ trao đổi với người bệnh; ảnh minh họa chăm sóc y tế, không đại diện cho ca viêm gan A cụ thể.",
+      "imageCredit": "Pexels · ảnh minh họa tư vấn y tế",
+      "imageSourceUrl": "https://www.pexels.com/photo/woman-having-a-check-up-3992806/",
+      "palette": "amber",
+      "video": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
       "imageMotionStyle": "cinematic",
-      "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
+      "video4k": null,
       "imageFit": "cover",
-      "videoAlt": "Rau củ, đậu và các loại hạt giàu chất xơ"
+      "videoAlt": null,
+      "imageFallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Liver.svg/1280px-Liver.svg.png"
     },
     {
-      "kicker": "BỆNH 05 · YẾU TỐ NGUY CƠ",
-      "title": "Điều gì có thể dẫn đến táo bón?",
-      "subtitle": "Táo bón thường liên quan đến nhiều thói quen hoặc yếu tố sức khỏe; không nên đổ lỗi cho một món ăn duy nhất.",
+      "kicker": "BỆNH 05 · PHÒNG NGỪA",
+      "title": "Bảo vệ gan: vệ sinh đúng cách và chủ động phòng bệnh",
+      "subtitle": "Phòng viêm gan A tập trung vào nước sạch, vệ sinh, an toàn thực phẩm và tiêm vaccine theo khuyến nghị y tế.",
       "points": [
-        "Ăn ít chất xơ từ rau, quả, đậu và ngũ cốc nguyên hạt.",
-        "Uống chưa đủ nước, ít vận động hoặc thường xuyên nhịn đi vệ sinh có thể góp phần.",
-        "Một số thuốc và tình trạng sức khỏe cũng có thể liên quan; trường hợp kéo dài cần được đánh giá."
+        "Rửa tay đúng lúc; dùng nước an toàn và bảo đảm thực phẩm được rửa, chế biến, bảo quản phù hợp.",
+        "Vaccine viêm gan A giúp phòng bệnh; hỏi cha mẹ và nhân viên y tế về lịch tiêm phù hợp.",
+        "Không dùng chung một triệu chứng để tự chẩn đoán; khi có dấu hiệu nghiêm trọng, cần được đánh giá y tế."
       ],
-      "note": "BỔ SUNG Y TẾ · NIDDK: CONSTIPATION IN CHILDREN",
+      "note": "NGUỒN: WHO · HEPATITIS A",
       "visual": "fiber",
-      "image": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Chuẩn bị rau củ cho bữa ăn",
-      "imageCredit": "Unsplash · ảnh thực",
-      "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "lime",
+      "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "imageAlt": "Rửa tay với xà phòng; minh họa một phần của vệ sinh giúp giảm lây truyền qua đường phân–miệng.",
+      "imageCredit": "Ivan S / Pexels · Free to use",
+      "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
+      "palette": "teal",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://videos.pexels.com/video-files/6327114/6327114-hd_1080_1920_25fps.mp4",
-      "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Tima Miroshnichenko · preparing vegetables",
-      "videoSourceUrl": "https://www.pexels.com/video/vegetables-being-taken-with-a-fork-6327114/",
+      "video": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Rau củ được chuẩn bị cho bữa ăn"
+      "videoAlt": null,
+      "imageFallback": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "video4k": null
     },
     {
       "kicker": "SO SÁNH NHANH",
-      "title": "Phân biệt dấu hiệu — tránh tự chẩn đoán",
+      "title": "Nhận biết dấu hiệu — không tự chẩn đoán",
       "subtitle": "Các biểu hiện dưới đây chỉ giúp nhận biết vấn đề cần chú ý, không thay thế kết luận của nhân viên y tế.",
       "points": [
-        "Sâu răng: đau/ê buốt răng, nhìn thấy lỗ sâu.",
-        "Viêm loét dạ dày–tá tràng: đau bụng trên, khó tiêu, buồn nôn.",
-        "Tiêu chảy: phân lỏng/nước thường xuyên; chú ý dấu hiệu mất nước.",
-        "Ngộ độc thực phẩm: đau bụng, nôn, tiêu chảy sau khi ăn/uống nghi nhiễm bẩn.",
-        "Táo bón: phân cứng/khô, đại tiện khó hoặc ít hơn thường lệ."
+        "Sâu răng: đốm/lỗ sâu, đau hoặc ê buốt răng.",
+        "Viêm loét dạ dày–tá tràng: đau bụng trên, khó tiêu; cần đánh giá nguyên nhân.",
+        "Tiêu chảy: đi ngoài phân lỏng nhiều lần; theo dõi dấu hiệu mất nước.",
+        "Nhiễm giun đường ruột: đôi khi ít triệu chứng; dấu hiệu thường không đặc hiệu.",
+        "Viêm gan A: có thể mệt, chán ăn, nước tiểu sẫm hoặc vàng da; cần khám để xác định."
       ],
-      "note": "DẤU HIỆU CÓ THỂ KHÁC NHAU GIỮA MỖI NGƯỜI",
+      "note": "DẤU HIỆU KHÔNG THAY THẾ CHO CHẨN ĐOÁN",
       "visual": "comparison",
       "image": "https://images.pexels.com/photos/3992806/pexels-photo-3992806.jpeg?auto=compress&cs=tinysrgb&w=1600",
       "imageAlt": "Bác sĩ thăm khám khi có dấu hiệu đáng lo",
@@ -755,15 +784,16 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoAlt": "Rửa tay với xà phòng dưới vòi nước"
     },
     {
-      "kicker": "BỆNH 05 · KẾ HOẠCH HẰNG NGÀY",
-      "title": "Bốn việc nhỏ giúp đi ngoài dễ dàng hơn",
-      "subtitle": "Tạo thói quen đều đặn thường hữu ích hơn việc thay đổi thất thường hoặc tự ý uống thuốc.",
+      "kicker": "AN TOÀN SỨC KHỎE",
+      "title": "Khi nào cần báo người lớn và đi khám?",
+      "subtitle": "Không cần tự xác định tên bệnh mới có thể tìm sự giúp đỡ.",
       "points": [
-        "Bổ sung chất xơ từ rau, quả, đậu và ngũ cốc nguyên hạt; tăng dần theo khẩu phần phù hợp.",
-        "Uống đủ nước, vận động hằng ngày và không cố nhịn khi muốn đi vệ sinh.",
-        "Báo người lớn nếu táo bón kéo dài, có máu trong phân, đau bụng liên tục hoặc nôn."
+        "Đau bụng dữ dội hoặc kéo dài, nôn liên tục hay có máu trong phân/nôn.",
+        "Lừ đừ, không uống được, tiểu rất ít hoặc có dấu hiệu mất nước.",
+        "Vàng mắt/da hoặc nước tiểu sẫm màu cần được nhân viên y tế đánh giá.",
+        "Không tự dùng kháng sinh, thuốc tẩy giun hay thuốc điều trị khi chưa có hướng dẫn phù hợp."
       ],
-      "note": "NGUỒN: NIDDK · CONSTIPATION IN CHILDREN",
+      "note": "GIÁO DỤC SỨC KHỎE · KHÔNG THAY THẾ KHÁM BỆNH",
       "visual": "habits",
       "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
       "imageAlt": "Bữa ăn nhiều rau và thực phẩm giàu chất xơ",
@@ -797,7 +827,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "interactiveQuiz": true,
       "quizQuestions": [
         {
-          "question": "Tình huống 1: Bạn bị tiêu chảy, khô miệng và tiểu ít. Việc nên làm trước tiên là gì?",
+          "question": "Tình huống 1: Bạn bị tiêu chảy, khô miệng và tiểu ít. Việc an toàn nhất là gì?",
           "options": [
             "Báo người lớn và bù nước đúng hướng dẫn",
             "Nhịn uống nước",
@@ -805,29 +835,29 @@ window.BIOSPHERE_BAI32_SEED = {
             "Chờ vài ngày dù mệt lả"
           ],
           "correctIndex": 0,
-          "explanation": "Tiêu chảy có thể gây mất nước. Báo người lớn, bù nước đúng hướng dẫn; nếu lừ đừ, không uống được hoặc tiểu rất ít, cần được trợ giúp y tế."
+          "explanation": "Tiêu chảy có thể gây mất nước. Báo người lớn, bù nước đúng hướng dẫn; dấu hiệu nặng cần được trợ giúp y tế."
         },
         {
-          "question": "Tình huống 2: Trên thức ăn có mốc, em nên làm gì?",
+          "question": "Tình huống 2: Vì sao nên rửa tay và làm sạch rau củ trước khi ăn?",
           "options": [
-            "Cắt phần mốc rồi ăn phần còn lại",
-            "Nếm thử xem có vị lạ không",
-            "Không ăn, báo người lớn và xử lý an toàn",
-            "Hâm nóng là luôn an toàn"
-          ],
-          "correctIndex": 2,
-          "explanation": "Không nếm thử để kiểm tra. Thực phẩm bị mốc hoặc biến chất cần được loại bỏ; làm sạch nơi bảo quản và tránh lây nhiễm sang thức ăn khác."
-        },
-        {
-          "question": "Tình huống 3: Bạn thường xuyên nhịn đi vệ sinh và ít ăn rau. Thói quen nào cần đổi?",
-          "options": [
-            "Tiếp tục nhịn để tiết kiệm thời gian",
-            "Ăn thêm chất xơ, uống đủ nước và đi vệ sinh khi có nhu cầu",
-            "Chỉ ăn đồ ngọt",
-            "Tự mua thuốc nhuận tràng"
+            "Để mọi bệnh biến mất hoàn toàn",
+            "Để giảm nguy cơ nuốt phải tác nhân gây bệnh từ môi trường",
+            "Vì thức ăn sạch không bao giờ hư hỏng",
+            "Để thay thế vaccine"
           ],
           "correctIndex": 1,
-          "explanation": "Chất xơ, đủ nước, vận động và thói quen đi vệ sinh đều đặn hỗ trợ phòng táo bón. Nếu kéo dài hoặc có dấu hiệu cảnh báo, hãy báo người lớn."
+          "explanation": "Vệ sinh tay và thực phẩm giúp giảm nguy cơ tiếp xúc với tác nhân lây nhiễm, trong đó có trứng giun và virus viêm gan A."
+        },
+        {
+          "question": "Tình huống 3: Vàng mắt và nước tiểu sẫm màu có đủ để tự chẩn đoán viêm gan A không?",
+          "options": [
+            "Có, chắc chắn là viêm gan A",
+            "Có nếu bị đau bụng",
+            "Không; cần báo người lớn và được nhân viên y tế đánh giá",
+            "Không cần để ý nếu không sốt"
+          ],
+          "correctIndex": 2,
+          "explanation": "Các dấu hiệu này có thể liên quan đến vấn đề gan nhưng không xác định được nguyên nhân. Cần đánh giá y tế."
         }
       ],
       "video": "https://videos.pexels.com/video-files/8196812/8196812-hd_1920_1080_25fps.mp4",
@@ -854,59 +884,59 @@ window.BIOSPHERE_BAI32_SEED = {
       "interactiveQuiz": true,
       "quizQuestions": [
         {
-          "question": "1. Sâu răng hình thành chủ yếu do điều gì?",
+          "question": "1. Sâu răng thường bắt đầu qua cơ chế nào?",
           "options": [
-            "Uống nước lạnh",
+            "Nước lạnh làm răng tự thủng",
             "Vi khuẩn trong mảng bám sử dụng đường và tạo axit",
             "Ăn rau xanh",
             "Đánh răng đúng cách"
           ],
           "correctIndex": 1,
-          "explanation": "Vi khuẩn trong mảng bám sử dụng đường từ thức ăn, đồ uống và tạo axit làm mất khoáng men răng. Vì vậy, vệ sinh răng và hạn chế đường rất quan trọng."
+          "explanation": "Axit do vi khuẩn trong mảng bám tạo ra có thể làm mất khoáng men răng; vệ sinh răng và hạn chế đường giúp giảm nguy cơ."
         },
         {
-          "question": "2. Hai nguyên nhân thường gặp của viêm loét dạ dày – tá tràng là gì?",
+          "question": "2. Hai nguyên nhân phổ biến của viêm loét dạ dày–tá tràng là gì?",
           "options": [
-            "Thiếu ngủ và uống nước lạnh",
             "Chỉ do ăn cay",
             "Nhiễm H. pylori và một số thuốc kháng viêm không steroid",
-            "Chỉ do ăn không đúng giờ"
+            "Chỉ do bỏ bữa",
+            "Chỉ do uống nước lạnh"
           ],
-          "correctIndex": 2,
-          "explanation": "H. pylori và một số thuốc kháng viêm không steroid (NSAID) là những nguyên nhân thường gặp. Không tự ý dùng kháng sinh hoặc thuốc điều trị khi chưa được hướng dẫn."
+          "correctIndex": 1,
+          "explanation": "H. pylori và một số thuốc NSAID là các nguyên nhân phổ biến. Không tự dùng kháng sinh hay thuốc điều trị."
         },
         {
           "question": "3. Nguy cơ đáng chú ý khi bị tiêu chảy nhiều lần là gì?",
           "options": [
             "Mất nước và chất điện giải",
-            "Tăng chiều cao ngay lập tức",
-            "Răng mọc nhanh hơn",
-            "Không ảnh hưởng đến cơ thể"
+            "Tăng chiều cao ngay",
+            "Không ảnh hưởng cơ thể",
+            "Răng mọc nhanh"
           ],
           "correctIndex": 0,
-          "explanation": "Đi ngoài phân lỏng nhiều lần có thể làm cơ thể mất nước và chất điện giải. Cần báo người lớn, bù nước đúng hướng dẫn và tìm trợ giúp y tế khi có dấu hiệu nặng."
+          "explanation": "Tiêu chảy nhiều lần có thể làm cơ thể mất nước và chất điện giải. Báo người lớn và bù nước theo hướng dẫn."
         },
         {
-          "question": "4. Cách nào giúp giảm nguy cơ ngộ độc thực phẩm?",
+          "question": "4. Cách nào giúp giảm nguy cơ nhiễm giun đường ruột?",
           "options": [
-            "Để thức ăn chín cạnh đồ sống",
-            "Dùng thực phẩm có mùi lạ nếu chưa hết hạn",
-            "Rửa tay, nấu chín và bảo quản thực phẩm đúng cách",
-            "Nếm thử đồ ăn nghi ôi thiu"
+            "Ăn rau chưa rửa",
+            "Bỏ qua việc rửa tay",
+            "Rửa tay, dùng nước an toàn và làm sạch/chế biến thực phẩm phù hợp",
+            "Tự uống thuốc bất kỳ"
           ],
           "correctIndex": 2,
-          "explanation": "Rửa tay, làm sạch dụng cụ, nấu chín, giữ riêng đồ sống và đồ chín, bảo quản phù hợp và bỏ thực phẩm đã biến chất là các bước quan trọng."
+          "explanation": "Nhiều giun truyền qua đất lây khi trứng bị nuốt từ tay, nước hay thực phẩm nhiễm bẩn. Phòng bệnh đòi hỏi vệ sinh cá nhân, thực phẩm và môi trường."
         },
         {
-          "question": "5. Thói quen nào hỗ trợ phòng táo bón?",
+          "question": "5. Cách nào giúp phòng viêm gan A?",
           "options": [
-            "Nhịn đi vệ sinh",
-            "Ăn ít rau, quả",
-            "Ngồi yên cả ngày",
-            "Ăn thực phẩm giàu chất xơ, uống đủ nước và vận động"
+            "Chỉ tránh thức ăn cay",
+            "Dùng nước an toàn, giữ vệ sinh và tiêm vaccine theo khuyến nghị y tế",
+            "Tự dùng kháng sinh",
+            "Dùng chung thuốc với người khác"
           ],
-          "correctIndex": 3,
-          "explanation": "Chất xơ, đủ nước, vận động và thói quen đi vệ sinh đều đặn có thể hỗ trợ phòng táo bón. Nếu kéo dài hoặc có dấu hiệu cảnh báo, cần báo người lớn và đi khám."
+          "correctIndex": 1,
+          "explanation": "WHO nhấn mạnh nước sạch, vệ sinh, an toàn thực phẩm và vaccine là các biện pháp phòng viêm gan A."
         }
       ],
       "video": "https://videos.pexels.com/video-files/5676150/5676150-hd_1920_1080_25fps.mp4",
@@ -922,9 +952,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "title": "Ba điều cần ghi nhớ",
       "subtitle": "Hệ tiêu hóa biến đổi thức ăn thành chất dinh dưỡng cơ thể hấp thụ được; bảo vệ hệ tiêu hóa bắt đầu từ việc làm hằng ngày; dấu hiệu nặng cần được nhân viên y tế đánh giá.",
       "points": [
-        "Không tự chẩn đoán, không tự dùng kháng sinh hoặc thuốc điều trị.",
-        "Phần kiến thức chính dựa trên SGK KHTN 8, Bài 32, trang in 128–134.",
-        "Thông tin bổ sung được đối chiếu từ WHO, CDC và NIDDK — các cơ quan y tế chính thống."
+        "Bảo vệ răng miệng và hiểu đúng dấu hiệu cảnh báo.",
+        "Giữ vệ sinh tay, nước và thực phẩm; biết rằng triệu chứng không thay thế chẩn đoán.",
+        "Phần nền tảng dựa trên SGK KHTN 8, Bài 32; phần mở rộng có nguồn y tế đối chiếu."
       ],
       "note": "NGUỒN NGOÀI SGK ĐƯỢC PHÂN BIỆT RÕ TRONG BÀI",
       "visual": "sources",
@@ -939,10 +969,6 @@ window.BIOSPHERE_BAI32_SEED = {
           "url": "https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease"
         },
         {
-          "label": "WHO · An toàn thực phẩm tại Việt Nam",
-          "url": "https://www.who.int/vietnam/health-topics/food-safety/food-safety"
-        },
-        {
           "label": "CDC · Sâu răng",
           "url": "https://www.cdc.gov/oral-health/about/cavities-tooth-decay.html"
         },
@@ -951,8 +977,12 @@ window.BIOSPHERE_BAI32_SEED = {
           "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes"
         },
         {
-          "label": "NIDDK · Táo bón ở trẻ em",
-          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/symptoms-causes"
+          "label": "WHO · Nhiễm giun truyền qua đất",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/soil-transmitted-helminth-infections"
+        },
+        {
+          "label": "WHO · Viêm gan A",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-a"
         }
       ],
       "video": null,
@@ -966,12 +996,12 @@ window.BIOSPHERE_BAI32_SEED = {
     {
       "kicker": "LỜI KẾT",
       "title": "Chúng em cảm ơn cô và các bạn đã lắng nghe!",
-      "subtitle": "Sức khỏe tiêu hóa được xây dựng từ những lựa chọn đúng mỗi ngày. Nhóm chúng em xin cảm ơn và rất mong nhận được câu hỏi, góp ý của cô và các bạn.",
+      "subtitle": "Mong rằng mỗi bạn sẽ mang theo một điều có thể thực hiện ngay: vệ sinh đúng cách, ăn uống an toàn và tìm người lớn hoặc nhân viên y tế khi có dấu hiệu đáng lo.",
       "points": [
-        "Câu hỏi và trao đổi",
-        "Xin cảm ơn!"
+        "Bảo vệ sức khỏe tiêu hóa mỗi ngày",
+        "Xin cảm ơn cô và các bạn!"
       ],
-      "note": "KÍNH CHÚC CÔ VÀ CÁC BẠN SỨC KHỎE",
+      "note": "HẾT BÀI · CÓ THỂ CHỌN XEM LẠI TỪ ĐẦU HOẶC TRỞ VỀ MỤC LỤC",
       "visual": "closing",
       "image": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=85",
       "imageAlt": "Không khí lớp học khi kết thúc phần trình bày",
