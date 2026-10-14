@@ -727,14 +727,17 @@
         document.addEventListener('visibilitychange', model.visibilityHandler);
         model.render();
       } catch (error) {
+        if (panel.dataset.modelRequest !== requestId || !panel.isConnected) return;
         panel.classList.remove('is-3d-ready');
+        delete panel.dataset.modelInitializing;
         const status = panel.querySelector('.anatomy3d-status');
         if (status) status.textContent = 'Đang dùng hình minh họa dự phòng';
         const footnote = panel.querySelector('.anatomy3d-footnote');
         if (footnote) footnote.textContent = 'Ảnh tĩnh dự phòng · mô hình 3D không khả dụng';
       }
     }).catch(() => {
-      if (!panel.isConnected) return;
+      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.dataset.modelRequest !== requestId) return;
+      delete panel.dataset.modelInitializing;
       const status = panel.querySelector('.anatomy3d-status');
       if (status) status.textContent = 'Không tải được 3D · đang dùng hình minh họa';
       const footnote = panel.querySelector('.anatomy3d-footnote');
