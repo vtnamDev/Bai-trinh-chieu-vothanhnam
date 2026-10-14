@@ -23,7 +23,8 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 
 ## Chuyển cảnh và hỏi đáp
 - Chuyển trang theo hướng tiến/lùi với bốn preset CSS riêng: wipe, depth, focus và rise; tiêu đề, phần mô tả, từng ý chính và ảnh có nhịp xuất hiện riêng.
-- Trong quiz, bấm một đáp án là nhận phản hồi đúng/sai và lời giải thích ngay trên slide. Không có nút “hiện đáp án” hoặc nút “câu tiếp theo” lớn; chạm vùng slide hoặc phím mũi tên để chuyển sang câu kế tiếp.
+- Mỗi bệnh có một tình huống và câu hỏi ở cuối phần; đáp án gợi ý được giấu cho đến khi người thuyết trình bấm nút hiện đáp án.
+- Các cảnh răng, dạ dày, ruột, giun và gan có mô hình 3D dạng sơ đồ để kéo xoay/phóng to. Nếu WebGL hoặc thư viện ngoài không tải được, ảnh dự phòng vẫn hiển thị.
 - Âm báo đúng/sai và chuyển slide có thể bật/tắt; chế độ giảm chuyển động vẫn được tôn trọng.
 
 ## Hình ảnh và thiết kế
@@ -52,7 +53,7 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 - SGK Khoa học Tự nhiên 8, tập 1 — Bài 32, trang in 128–134.
 - WHO: [Diarrhoeal disease](https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease), [Soil-transmitted helminth infections](https://www.who.int/news-room/fact-sheets/detail/soil-transmitted-helminth-infections), [Hepatitis A](https://www.who.int/news-room/fact-sheets/detail/hepatitis-a), [Food safety in Viet Nam](https://www.who.int/vietnam/health-topics/food-safety/food-safety).
 - CDC: [About Cavities (Tooth Decay)](https://www.cdc.gov/oral-health/about/cavities-tooth-decay.html), [DPDx — Ascariasis](https://www.cdc.gov/dpdx/ascariasis/).
-- NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes), [Hepatitis A](https://www.who.int/news-room/fact-sheets/detail/hepatitis-a).
+- NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes).
 
 ## Deploy
 GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính sẽ tạo deployment mới.
