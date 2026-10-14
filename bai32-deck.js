@@ -1,4 +1,4 @@
-/* BioSphere Slides · Bài 32 · Ảnh/video trực tuyến có ghi nguồn trên từng slide. */
+/* BioSphere Slides · Bài 32 · Video nền đa nguồn, độ phân giải thích ứng. */
 window.BIOSPHERE_BAI32_SEED = {
   "id": "khtn8-bai32-scaffold",
   "title": "5 bệnh thường gặp liên quan đến đường tiêu hóa",
@@ -205,9 +205,10 @@ window.BIOSPHERE_BAI32_SEED = {
       "palette": "coral",
       "video": "https://videos.pexels.com/video-files/5099678/5099678-hd_1920_1080_30fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Gustavo Fring · dental examination",
+      "videoCredit": "Pexels · Gustavo Fring · 4K master",
       "videoSourceUrl": "https://www.pexels.com/video/doctor-checking-her-patient-teeth-5099678/",
-      "imageMotionStyle": "cinematic"
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/5099678/5099678-uhd_3840_2160_30fps.mp4"
     },
     {
       "kicker": "BỆNH 01 · NGUYÊN NHÂN",
@@ -250,11 +251,12 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageCredit": "Kindel Media / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/",
       "palette": "aqua",
-      "video": "https://assets.mixkit.co/videos/33256/33256-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Dentist hands cleaning teeth",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/dentist-hands-cleaning-teeth-to-a-patient-33256/",
-      "imageMotionStyle": "cinematic"
+      "video": "https://videos.pexels.com/video-files/5892119/5892119-hd_1920_1080_30fps.mp4",
+      "videoProvider": "Pexels",
+      "videoCredit": "Pexels · Gustavo Fring · dental examination",
+      "videoSourceUrl": "https://www.pexels.com/video/person-checking-teeth-5892119/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4"
     },
     {
       "kicker": "BỆNH 01 · NHẬN BIẾT SỚM",
@@ -276,9 +278,10 @@ window.BIOSPHERE_BAI32_SEED = {
       "interactiveQuiz": false,
       "video": "https://videos.pexels.com/video-files/5892119/5892119-hd_1920_1080_30fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Gustavo Fring · dental examination",
+      "videoCredit": "Pexels · Gustavo Fring · 4K master",
       "videoSourceUrl": "https://www.pexels.com/video/person-checking-teeth-5892119/",
-      "imageMotionStyle": "cinematic"
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4"
     },
     {
       "kicker": "BỆNH 02 · VIÊM LOÉT DẠ DÀY – TÁ TRÀNG",
