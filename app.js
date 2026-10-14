@@ -432,8 +432,8 @@
     const button = $('#viewerSound');
     button?.setAttribute('aria-pressed', String(soundEnabled));
     if (button) button.textContent = soundEnabled ? '♫' : '♪';
-    button?.setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh phản hồi' : 'Bật âm thanh phản hồi');
-    button?.setAttribute('title', soundEnabled ? 'Âm thanh phản hồi đang bật' : 'Âm thanh phản hồi đang tắt');
+    button?.setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh');
+    button?.setAttribute('title', soundEnabled ? 'Âm thanh slide và phản hồi đúng/sai đang bật' : 'Âm thanh slide và phản hồi đúng/sai đang tắt');
     renderSlide();
     if (soundEnabled) playQuizSound(true, true);
   }
@@ -886,7 +886,7 @@
   if ($('#viewerSound')) {
     $('#viewerSound').textContent = soundEnabled ? '♫' : '♪';
     $('#viewerSound').setAttribute('aria-pressed', String(soundEnabled));
-    $('#viewerSound').setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh phản hồi' : 'Bật âm thanh phản hồi');
+    $('#viewerSound').setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh');
   }
   initStageAtmosphere();
 
