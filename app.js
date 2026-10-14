@@ -220,6 +220,65 @@
     }
   }
 
+  function renderPhoto(slide) {
+    const fallback = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=75';
+    const url = String(slide.image || '').trim();
+    if (!url) return renderVisual(slide.visual);
+    const credit = slide.imageCredit || 'Nguồn ảnh được ghi kèm';
+    const source = slide.imageSourceUrl || url;
+    const palette = slide.palette || 'ocean';
+    const photoNo = String(slideIndex + 1).padStart(2, '0');
+    const supports = Array.isArray(slide.supportImages) ? slide.supportImages.slice(0, 2) : [];
+    const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
+      '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(item.sourceUrl || item.url || source) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
+        '<img class="photo-support-image" src="' + escapeHTML(item.url || '') + '" alt="' + escapeHTML(item.alt || '') + '" loading="eager" decoding="async" data-fallback="' + fallback + '">' +
+      '</a>'
+    ).join('') + '</div>' : '';
+    return '<aside class="photo-scene" data-palette="' + escapeHTML(palette) + '" aria-label="' + escapeHTML(slide.imageAlt || 'Ảnh minh họa thực tế') + '">' +
+      '<div class="photo-halo photo-halo--one"></div><div class="photo-halo photo-halo--two"></div>' +
+      '<div class="photo-frame">' +
+        '<img class="live-photo" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
+        '<div class="photo-color-wash"></div><div class="photo-vignette"></div>' +
+        '<div class="photo-topline"><span><i></i> ẢNH THỰC / LIVE SOURCE</span><b>' + photoNo + ' / 20</b></div>' +
+        '<div class="photo-bottomline"><div class="photo-caption-copy"><span>FIELD VISUAL</span><strong>' + escapeHTML(slide.imageAlt || 'Ảnh minh họa') + '</strong></div>' +
+        '<a class="photo-source-link" href="' + escapeHTML(source) + '" target="_blank" rel="noopener noreferrer" aria-label="Mở nguồn ảnh: ' + escapeHTML(credit) + '">Nguồn ảnh <span>↗</span></a></div>' +
+        '<div class="photo-focus-ring"></div>' +
+      '</div>' + supportMarkup +
+      '<div class="photo-credit-line"><span><i></i> SOURCE / ATTRIBUTION</span><strong>' + escapeHTML(credit) + '</strong></div>' +
+      '<div class="photo-scanline"></div>' +
+    '</aside>';
+  }
+
+  function attachLiveImageFallbacks(root = document) {
+    $('.live-photo, .photo-support-image, .deck-cover-photo, .hero-photo-img', root).forEach(img => {
+      if (img.dataset.fallbackBound === '1') return;
+      img.dataset.fallbackBound = '1';
+      img.addEventListener('error', () => {
+        const fallback = img.dataset.fallback;
+        if (fallback && img.dataset.fallbackUsed !== '1' && img.src !== fallback) {
+          img.dataset.fallbackUsed = '1';
+          img.src = fallback;
+          return;
+        }
+        img.classList.add('photo-load-failed');
+        img.closest('.photo-frame, .photo-support-card, .deck-cover, .hero-photo-card')?.classList.add('photo-failed');
+      });
+    });
+  }
+
+  function warmAdjacentPhotos() {
+    if (!currentDeck || typeof Image === 'undefined') return;
+    const slides = Array.isArray(currentDeck.slides) ? currentDeck.slides : [];
+    [slideIndex - 1, slideIndex + 1].forEach(index => {
+      const url = slides[index]?.image;
+      if (url && index >= 0 && index < slides.length) {
+        const preload = new Image();
+        preload.decoding = 'async';
+        preload.src = url;
+      }
+    });
+  }
+
   function renderSlide() {
     if (!currentDeck) return;
     const slides = Array.isArray(currentDeck.slides) && currentDeck.slides.length ? currentDeck.slides : seedDeck.slides;
@@ -232,19 +291,22 @@
     const linksHtml = slide.links?.length
       ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + slide.links.map(link => '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
       : '';
+    const palette = slide.palette || 'spectrum';
+    $('#slideStage').dataset.palette = palette;
     $('#slideStage').innerHTML =
-      '<article class="slide-page">' +
+      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '">' +
         '<div class="slide-layout">' +
           '<section class="slide-content">' +
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
-            pointHtml + sourceHtml +
+            pointHtml + sourceHtml + linksHtml +
           '</section>' +
-          '<div class="slide-side-content">' + (slide.visual ? renderVisual(slide.visual) : '') + linksHtml + '</div>' +
+          '<div class="slide-side-content">' + (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : '')) + '</div>' +
         '</div>' +
       '</article>';
-
+    attachLiveImageFallbacks($('#slideStage'));
+    warmAdjacentPhotos();
     const label = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
     $('#viewerSlideCaption').textContent = label;
     $('#viewerProgress').style.width = ((slideIndex + 1) / slides.length * 100) + '%';
