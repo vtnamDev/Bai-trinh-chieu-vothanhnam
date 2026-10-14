@@ -692,6 +692,12 @@
       ? '<div class="slide-points">' + slide.points.map((point, i) => '<div class="slide-point"><b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span></div>').join('') + '</div>'
       : '';
     const quizHtml = slide.interactiveQuiz ? renderQuiz(slide) : '';
+    const endingHtml = slideIndex === slides.length - 1
+      ? '<div class="ending-actions" aria-label="Thao tác sau khi kết thúc">' +
+        '<button type="button" class="ending-action ending-action-primary" id="viewerReplay">Xem lại từ đầu <span aria-hidden="true">↺</span></button>' +
+        '<button type="button" class="ending-action" id="viewerFinalContents">Về mục lục <span aria-hidden="true">▦</span></button>' +
+      '</div>'
+      : '';
     const prompt = slide.classroomPrompt;
     const promptHtml = prompt
       ? '<section class="classroom-prompt" aria-label="Tình huống thảo luận">' +
@@ -719,7 +725,7 @@
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
-            pointHtml + promptHtml + quizHtml + sourceHtml + linksHtml +
+            pointHtml + promptHtml + quizHtml + endingHtml + sourceHtml + linksHtml +
           '</section>' +
           '<div class="slide-side-content">' + (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : '')) + '</div>' +
         '</div>' +
@@ -990,6 +996,13 @@
       setMotion(!motionEnabled);
       toast(motionEnabled ? 'Đã bật chuyển động' : 'Đã giảm chuyển động');
     }
+    if (target.id === 'viewerReplay') {
+      slideIndex = 0;
+      quizSession = { deckId: null, slideIndex: -1, questionIndex: 0, answers: {}, score: 0 };
+      renderSlide({ animate: false });
+      return;
+    }
+    if (target.id === 'viewerFinalContents') { openContents(); return; }
     if (target.matches('[data-reveal-answer]')) {
       const panel = target.closest('.classroom-prompt');
       const answer = panel?.querySelector('.classroom-answer');
