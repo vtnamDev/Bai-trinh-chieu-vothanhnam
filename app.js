@@ -38,7 +38,7 @@
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
       if (Array.isArray(saved)) {
         // Replace the older bundled draft with the current, researched 20-slide deck.
-        const personalDecks = saved.filter(deck => deck && deck.id !== seedDeck.id && !deck.isSeed);
+        const personalDecks = saved.filter(deck => isValidDeckShape(deck) && deck.id !== seedDeck.id && !deck.isSeed);
         return [seedDeck, ...personalDecks];
       }
       return [seedDeck];
@@ -61,6 +61,45 @@
     return String(value ?? '').replace(/[&<>"']/g, character => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     })[character]);
+  }
+
+  // User-imported decks are data, not trusted markup. Only allow web URLs for resources.
+  function safeHttpUrl(value, fallback = '') {
+    const raw = String(value ?? '').trim();
+    if (!raw || /[\u0000-\u001f\u007f]/.test(raw)) return fallback;
+    try {
+      const parsed = new URL(raw, window.location.href);
+      if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) return fallback;
+      return raw.startsWith('//') ? parsed.href : raw;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function isValidDeckShape(deck) {
+    if (!deck || typeof deck !== 'object' || Array.isArray(deck) ||
+        typeof deck.title !== 'string' || !deck.title.trim() ||
+        !Array.isArray(deck.slides) || deck.slides.length < 1 || deck.slides.length > 200) return false;
+    return deck.slides.every(slide => {
+      if (!slide || typeof slide !== 'object' || Array.isArray(slide)) return false;
+      for (const key of ['points', 'links', 'supportImages', 'quizQuestions']) {
+        if (slide[key] != null && !Array.isArray(slide[key])) return false;
+      }
+      if (Array.isArray(slide.links) && !slide.links.every(link => link && typeof link === 'object' && !Array.isArray(link))) return false;
+      if (Array.isArray(slide.supportImages) && !slide.supportImages.every(item => item && typeof item === 'object' && !Array.isArray(item))) return false;
+      if (slide.interactiveQuiz) {
+        const questions = slide.quizQuestions;
+        if (!Array.isArray(questions) || !questions.length || !questions.every(question =>
+          question && typeof question === 'object' && !Array.isArray(question) &&
+          typeof question.question === 'string' &&
+          Array.isArray(question.options) && question.options.length >= 2 && question.options.length <= 8 &&
+          question.options.every(option => typeof option === 'string') &&
+          Number.isInteger(question.correctIndex) && question.correctIndex >= 0 && question.correctIndex < question.options.length &&
+          typeof question.explanation === 'string'
+        )) return false;
+      }
+      return true;
+    });
   }
 
   function formatSubject(subject) {
@@ -138,7 +177,7 @@
       return `
         <article class="deck-card">
           <div class="deck-cover">
-            ${deck.slides?.[0]?.image ? '<img class="deck-cover-photo" src="' + escapeHTML(deck.slides[0].image) + '" alt="" loading="lazy" decoding="async" data-fallback="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1000&q=70">' : ''}
+    ${deck.slides?.[0]?.image ? '<img class="deck-cover-photo" src="' + escapeHTML(safeHttpUrl(deck.slides[0].image)) + '" alt="" loading="lazy" decoding="async" data-fallback="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1000&q=70">' : ''}
             <div class="deck-cover-shade"></div>
             <div class="cover-top"><span>${formatSubject(deck.subject)}</span><span>${String(position + 1).padStart(2, '0')} / ${escapeHTML(deck.date || 'LOCAL')}</span></div>
             <div class="cover-title">${escapeHTML(deck.title)}</div>
@@ -248,14 +287,14 @@
 
   function renderInteractive3D(slide) {
     const type = String(slide.model3D || 'intestine');
-    const image = String(slide.modelFallback || slide.image || '').trim();
+    const image = safeHttpUrl(slide.modelFallback || slide.image || '');
     const alt = String(slide.modelFallbackAlt || slide.imageAlt || 'Hình minh họa mô hình giải phẫu');
     const title = String(slide.modelTitle || 'Mô hình tương tác');
     const description = String(slide.modelDescription || 'Mô hình sơ đồ tương tác.');
-    const modelSrc = String(slide.modelSrc || '').trim();
-    const sourceUrl = String(slide.modelSourceUrl || '').trim();
+    const modelSrc = safeHttpUrl(slide.modelSrc || '');
+    const sourceUrl = safeHttpUrl(slide.modelSourceUrl || '');
     const credit = String(slide.modelCredit || 'Mô hình sơ đồ minh họa BioSphere');
-    const license = String(slide.modelLicense || '').trim();
+    const license = safeHttpUrl(slide.modelLicense || '');
     return '<aside class="anatomy3d-panel" data-anatomy3d="' + escapeHTML(type) + '"' +
       (modelSrc ? ' data-model-src="' + escapeHTML(modelSrc) + '"' : '') +
       ' data-model-title="' + escapeHTML(title) + '" aria-label="' + escapeHTML(title) + '">' +
@@ -810,11 +849,11 @@
   }
 
   function renderPhoto(slide) {
-    const fallback = String(slide.imageFallback || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85');
-    const url = String(slide.image || '').trim();
+    const fallback = safeHttpUrl(slide.imageFallback, 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85');
+    const url = safeHttpUrl(slide.image || '');
     if (!url) return renderVisual(slide.visual);
-    const videoUrl = String(slide.video || '').trim();
-    const video4kUrl = String(slide.video4k || '').trim();
+    const videoUrl = safeHttpUrl(slide.video || '');
+    const video4kUrl = safeHttpUrl(slide.video4k || '');
     const saveData = Boolean(navigator.connection?.saveData);
     const connectionType = String(navigator.connection?.effectiveType || '');
     const coarsePortrait = window.matchMedia('(pointer: coarse) and (orientation: portrait)').matches;
@@ -827,20 +866,22 @@
     const credit = selectedVideo
       ? (use4k ? (slide.videoCredit || provider + ' · 4K master') : (slide.videoCredit || provider + ' · video'))
       : (slide.imageCredit || 'Nguồn ảnh được ghi kèm');
-    const imageSource = slide.imageSourceUrl || url;
-    const source = selectedVideo ? (slide.videoSourceUrl || imageSource) : imageSource;
+    const imageSource = safeHttpUrl(slide.imageSourceUrl || url, url);
+    const source = safeHttpUrl(selectedVideo ? (slide.videoSourceUrl || imageSource) : imageSource, imageSource);
     const palette = slide.palette || 'ocean';
     const photoTotal = currentDeck?.slides?.length || 32;
     const photoNo = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(photoTotal).padStart(2, '0');
-    const supports = Array.isArray(slide.supportImages) ? slide.supportImages.slice(0, 2) : [];
+    const supports = Array.isArray(slide.supportImages)
+      ? slide.supportImages.filter(item => item && typeof item === 'object' && !Array.isArray(item)).slice(0, 2)
+      : [];
     const videoMarkup = selectedVideo
       ? '<video class="live-video" muted playsinline autoplay loop preload="metadata" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
           '<source src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
         '</video>'
       : '';
     const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
-      '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(item.sourceUrl || item.url || imageSource) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
-        '<img class="photo-support-image" src="' + escapeHTML(item.url || '') + '" alt="' + escapeHTML(item.alt || '') + '" loading="eager" decoding="async" data-fallback="' + fallback + '">' +
+      '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(safeHttpUrl(item.sourceUrl || item.url || imageSource, imageSource)) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
+        '<img class="photo-support-image" src="' + escapeHTML(safeHttpUrl(item.url || '')) + '" alt="' + escapeHTML(item.alt || '') + '" loading="eager" decoding="async" data-fallback="' + escapeHTML(fallback) + '">' +
       '</a>'
     ).join('') + '</div>' : '';
     const mediaAlt = selectedVideo ? (slide.videoAlt || slide.imageAlt || 'Video minh họa liên quan') : (slide.imageAlt || 'Ảnh minh họa thực tế');
@@ -848,7 +889,7 @@
       '<div class="photo-halo photo-halo--one"></div><div class="photo-halo photo-halo--two"></div>' +
       '<div class="photo-frame">' +
         videoMarkup +
-        '<img class="live-photo' + (slide.imageFit === 'contain' ? ' is-contained-diagram' : '') + '" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
+        '<img class="live-photo' + (slide.imageFit === 'contain' ? ' is-contained-diagram' : '') + '" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + escapeHTML(fallback) + '">' +
         '<div class="photo-color-wash"></div><div class="photo-vignette"></div>' +
         '<div class="photo-topline"><span><i></i> ' + (selectedVideo ? 'VIDEO THỰC / ' + escapeHTML(provider.toUpperCase()) + (use4k ? ' · 4K' : '') : 'ẢNH THỰC / LIVE SOURCE') + '</span><b>' + photoNo + '</b></div>' +
         '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'LIVE FOOTAGE · ' + escapeHTML(provider.toUpperCase()) : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(mediaAlt) + '</strong></div>' +
@@ -1277,8 +1318,11 @@
       '</section>'
       : '';
     const sourceHtml = slide.note && !slide.interactiveQuiz ? '<div class="slide-source">' + escapeHTML(slide.note) + '</div>' : '';
-    const linksHtml = slide.links?.length
-      ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + slide.links.map(link => '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
+    const linkItems = Array.isArray(slide.links)
+      ? slide.links.filter(link => link && typeof link === 'object' && safeHttpUrl(link.url))
+      : [];
+    const linksHtml = linkItems.length
+      ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + linkItems.map(link => '<a href="' + escapeHTML(safeHttpUrl(link.url)) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
       : '';
     const palette = slide.palette || 'spectrum';
     stage.dataset.palette = palette;
@@ -1483,10 +1527,8 @@
     reader.onload = () => {
       try {
         const payload = JSON.parse(String(reader.result));
-        const deck = payload.presentation || payload;
-        if (typeof deck.title !== 'string' || !Array.isArray(deck.slides) || deck.slides.length < 1) {
-          throw new Error('invalid presentation');
-        }
+        const deck = payload && typeof payload === 'object' ? (payload.presentation || payload) : null;
+        if (!isValidDeckShape(deck)) throw new Error('invalid presentation');
         deck.id = 'import-' + Date.now().toString(36);
         deck.isSeed = false;
         deck.status = 'draft';
