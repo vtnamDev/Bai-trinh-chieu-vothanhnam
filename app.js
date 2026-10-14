@@ -17,6 +17,7 @@
   let motionEnabled = !reducedMotion.matches;
   let performanceMode = readPerformanceMode();
   let photoWarmTimer = 0;
+  let toastTimer = 0;
   let soundEnabled = true;
   let previousFocus = null;
   let transitionCleanupTimer = 0;
@@ -233,11 +234,20 @@
 
   function toast(message) {
     const region = $('#toastRegion');
-    const item = document.createElement('div');
-    item.className = 'toast';
+    if (!region) return;
+    // Reuse one live announcement so rapid setting changes never stack or overlap toasts.
+    let item = region.querySelector('.toast');
+    if (!item) {
+      item = document.createElement('div');
+      item.className = 'toast';
+      region.append(item);
+    }
     item.textContent = message;
-    region.append(item);
-    window.setTimeout(() => item.remove(), 2800);
+    if (toastTimer) window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      item.remove();
+      toastTimer = 0;
+    }, 2800);
   }
 
   function renderDecks() {
