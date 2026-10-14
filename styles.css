@@ -1557,3 +1557,13 @@ body{
   .viewer .live-video{display:none!important}
 }
 .viewer.motion-off .live-video{display:none!important}
+
+
+/* Prevent a 1–2% horizontal spill from the slide's entry transform/padding. */
+@media(max-width:800px){
+  .viewer .slide-page,.viewer .slide-layout,.viewer .slide-content{box-sizing:border-box!important}
+  .viewer .slide-content{width:calc(100% - 8px)!important;margin-left:4px!important;margin-right:4px!important}
+  .viewer .photo-topline{gap:12px!important}
+  .viewer .photo-topline span{margin-right:auto}
+  .viewer .photo-topline b{flex-shrink:0}
+}
