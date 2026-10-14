@@ -359,6 +359,7 @@
     const slide = currentDeck?.slides?.[slideIndex];
     if (!slide?.interactiveQuiz) return;
     quizSession.questionIndex = Math.min(quizSession.questionIndex + 1, slide.quizQuestions.length);
+    playSlideSound(true);
     renderSlide();
   }
 
@@ -396,6 +397,32 @@
       });
     } catch {
       // Browsers may block audio until the first user gesture; the quiz still works silently.
+    }
+  }
+
+  function playSlideSound(forward = true) {
+    if (!soundEnabled) return;
+    try {
+      const AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return;
+      quizAudioContext ||= new AudioCtor();
+      const context = quizAudioContext;
+      if (context.state === 'suspended') context.resume();
+      const now = context.currentTime;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(forward ? 360 : 440, now);
+      oscillator.frequency.exponentialRampToValueAtTime(forward ? 570 : 330, now + 0.105);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.014, now + 0.018);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 0.15);
+    } catch {
+      // Sound is optional; navigation must continue without it.
     }
   }
 
@@ -572,12 +599,14 @@
   function goNext() {
     if (!currentDeck || slideIndex >= currentDeck.slides.length - 1) return;
     slideIndex += 1;
+    playSlideSound(true);
     renderSlide();
   }
 
   function goPrevious() {
     if (!currentDeck || slideIndex <= 0) return;
     slideIndex -= 1;
+    playSlideSound(false);
     renderSlide();
   }
 
