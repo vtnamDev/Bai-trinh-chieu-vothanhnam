@@ -241,33 +241,78 @@
   }
 
   function renderPhoto(slide) {
-    const fallback = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=75';
+    const fallback = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85';
     const url = String(slide.image || '').trim();
     if (!url) return renderVisual(slide.visual);
-    const credit = slide.imageCredit || 'Nguồn ảnh được ghi kèm';
-    const source = slide.imageSourceUrl || url;
+    const videoUrl = String(slide.video || '').trim();
+    const video4kUrl = String(slide.video4k || '').trim();
+    const saveData = Boolean(navigator.connection?.saveData);
+    const connectionType = String(navigator.connection?.effectiveType || '');
+    const use4k = Boolean(video4kUrl && window.matchMedia('(min-width: 1200px)').matches &&
+      !saveData && !['slow-2g', '2g', '3g'].includes(connectionType) &&
+      motionEnabled && !reducedMotion.matches);
+    const selectedVideo = use4k ? video4kUrl : videoUrl;
+    const provider = String(slide.videoProvider || '').trim();
+    const credit = selectedVideo
+      ? (use4k ? (slide.videoCredit || provider + ' · 4K master') : (slide.videoCredit || provider + ' · video'))
+      : (slide.imageCredit || 'Nguồn ảnh được ghi kèm');
+    const imageSource = slide.imageSourceUrl || url;
+    const source = selectedVideo ? (slide.videoSourceUrl || imageSource) : imageSource;
     const palette = slide.palette || 'ocean';
-    const photoTotal = currentDeck?.slides?.length || 20;
+    const photoTotal = currentDeck?.slides?.length || 32;
     const photoNo = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(photoTotal).padStart(2, '0');
     const supports = Array.isArray(slide.supportImages) ? slide.supportImages.slice(0, 2) : [];
+    const videoMarkup = selectedVideo
+      ? '<video class="live-video" muted playsinline autoplay loop preload="metadata" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
+          '<source src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
+        '</video>'
+      : '';
     const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
-      '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(item.sourceUrl || item.url || source) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
+      '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(item.sourceUrl || item.url || imageSource) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
         '<img class="photo-support-image" src="' + escapeHTML(item.url || '') + '" alt="' + escapeHTML(item.alt || '') + '" loading="eager" decoding="async" data-fallback="' + fallback + '">' +
       '</a>'
     ).join('') + '</div>' : '';
-    return '<aside class="photo-scene" data-palette="' + escapeHTML(palette) + '" aria-label="' + escapeHTML(slide.imageAlt || 'Ảnh minh họa thực tế') + '">' +
+    return '<aside class="photo-scene" data-palette="' + escapeHTML(palette) + '" data-media-mode="' + (selectedVideo ? 'video' : 'photo') + '" aria-label="' + escapeHTML(slide.imageAlt || 'Ảnh minh họa thực tế') + '">' +
       '<div class="photo-halo photo-halo--one"></div><div class="photo-halo photo-halo--two"></div>' +
       '<div class="photo-frame">' +
+        videoMarkup +
         '<img class="live-photo" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
         '<div class="photo-color-wash"></div><div class="photo-vignette"></div>' +
-        '<div class="photo-topline"><span><i></i> ẢNH THỰC / LIVE SOURCE</span><b>' + photoNo + '</b></div>' +
-        '<div class="photo-bottomline"><div class="photo-caption-copy"><span>FIELD VISUAL</span><strong>' + escapeHTML(slide.imageAlt || 'Ảnh minh họa') + '</strong></div>' +
-        '<a class="photo-source-link" href="' + escapeHTML(source) + '" target="_blank" rel="noopener noreferrer" aria-label="Mở nguồn ảnh: ' + escapeHTML(credit) + '">Nguồn ảnh <span>↗</span></a></div>' +
+        '<div class="photo-topline"><span><i></i> ' + (selectedVideo ? 'VIDEO THỰC / ' + escapeHTML(provider.toUpperCase()) + (use4k ? ' · 4K' : '') : 'ẢNH THỰC / LIVE SOURCE') + '</span><b>' + photoNo + '</b></div>' +
+        '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'CINEMATIC FOOTAGE' : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(slide.imageAlt || 'Ảnh minh họa') + '</strong></div>' +
+        '<a class="photo-source-link" href="' + escapeHTML(source) + '" target="_blank" rel="noopener noreferrer" aria-label="Mở nguồn ' + (selectedVideo ? 'video' : 'ảnh') + ': ' + escapeHTML(credit) + '">' + (selectedVideo ? 'Nguồn video' : 'Nguồn ảnh') + ' <span>↗</span></a></div>' +
         '<div class="photo-focus-ring"></div>' +
       '</div>' + supportMarkup +
-      '<div class="photo-credit-line"><span><i></i> SOURCE / ATTRIBUTION</span><strong>' + escapeHTML(credit) + '</strong></div>' +
+      '<div class="photo-credit-line"><span><i></i> ' + (selectedVideo ? 'VIDEO SOURCE / LICENSE' : 'SOURCE / ATTRIBUTION') + '</span><strong>' + escapeHTML(credit) + '</strong></div>' +
       '<div class="photo-scanline"></div>' +
     '</aside>';
+  }
+
+  function attachVideoBackgrounds(root = document) {
+    $$('.live-video', root).forEach(video => {
+      if (video.dataset.motionBound === '1') return;
+      video.dataset.motionBound = '1';
+      const frame = video.closest('.photo-frame');
+      video.addEventListener('playing', () => frame?.classList.add('video-playing'));
+      video.addEventListener('pause', () => {
+        if (video.ended || video.error) frame?.classList.remove('video-playing');
+      });
+      video.addEventListener('error', () => {
+        frame?.classList.remove('video-playing');
+        frame?.classList.add('video-failed');
+        video.remove();
+      });
+      const startVideo = () => {
+        if (!motionEnabled || reducedMotion.matches || document.hidden || $('#presentationViewer').hidden) {
+          video.pause();
+          return;
+        }
+        const attempt = video.play();
+        if (attempt && typeof attempt.catch === 'function') attempt.catch(() => frame?.classList.remove('video-playing'));
+      };
+      video.addEventListener('loadeddata', startVideo, { once: true });
+      startVideo();
+    });
   }
 
   function attachLiveImageFallbacks(root = document) {
@@ -650,6 +695,7 @@
     }
 
     attachLiveImageFallbacks(stage);
+    attachVideoBackgrounds(stage);
     warmAdjacentPhotos();
     const label = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
     $('#viewerSlideCaption').textContent = label;
@@ -664,8 +710,14 @@
     $('#slideNext').disabled = slideIndex === slides.length - 1;
     $('#viewerPlayMotion').setAttribute('aria-pressed', String(motionEnabled));
     $('#presentationViewer').classList.toggle('motion-off', !motionEnabled);
-    if (motionEnabled) startStageAtmosphere();
-    else stopStageAtmosphere();
+    if (motionEnabled) {
+      startStageAtmosphere();
+      attachVideoBackgrounds($('#slideStage'));
+    } else {
+      stopStageAtmosphere();
+      $('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
+    }
   }
 
   function advanceFromStage() {
@@ -984,8 +1036,13 @@
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopStageAtmosphere();
-    else if (!$('#presentationViewer').hidden && motionEnabled && !reducedMotion.matches) startStageAtmosphere();
+    if (document.hidden) {
+      stopStageAtmosphere();
+      $('.live-video', $('#slideStage')).forEach(video => video.pause());
+    } else if (!$('#presentationViewer').hidden && motionEnabled && !reducedMotion.matches) {
+      startStageAtmosphere();
+      attachVideoBackgrounds($('#slideStage'));
+    }
   });
 
   reducedMotion.addEventListener?.('change', event => {
