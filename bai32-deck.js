@@ -224,13 +224,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5099678/5099678-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Nha sĩ kiểm tra răng cho bệnh nhân",
-      "classroomPrompt": {
-        "scenario": "Minh thường xuyên nhâm nhi nước ngọt trong ngày. Gần đây, bạn thấy răng ê buốt khi ăn đồ lạnh.",
-        "question": "Thói quen nào nên thay đổi, và vì sao chỉ nhìn triệu chứng chưa đủ để tự kết luận mức độ sâu răng?",
-        "answer": "Hạn chế tần suất dùng đồ uống có đường, làm sạch răng đúng cách và báo người lớn để được khám nha khoa.",
-        "explanation": "Ê buốt có thể có nhiều nguyên nhân. Mảng bám và axit là một cơ chế gây sâu răng, nhưng chẩn đoán và mức độ tổn thương cần được nhân viên nha khoa đánh giá."
-      }
+      "videoAlt": "Nha sĩ kiểm tra răng cho bệnh nhân"
     },
     {
       "kicker": "BỆNH 01 · NGUYÊN NHÂN",
@@ -285,15 +279,14 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoAlt": "Trẻ đánh răng trước gương"
     },
     {
-      "kicker": "BỆNH 01 · NHẬN BIẾT SỚM",
-      "title": "Khi nào cần báo người lớn và đi khám răng?",
-      "subtitle": "Răng sâu sớm có thể không đau. Đừng chờ đến khi đau nhiều mới nhờ người lớn giúp đỡ.",
+      "kicker": "TÌNH HUỐNG 01 · SÂU RĂNG",
+      "title": "Khi nào cần báo người lớn?",
+      "subtitle": "Dùng kiến thức về sâu răng để suy luận sau khi đã tìm hiểu nguyên nhân và cách phòng tránh.",
       "points": [
-        "Chú ý đốm trắng/ nâu/đen, lỗ nhỏ trên răng, ê buốt hoặc đau khi ăn uống.",
-        "Đau kéo dài, sưng nướu/mặt hoặc sốt kèm đau răng: báo người lớn và đi khám sớm.",
-        "Không tự bôi hóa chất lên răng, không dùng mẹo có tính axit để chữa sâu răng."
+        "Đốm/lỗ sâu, ê buốt hoặc đau răng là dấu hiệu nên được chú ý.",
+        "Đau kéo dài, sưng nướu/mặt hoặc sốt kèm đau răng: báo người lớn và đi khám sớm."
       ],
-      "note": "NGUỒN: CDC · ORAL HEALTH / CAVITIES",
+      "note": "TÌNH HUỐNG CUỐI PHẦN · SÂU RĂNG",
       "visual": "toothcare",
       "image": "https://images.pexels.com/photos/7979784/pexels-photo-7979784.jpeg?auto=compress&cs=tinysrgb&w=1600",
       "imageAlt": "Khám răng giúp phát hiện vấn đề sớm",
@@ -309,7 +302,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Nha sĩ khám răng trong phòng khám"
+      "videoAlt": "Nha sĩ khám răng trong phòng khám",
+      "classroomPrompt": {
+        "scenario": "Minh thường xuyên nhâm nhi nước ngọt trong ngày. Gần đây, bạn thấy răng ê buốt khi ăn đồ lạnh.",
+        "question": "Thói quen nào nên thay đổi, và vì sao chỉ nhìn triệu chứng chưa đủ để tự kết luận mức độ sâu răng?",
+        "answer": "Hạn chế tần suất dùng đồ uống có đường, làm sạch răng đúng cách và báo người lớn để được khám nha khoa.",
+        "explanation": "Ê buốt có thể có nhiều nguyên nhân. Mảng bám và axit là một cơ chế gây sâu răng, nhưng chẩn đoán và mức độ tổn thương cần được nhân viên nha khoa đánh giá."
+      }
     },
     {
       "kicker": "BỆNH 02 · VIÊM LOÉT DẠ DÀY – TÁ TRÀNG",
@@ -333,13 +332,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng",
-      "classroomPrompt": {
-        "scenario": "Một bạn đau vùng bụng trên vài lần và cho rằng chắc chắn bị loét vì có hôm bỏ bữa.",
-        "question": "Có thể kết luận như vậy không? Hai nguyên nhân phổ biến cần biết là gì?",
-        "answer": "Không thể kết luận chỉ từ triệu chứng. Hai nguyên nhân phổ biến là nhiễm vi khuẩn H. pylori và dùng một số thuốc kháng viêm không steroid.",
-        "explanation": "Ăn uống điều độ có lợi cho sức khỏe nhưng không giải thích mọi trường hợp loét. Không tự dùng kháng sinh hoặc thuốc điều trị; hãy báo người lớn và khám nếu triệu chứng kéo dài hoặc có dấu hiệu cảnh báo."
-      }
+      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng"
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -394,15 +387,14 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoAlt": "Bác sĩ giải thích tình trạng sức khỏe cho bệnh nhân"
     },
     {
-      "kicker": "BỆNH 02 · PHÒNG NGỪA VÀ ĐIỀU TRỊ",
-      "title": "Không tự mua thuốc để chữa đau dạ dày",
-      "subtitle": "Thói quen sinh hoạt lành mạnh có ích, nhưng không thay thế việc tìm nguyên nhân và điều trị theo hướng dẫn của nhân viên y tế.",
+      "kicker": "TÌNH HUỐNG 02 · DẠ DÀY – TÁ TRÀNG",
+      "title": "Đau bụng chưa đủ để kết luận",
+      "subtitle": "Hãy phân biệt suy đoán thông thường với thông tin cần được kiểm tra y tế.",
       "points": [
-        "Không tự dùng kháng sinh; bác sĩ cần đánh giá và có thể xét nghiệm H. pylori.",
-        "Báo bác sĩ các thuốc đang dùng; một số thuốc kháng viêm/giảm đau có thể gây loét.",
-        "Ăn uống điều độ để hỗ trợ sức khỏe, nhưng không coi một món ăn hay mẹo dân gian là thuốc chữa loét."
+        "Không tự dùng kháng sinh hoặc thuốc điều trị; bác sĩ có thể cần đánh giá H. pylori và thuốc đang dùng.",
+        "Nôn ra máu, phân đen hoặc đau bụng đột ngột dữ dội cần được trợ giúp y tế khẩn cấp."
       ],
-      "note": "SGK BÀI 32 TR. 130 · ĐỐI CHIẾU NIDDK",
+      "note": "TÌNH HUỐNG CUỐI PHẦN · VIÊM LOÉT DẠ DÀY – TÁ TRÀNG",
       "visual": "stomachcare",
       "image": "https://images.pexels.com/photos/5215008/pexels-photo-5215008.jpeg?auto=compress&cs=tinysrgb&w=1600",
       "imageAlt": "Bác sĩ chăm sóc và tư vấn người bệnh",
@@ -417,7 +409,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-talking-to-a-patient-in-a-hospital-bed-35956/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Bác sĩ trao đổi với người bệnh tại bệnh viện"
+      "videoAlt": "Bác sĩ trao đổi với người bệnh tại bệnh viện",
+      "classroomPrompt": {
+        "scenario": "Một bạn đau vùng bụng trên vài lần và cho rằng chắc chắn bị loét vì có hôm bỏ bữa.",
+        "question": "Có thể kết luận như vậy không? Hai nguyên nhân phổ biến cần biết là gì?",
+        "answer": "Không thể kết luận chỉ từ triệu chứng. Hai nguyên nhân phổ biến là nhiễm vi khuẩn H. pylori và dùng một số thuốc kháng viêm không steroid.",
+        "explanation": "Ăn uống điều độ có lợi cho sức khỏe nhưng không giải thích mọi trường hợp loét. Không tự dùng kháng sinh hoặc thuốc điều trị; hãy báo người lớn và khám nếu triệu chứng kéo dài hoặc có dấu hiệu cảnh báo."
+      }
     },
     {
       "kicker": "BỆNH 03 · TIÊU CHẢY",
@@ -441,13 +439,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-drinking-a-glass-of-water-4731190/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Người uống nước từ cốc thủy tinh",
-      "classroomPrompt": {
-        "scenario": "Sau một chuyến đi, Lan bị tiêu chảy nhiều lần, khô miệng và tiểu ít.",
-        "question": "Nguy cơ nào cần chú ý đầu tiên và em nên làm gì an toàn?",
-        "answer": "Cần chú ý mất nước. Báo người lớn, bù nước đúng hướng dẫn; nếu lừ đừ, không uống được, tiểu rất ít hoặc có máu trong phân, cần trợ giúp y tế.",
-        "explanation": "Không tự mua kháng sinh. Dung dịch bù nước đường uống phải pha đúng lượng nước ghi trên gói; dấu hiệu nặng cần được nhân viên y tế đánh giá."
-      }
+      "videoAlt": "Người uống nước từ cốc thủy tinh"
     },
     {
       "kicker": "BỆNH 03 · MẤT NƯỚC",
@@ -503,15 +495,14 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoAlt": "Rửa tay với xà phòng ở bồn rửa"
     },
     {
-      "kicker": "BỆNH 03 · XỬ TRÍ AN TOÀN",
-      "title": "Bù nước đúng cách — không pha theo cảm tính",
-      "subtitle": "Dung dịch bù nước đường uống (ORS) giúp thay thế nước và chất điện giải bị mất khi dùng đúng hướng dẫn.",
+      "kicker": "TÌNH HUỐNG 03 · TIÊU CHẢY",
+      "title": "Điều gì cần làm khi có nguy cơ mất nước?",
+      "subtitle": "Khi tiêu chảy xảy ra, ưu tiên là bù nước an toàn và nhận biết dấu hiệu cần trợ giúp.",
       "points": [
-        "Pha cả gói ORS với đúng lượng nước sạch ghi trên bao bì; không tự thêm đường, muối hoặc chia gói ước lượng.",
-        "Uống từng ngụm nhỏ, tiếp tục ăn uống phù hợp; với học sinh, hãy báo cha mẹ/thầy cô.",
-        "Khi có dấu hiệu nặng hoặc không uống được, cần đến cơ sở y tế thay vì chỉ tự chăm sóc tại nhà."
+        "Pha dung dịch bù nước đường uống (ORS) theo đúng lượng nước ghi trên gói.",
+        "Lừ đừ, không uống được, tiểu rất ít hoặc có máu trong phân: báo người lớn và tìm trợ giúp y tế."
       ],
-      "note": "NGUỒN: WHO · DIARRHOEAL DISEASE",
+      "note": "TÌNH HUỐNG CUỐI PHẦN · TIÊU CHẢY",
       "visual": "watercare",
       "image": "https://suckhoedoisong.qltns.mediacdn.vn/Images/thuha/2021/07/16/pha%20osesol%20voi%20luong%20nuoc%20vua%20dung%20huong%20dan.jpg",
       "imageAlt": "Minh họa pha Oresol đúng lượng nước hướng dẫn",
@@ -526,7 +517,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": null,
       "videoSourceUrl": null,
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "classroomPrompt": {
+        "scenario": "Sau một chuyến đi, Lan bị tiêu chảy nhiều lần, khô miệng và tiểu ít.",
+        "question": "Nguy cơ nào cần chú ý đầu tiên và em nên làm gì an toàn?",
+        "answer": "Cần chú ý mất nước. Báo người lớn, bù nước đúng hướng dẫn; nếu lừ đừ, không uống được, tiểu rất ít hoặc có máu trong phân, cần trợ giúp y tế.",
+        "explanation": "Không tự mua kháng sinh. Dung dịch bù nước đường uống phải pha đúng lượng nước ghi trên gói; dấu hiệu nặng cần được nhân viên y tế đánh giá."
+      }
     },
     {
       "kicker": "BỆNH 04 · NHIỄM GIUN ĐƯỜNG RUỘT",
@@ -551,13 +548,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "video4k": null,
       "imageFit": "contain",
       "imageFallback": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Ascaris_lumbricoides1.jpg",
-      "videoAlt": null,
-      "classroomPrompt": {
-        "scenario": "Một học sinh hay ăn rau chưa rửa kỹ và thường quên rửa tay trước bữa ăn.",
-        "question": "Làm thế nào trứng giun có thể đi vào cơ thể, và thói quen nào giúp cắt đường lây?",
-        "answer": "Trứng giun có thể bị nuốt qua tay bẩn, nước hoặc rau củ nhiễm bẩn. Rửa tay, rửa/chế biến thực phẩm phù hợp và dùng nước an toàn giúp giảm nguy cơ.",
-        "explanation": "Đau bụng hoặc mệt không đủ để khẳng định nhiễm giun. Đây là tình huống suy luận về đường lây, không phải công cụ tự chẩn đoán."
-      }
+      "videoAlt": null
     },
     {
       "kicker": "BỆNH 04 · DẤU HIỆU VÀ TÁC ĐỘNG",
@@ -588,20 +579,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFallback": "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=1600"
     },
     {
-      "kicker": "BỆNH 04 · PHÒNG NGỪA",
-      "title": "Chặn đường lây: tay sạch, thực phẩm sạch, môi trường sạch",
-      "subtitle": "Phòng nhiễm giun cần nhiều lớp bảo vệ, không chỉ dựa vào một thói quen riêng lẻ.",
+      "kicker": "TÌNH HUỐNG 04 · NHIỄM GIUN",
+      "title": "Cắt đường lây nhiễm từ những thói quen nhỏ",
+      "subtitle": "Vận dụng hiểu biết về vòng lây truyền để chọn biện pháp phòng ngừa phù hợp.",
       "points": [
         "Rửa tay bằng xà phòng trước khi ăn và sau khi đi vệ sinh.",
-        "Rửa, nấu hoặc gọt rau củ phù hợp; dùng nước an toàn và bảo đảm vệ sinh môi trường.",
-        "Mang giày dép khi tiếp xúc đất ở nơi có nguy cơ giun móc; việc dùng thuốc tẩy giun cần theo hướng dẫn y tế."
+        "Rửa/chế biến thực phẩm phù hợp, dùng nước an toàn và giữ vệ sinh môi trường."
       ],
-      "note": "NGUỒN: WHO · SOIL-TRANSMITTED HELMINTH INFECTIONS",
+      "note": "NGUỒN BỔ SUNG · WHO: SOIL-TRANSMITTED HELMINTH INFECTIONS",
       "visual": "foodsafety",
-      "image": "https://www.who.int/images/default-source/searo---images/health-topics/food-safety/infographics/200511-fao-social-media-instagram-v19-no2.jpg?sfvrsn=4d892145_2",
-      "imageAlt": "Infographic WHO/FAO/WFP về các nguyên tắc an toàn thực phẩm; minh họa vai trò của vệ sinh khi chế biến.",
-      "imageCredit": "WHO / FAO / WFP · An toàn thực phẩm",
-      "imageSourceUrl": "https://www.who.int/indonesia/news/novel-coronavirus/new-infographics/food-safety",
+      "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "imageAlt": "Rửa tay bằng xà phòng để minh họa vệ sinh phòng bệnh.",
+      "imageCredit": "Ivan S / Pexels · Free to use",
+      "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
       "palette": "lime",
       "supportImages": [
         {
@@ -620,7 +610,15 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Rửa tay bằng xà phòng khi chuẩn bị thực phẩm"
+      "videoAlt": "Rửa tay bằng xà phòng khi chuẩn bị thực phẩm",
+      "classroomPrompt": {
+        "scenario": "Một học sinh hay ăn rau chưa rửa kỹ và thường quên rửa tay trước bữa ăn.",
+        "question": "Làm thế nào trứng giun có thể đi vào cơ thể, và thói quen nào giúp cắt đường lây?",
+        "answer": "Trứng giun có thể bị nuốt qua tay bẩn, nước hoặc rau củ nhiễm bẩn. Rửa tay, rửa/chế biến thực phẩm phù hợp và dùng nước an toàn giúp giảm nguy cơ.",
+        "explanation": "Đau bụng hoặc mệt không đủ để khẳng định nhiễm giun. Đây là tình huống suy luận về đường lây, không phải công cụ tự chẩn đoán."
+      },
+      "interactiveQuiz": false,
+      "imageFallback": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600"
     },
     {
       "kicker": "BỆNH 05 · VIÊM GAN A",
@@ -647,13 +645,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFit": "contain",
       "videoAlt": null,
       "imageFallback": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
-      "video4k": null,
-      "classroomPrompt": {
-        "scenario": "Sau khi ăn uống ở nơi vệ sinh chưa bảo đảm, một người thấy mệt, chán ăn, nước tiểu sẫm màu và mắt vàng.",
-        "question": "Những dấu hiệu này có thể gợi ý vấn đề ở cơ quan nào, và bước an toàn tiếp theo là gì?",
-        "answer": "Có thể liên quan đến gan, nhưng không thể tự xác định là viêm gan A. Cần báo người lớn và đến cơ sở y tế để được đánh giá.",
-        "explanation": "Viêm gan A lây chủ yếu qua đường phân–miệng khi nuốt phải thực phẩm/nước nhiễm virus. Vàng da và nước tiểu sẫm là dấu hiệu cần được đánh giá y tế, không phải bằng chứng đủ để tự chẩn đoán."
-      }
+      "video4k": null
     },
     {
       "kicker": "BỆNH 05 · ĐƯỜNG LÂY VÀ DẤU HIỆU",
@@ -682,15 +674,14 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Liver.svg/1280px-Liver.svg.png"
     },
     {
-      "kicker": "BỆNH 05 · PHÒNG NGỪA",
-      "title": "Bảo vệ gan: vệ sinh đúng cách và chủ động phòng bệnh",
-      "subtitle": "Phòng viêm gan A tập trung vào nước sạch, vệ sinh, an toàn thực phẩm và tiêm vaccine theo khuyến nghị y tế.",
+      "kicker": "TÌNH HUỐNG 05 · VIÊM GAN A",
+      "title": "Dấu hiệu nào cần được đánh giá y tế?",
+      "subtitle": "Không cần tự chẩn đoán tên bệnh mới biết khi nào nên tìm người lớn và nhân viên y tế.",
       "points": [
-        "Rửa tay đúng lúc; dùng nước an toàn và bảo đảm thực phẩm được rửa, chế biến, bảo quản phù hợp.",
-        "Vaccine viêm gan A giúp phòng bệnh; hỏi cha mẹ và nhân viên y tế về lịch tiêm phù hợp.",
-        "Không dùng chung một triệu chứng để tự chẩn đoán; khi có dấu hiệu nghiêm trọng, cần được đánh giá y tế."
+        "Dùng nước an toàn, giữ vệ sinh tay và thực phẩm; vaccine viêm gan A có thể giúp phòng bệnh theo khuyến nghị y tế.",
+        "Vàng mắt/da hoặc nước tiểu sẫm màu cần được đánh giá, không phải bằng chứng đủ để tự kết luận viêm gan A."
       ],
-      "note": "NGUỒN: WHO · HEPATITIS A",
+      "note": "NGUỒN BỔ SUNG · WHO: HEPATITIS A",
       "visual": "fiber",
       "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
       "imageAlt": "Rửa tay với xà phòng; minh họa một phần của vệ sinh giúp giảm lây truyền qua đường phân–miệng.",
@@ -707,7 +698,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFit": "cover",
       "videoAlt": null,
       "imageFallback": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "video4k": null
+      "video4k": null,
+      "classroomPrompt": {
+        "scenario": "Sau khi ăn uống ở nơi vệ sinh chưa bảo đảm, một người thấy mệt, chán ăn, nước tiểu sẫm màu và mắt vàng.",
+        "question": "Những dấu hiệu này có thể gợi ý vấn đề ở cơ quan nào, và bước an toàn tiếp theo là gì?",
+        "answer": "Có thể liên quan đến gan, nhưng không thể tự xác định là viêm gan A. Cần báo người lớn và đến cơ sở y tế để được đánh giá.",
+        "explanation": "Viêm gan A lây chủ yếu qua đường phân–miệng khi nuốt phải thực phẩm/nước nhiễm virus. Vàng da và nước tiểu sẫm là dấu hiệu cần được đánh giá y tế, không phải bằng chứng đủ để tự chẩn đoán."
+      }
     },
     {
       "kicker": "SO SÁNH NHANH",
