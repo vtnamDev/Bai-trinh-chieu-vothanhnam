@@ -229,7 +229,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "modelTitle": "Mô hình răng",
       "modelDescription": "Lớp men, ngà và tủy răng trong mặt cắt sơ đồ.",
       "modelFallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Dental_Caries_Cavity_1.JPG/960px-Dental_Caries_Cavity_1.JPG",
-      "modelFallbackAlt": "Ảnh răng sâu của Wikimedia Commons, dùng làm hình dự phòng khi mô hình tương tác không tải."
+      "modelFallbackAlt": "Răng được kiểm tra trong buổi khám nha khoa"
     },
     {
       "kicker": "BỆNH 01 · NGUYÊN NHÂN",
