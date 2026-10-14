@@ -251,19 +251,44 @@
     const alt = String(slide.modelFallbackAlt || slide.imageAlt || 'Hình minh họa mô hình giải phẫu');
     const title = String(slide.modelTitle || 'Mô hình tương tác');
     const description = String(slide.modelDescription || 'Mô hình sơ đồ tương tác.');
-    return '<aside class="anatomy3d-panel" data-anatomy3d="' + escapeHTML(type) + '" aria-label="' + escapeHTML(title) + '">' +
-      '<div class="anatomy3d-topline"><span>BIOSPHERE / 3D</span><span class="anatomy3d-status" role="status" aria-live="polite">Đang chuẩn bị mô hình…</span></div>' +
-      (image ? '<img class="anatomy3d-fallback" src="' + escapeHTML(image) + '" alt="' + escapeHTML(alt) + '" decoding="async" loading="eager">' : '') +
+    const modelSrc = String(slide.modelSrc || '').trim();
+    const sourceUrl = String(slide.modelSourceUrl || '').trim();
+    const credit = String(slide.modelCredit || 'Mô hình sơ đồ minh họa BioSphere');
+    const license = String(slide.modelLicense || '').trim();
+    return '<aside class="anatomy3d-panel" data-anatomy3d="' + escapeHTML(type) + '"' +
+      (modelSrc ? ' data-model-src="' + escapeHTML(modelSrc) + '"' : '') +
+      ' data-model-title="' + escapeHTML(title) + '" aria-label="' + escapeHTML(title) + '">' +
+      '<div class="anatomy3d-topline"><span>BIOSPHERE / 3D</span><span class="anatomy3d-status" role="status" aria-live="polite">Sẵn sàng mở mô hình</span></div>' +
+      (image ? '<img class="anatomy3d-fallback" data-fallback-src="' + escapeHTML(image) + '" alt="' + escapeHTML(alt) + '" decoding="async" loading="lazy">' : '') +
+      '<div class="anatomy3d-native-slot"></div>' +
       '<div class="anatomy3d-canvas" aria-hidden="true"></div>' +
       '<div class="anatomy3d-title"><strong>' + escapeHTML(title) + '</strong><span>' + escapeHTML(description) + '</span></div>' +
       '<div class="anatomy3d-controls" role="group" aria-label="Điều khiển mô hình 3D">' +
-        '<button type="button" data-model-action="rotate" aria-pressed="true">Tự xoay</button>' +
+        '<button type="button" data-model-action="rotate" aria-pressed="false">Tự xoay</button>' +
         '<button type="button" data-model-action="zoom-out" aria-label="Thu nhỏ mô hình">−</button>' +
         '<button type="button" data-model-action="zoom-in" aria-label="Phóng to mô hình">＋</button>' +
         '<button type="button" data-model-action="reset">Đặt lại</button>' +
       '</div>' +
-      '<div class="anatomy3d-footnote">Kéo chuột để xoay · lăn chuột để phóng to · mô hình sơ đồ minh họa</div>' +
+      '<div class="anatomy3d-attribution">' +
+        (sourceUrl ? '<a href="' + escapeHTML(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(credit) + ' ↗</a>' : '<span>' + escapeHTML(credit) + '</span>') +
+        (license ? '<a href="' + escapeHTML(license) + '" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>' : '') +
+      '</div>' +
+      '<div class="anatomy3d-footnote">' + (modelSrc ? 'Xoay bằng chuột · cuộn để phóng to · mô hình tham chiếu giải phẫu' : 'Kéo chuột để xoay · lăn chuột để phóng to · mô hình sơ đồ minh họa') + '</div>' +
     '</aside>';
+  }
+
+  function renderMediaWithModel(slide) {
+    const image = slide.image ? renderPhoto(slide) : renderVisual(slide.visual);
+    return '<div class="media-experience" data-media-type="' + escapeHTML(String(slide.model3D || 'anatomy')) + '">' +
+      '<div class="media-mode-bar"><span class="media-mode-label">KHÁM PHÁ HÌNH ẢNH</span>' +
+        '<div class="media-mode-switch" role="group" aria-label="Chọn cách xem hình ảnh">' +
+          '<button type="button" class="media-mode-button is-active" data-media-mode="image" aria-pressed="true"><span aria-hidden="true">▧</span> Ảnh gốc</button>' +
+          '<button type="button" class="media-mode-button" data-media-mode="model" aria-pressed="false"><span aria-hidden="true">◈</span> Mô hình 3D</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="media-image-view is-active">' + image + '</div>' +
+      '<div class="media-3d-view" hidden>' + renderInteractive3D(slide) + '</div>' +
+    '</div>';
   }
 
   function ensureThreeLibrary() {
@@ -1046,7 +1071,7 @@
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
             pointHtml + promptHtml + quizHtml + endingHtml + sourceHtml + linksHtml +
           '</section>' +
-          '<div class="slide-side-content">' + (slide.model3D ? renderInteractive3D(slide) : (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : ''))) + '</div>' +
+          '<div class="slide-side-content">' + (slide.model3D ? renderMediaWithModel(slide) : (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : ''))) + '</div>' +
         '</div>' +
       '</article>';
 
