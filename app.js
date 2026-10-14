@@ -16,6 +16,8 @@
   let motionEnabled = !reducedMotion.matches;
   let soundEnabled = true;
   let previousFocus = null;
+  let transitionCleanupTimer = 0;
+  let activeTransitionGhost = null;
   let quizSession = { deckId: null, slideIndex: -1, questionIndex: 0, answers: {}, score: 0 };
   let quizAudioContext = null;
   let atmosphereRunning = false;
@@ -227,6 +229,7 @@
     }
     currentDeck = requested;
     slideIndex = 0;
+    $('#slideStage').innerHTML = '';
     $('#presentationViewer').hidden = false;
     document.body.style.overflow = 'hidden';
     startStageAtmosphere();
@@ -330,9 +333,9 @@
       return '<button class="quiz-answer' + stateClass + '" data-quiz-answer="' + optionIndex + '" ' + (hasAnswer ? 'disabled ' : '') + 'aria-pressed="' + String(isSelected) + '">' + symbol + '<span class="quiz-answer-text">' + escapeHTML(option) + '</span><span class="quiz-answer-shimmer"></span></button>';
     }).join('');
     const feedback = hasAnswer
-      ? '<div class="quiz-feedback ' + (correct ? 'is-correct' : 'is-wrong') + '" role="status"><span class="quiz-feedback-icon">' + (correct ? '✓' : '↺') + '</span><div><strong>' + (correct ? 'Chính xác! +1 điểm' : 'Chưa đúng — cùng xem đáp án nhé') + '</strong><p>' + escapeHTML(question.explanation) + '</p></div></div>' +
-        '<button class="quiz-action quiz-action-primary" data-quiz-next>' + (index === total - 1 ? 'Xem kết quả' : 'Câu tiếp theo') + ' <span>→</span></button>'
-      : '<div class="quiz-encouragement"><span>◉</span> Chọn A, B, C hoặc D — đáp án sẽ được mở sau khi em chọn.</div>';
+      ? '<div class="quiz-feedback ' + (correct ? 'is-correct' : 'is-wrong') + '" role="status"><span class="quiz-feedback-icon">' + (correct ? '✓' : '×') + '</span><div><strong>' + (correct ? 'CHÍNH XÁC · +1 ĐIỂM' : 'CHƯA ĐÚNG · CÙNG GHI NHỚ') + '</strong><p>' + escapeHTML(question.explanation) + '</p></div></div>' +
+        '<div class="quiz-continue-hint"><span>Chạm vùng trình chiếu để tiếp tục</span><i aria-hidden="true"></i><kbd>→</kbd></div>'
+      : '<div class="quiz-encouragement"><span>◉</span> Chọn một đáp án — phản hồi sẽ xuất hiện ngay.</div>';
     return '<section class="quiz-panel" aria-label="Câu hỏi tương tác">' +
       '<div class="quiz-panel-top"><span><i></i> LỚP HỌC TƯƠNG TÁC</span><b>CÂU ' + String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0') + '</b></div>' +
       '<div class="quiz-progress"><i style="width:' + (((index + (hasAnswer ? 1 : 0)) / total) * 100) + '%"></i></div>' +
@@ -352,7 +355,7 @@
     quizSession.answers[index] = Number(optionIndex);
     if (isCorrect) quizSession.score += 1;
     playQuizSound(isCorrect);
-    renderSlide();
+    renderSlide({ direction: 'reveal', animate: false });
   }
 
   function nextQuizQuestion() {
@@ -360,7 +363,7 @@
     if (!slide?.interactiveQuiz) return;
     quizSession.questionIndex = Math.min(quizSession.questionIndex + 1, slide.quizQuestions.length);
     playSlideSound(true);
-    renderSlide();
+    renderSlide({ direction: 'forward' });
   }
 
   function restartQuiz() {
@@ -368,7 +371,7 @@
     if (!slide?.interactiveQuiz) return;
     quizSession = { deckId: currentDeck.id, slideIndex, questionIndex: 0, answers: {}, score: 0 };
     playQuizSound(true, true);
-    renderSlide();
+    renderSlide({ direction: 'reveal', animate: false });
   }
 
   function playQuizSound(correct, soft = false) {
@@ -551,12 +554,31 @@
     if (atmosphereCanvasContext) atmosphereCanvasContext.clearRect(0, 0, atmosphereWidth, atmosphereHeight);
   }
 
-  function renderSlide() {
+  function renderSlide({ direction = 'forward', animate = true } = {}) {
     if (!currentDeck) return;
     const slides = Array.isArray(currentDeck.slides) && currentDeck.slides.length ? currentDeck.slides : seedDeck.slides;
     slideIndex = Math.max(0, Math.min(slideIndex, slides.length - 1));
     const slide = slides[slideIndex];
     if (!slide.interactiveQuiz) quizSession = { deckId: null, slideIndex: -1, questionIndex: 0, answers: {}, score: 0 };
+
+    const stage = $('#slideStage');
+    const previousPage = stage.querySelector(':scope > .slide-page:not(.slide-transition-ghost)');
+    const motionPreset = slide.interactiveQuiz ? 'focus' : (slide.motionPreset || ['wipe', 'depth', 'focus', 'rise'][slideIndex % 4]);
+    let ghost = null;
+
+    if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
+    if (activeTransitionGhost?.isConnected) activeTransitionGhost.remove();
+    activeTransitionGhost = null;
+
+    if (animate && motionEnabled && previousPage && direction !== 'reveal') {
+      ghost = previousPage.cloneNode(true);
+      ghost.classList.add('slide-transition-ghost');
+      ghost.dataset.direction = direction;
+      ghost.dataset.preset = motionPreset;
+      ghost.setAttribute('aria-hidden', 'true');
+      ghost.inert = true;
+    }
+
     const pointHtml = !slide.interactiveQuiz && slide.points?.length
       ? '<div class="slide-points">' + slide.points.map((point, i) => '<div class="slide-point"><b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span></div>').join('') + '</div>'
       : '';
@@ -566,9 +588,13 @@
       ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + slide.links.map(link => '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
       : '';
     const palette = slide.palette || 'spectrum';
-    $('#slideStage').dataset.palette = palette;
-    $('#slideStage').innerHTML =
-      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '">' +
+    stage.dataset.palette = palette;
+    stage.dataset.direction = direction;
+    stage.dataset.preset = motionPreset;
+    stage.dataset.slideIndex = String(slideIndex + 1);
+    stage.dataset.slideCount = String(slides.length);
+    stage.innerHTML =
+      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
         '<div class="slide-layout">' +
           '<section class="slide-content">' +
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
@@ -579,11 +605,23 @@
           '<div class="slide-side-content">' + (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : '')) + '</div>' +
         '</div>' +
       '</article>';
-    attachLiveImageFallbacks($('#slideStage'));
+
+    if (ghost) {
+      stage.appendChild(ghost);
+      activeTransitionGhost = ghost;
+      requestAnimationFrame(() => {
+        if (ghost.isConnected) ghost.classList.add('is-leaving');
+      });
+      transitionCleanupTimer = window.setTimeout(() => {
+        if (ghost.isConnected) ghost.remove();
+        if (activeTransitionGhost === ghost) activeTransitionGhost = null;
+        transitionCleanupTimer = 0;
+      }, 760);
+    }
+
+    attachLiveImageFallbacks(stage);
     warmAdjacentPhotos();
     const label = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
-    $('#slideStage').dataset.slideIndex = String(slideIndex + 1);
-    $('#slideStage').dataset.slideCount = String(slides.length);
     $('#viewerSlideCaption').textContent = label;
     const photoCounter = $('#slideStage .photo-topline b');
     if (photoCounter) photoCounter.textContent = label;
@@ -598,6 +636,22 @@
     $('#presentationViewer').classList.toggle('motion-off', !motionEnabled);
     if (motionEnabled) startStageAtmosphere();
     else stopStageAtmosphere();
+  }
+
+  function advanceFromStage() {
+    const slide = currentDeck?.slides?.[slideIndex];
+    if (!slide?.interactiveQuiz) {
+      goNext();
+      return;
+    }
+    const questions = slide.quizQuestions || [];
+    if (quizSession.questionIndex >= questions.length) {
+      goNext();
+      return;
+    }
+    if (Object.prototype.hasOwnProperty.call(quizSession.answers, quizSession.questionIndex)) {
+      nextQuizQuestion();
+    }
   }
 
   function goNext() {
@@ -623,6 +677,11 @@
     viewer.hidden = true;
     document.body.style.overflow = '';
     stopStageAtmosphere();
+    if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
+    transitionCleanupTimer = 0;
+    activeTransitionGhost?.remove();
+    activeTransitionGhost = null;
+    $('#slideStage').innerHTML = '';
     currentDeck = null;
     if (!['library', 'templates', 'settings'].includes(location.hash.slice(1))) {
       history.replaceState({ view: activeView }, '', '#' + activeView);
@@ -789,6 +848,18 @@
   });
 
   $('#slideStage').addEventListener('click', event => {
+    const quizSlide = currentDeck?.slides?.[slideIndex];
+    if (quizSlide?.interactiveQuiz) {
+      const answerButton = event.target.closest('[data-quiz-answer]');
+      const interactiveControl = event.target.closest('a, [data-quiz-restart], input, select, textarea');
+      if (interactiveControl) return;
+      if (answerButton) {
+        if (Object.prototype.hasOwnProperty.call(quizSession.answers, quizSession.questionIndex)) nextQuizQuestion();
+        return;
+      }
+      advanceFromStage();
+      return;
+    }
     if (event.target.closest('a, button, input, select, textarea')) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     if (event.clientX < bounds.left + bounds.width / 2) goPrevious();
@@ -823,10 +894,23 @@
   document.addEventListener('keydown', event => {
     const viewerOpen = !$('#presentationViewer').hidden;
     if (viewerOpen) {
+      const quizSlide = currentDeck?.slides?.[slideIndex];
+      const quizActive = Boolean(quizSlide?.interactiveQuiz);
+      const quizIndex = quizSession.questionIndex;
+      const quizAnswered = quizActive && quizIndex < quizSlide.quizQuestions.length &&
+        Object.prototype.hasOwnProperty.call(quizSession.answers, quizIndex);
+      const forwardKeys = ['ArrowRight', 'PageDown', ' '];
+
+      if (quizActive && quizAnswered && forwardKeys.includes(event.key)) {
+        event.preventDefault();
+        advanceFromStage();
+        return;
+      }
+
       const control = event.target.closest?.('button, a, input, select, textarea, [role="button"]');
       if (control) {
         if (control.matches('[data-quiz-answer]') && ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(event.key)) {
-          const choices = $('[data-quiz-answer]', $('#slideStage'));
+          const choices = $$('[data-quiz-answer]', $('#slideStage')).filter(button => !button.disabled);
           const index = choices.indexOf(control);
           const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
           const nextChoice = choices[index + direction];
@@ -838,9 +922,10 @@
         if (event.key === 'Escape' && !document.fullscreenElement) exitPresentation();
         return;
       }
-      if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
+      if (forwardKeys.includes(event.key)) {
         event.preventDefault();
-        goNext();
+        if (quizActive) advanceFromStage();
+        else goNext();
       } else if (['ArrowLeft', 'PageUp'].includes(event.key)) {
         event.preventDefault();
         goPrevious();
@@ -849,7 +934,7 @@
       }
       return;
     }
-    if (event.key === 'Escape') $('.modal-backdrop:not([hidden])').forEach(closeModal);
+    if (event.key === 'Escape') $$('.modal-backdrop:not([hidden])').forEach(closeModal);
   });
 
   window.addEventListener('popstate', () => {
