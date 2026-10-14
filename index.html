@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://images.pexels.com">
   <link rel="preconnect" href="https://upload.wikimedia.org">
   <link rel="dns-prefetch" href="https://www.who.int">
-  <link rel="stylesheet" href="/styles.css?v=20261014-hdmi-cinematic-v4">
-  <script src="/bai32-deck.js?v=20261014-hdmi-cinematic-v4" defer></script>
-  <script src="/app.js?v=20261014-hdmi-cinematic-v4" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20261014-smart-performance-v5">
+  <script src="/bai32-deck.js?v=20261014-smart-performance-v5" defer></script>
+  <script src="/app.js?v=20261014-smart-performance-v5" defer></script>
 </head>
 <body>
   <div class="ambient ambient-a" aria-hidden="true"></div>
@@ -99,6 +99,16 @@
       <div class="page-intro"><div class="eyebrow eyebrow-muted">YOUR WORKSPACE</div><h1>Thiết lập<br><em>không gian riêng.</em></h1><p>Các tuỳ chọn giao diện và thông tin về lưu trữ hiện tại.</p></div>
       <div class="settings-layout">
         <div class="settings-panel"><div class="settings-panel-title"><span class="panel-icon">◐</span><div><h2>Giao diện</h2><p>Tùy chỉnh cách không gian hiển thị.</p></div></div><div class="setting-row"><div><strong>Chủ đề sáng/tối</strong><small>Đổi độ sáng toàn giao diện.</small></div><button class="switch" id="settingsTheme" role="switch" aria-checked="false" aria-label="Bật giao diện sáng"><span></span></button></div><div class="setting-row"><div><strong>Chuyển động nền</strong><small>Giảm chuyển động trang trí khi cần.</small></div><button class="switch on" id="settingsMotion" role="switch" aria-checked="true" aria-label="Cho phép chuyển động nền"><span></span></button></div></div>
+        <div class="settings-panel performance-settings-panel">
+          <div class="settings-panel-title"><span class="panel-icon">⚡</span><div><h2>Hiệu năng thông minh</h2><p>Chọn mức ưu tiên phù hợp với thiết bị và đường truyền.</p></div></div>
+          <div class="performance-presets" role="group" aria-label="Chế độ hiệu năng">
+            <button type="button" class="performance-preset is-active" data-performance-mode="auto" aria-pressed="true"><span class="preset-icon">✧</span><strong>Tự động</strong><small>Cân bằng theo thiết bị</small></button>
+            <button type="button" class="performance-preset" data-performance-mode="smooth" aria-pressed="false"><span class="preset-icon">⌁</span><strong>Mượt nhẹ</strong><small>Ưu tiên tốc độ và pin</small></button>
+            <button type="button" class="performance-preset" data-performance-mode="cinema" aria-pressed="false"><span class="preset-icon">◈</span><strong>Điện ảnh</strong><small>Hiệu ứng đầy đủ hơn</small></button>
+          </div>
+          <p class="performance-status" id="performanceStatus" role="status" aria-live="polite">Đang chuẩn bị cấu hình hiệu năng…</p>
+          <p class="performance-footnote">Tự động dựa trên tín hiệu phần cứng, mạng và chế độ tiết kiệm dữ liệu. 3D vẫn chỉ tải khi bạn chủ động mở; chế độ điện ảnh không ép tải video trên mạng yếu.</p>
+        </div>
         <div class="settings-panel"><div class="settings-panel-title"><span class="panel-icon">⌑</span><div><h2>Lưu trữ & bảo vệ</h2><p>Minh bạch trạng thái các tính năng.</p></div></div><div class="status-row"><span class="status-icon">⌂</span><div><strong>Lưu trữ trình duyệt</strong><small>Bản nháp lưu cục bộ trên thiết bị hiện tại.</small></div><span class="state-tag state-local">LOCAL</span></div><div class="status-row"><span class="status-icon">⌑</span><div><strong>Mật khẩu bảo vệ bài</strong><small>Cần xác thực phía máy chủ để chia sẻ an toàn.</small></div><span class="state-tag state-planned">NEXT</span></div><div class="status-row"><span class="status-icon">↗</span><div><strong>Đồng bộ liên kết</strong><small>Chưa bật lưu trữ đám mây; dữ liệu chưa tự chuyển sang thiết bị giáo viên.</small></div><span class="state-tag state-planned">NEXT</span></div><button class="secondary-btn reset-btn" id="resetLocal">Khôi phục dữ liệu mẫu</button></div>
       </div>
     </section>
