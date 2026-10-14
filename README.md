@@ -10,6 +10,11 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 - `assets/mark.svg` — biểu tượng BioSphere.
 - `vercel.json` — cấu hình hosting tĩnh.
 
+## Chuyển cảnh và hỏi đáp
+- Chuyển trang theo hướng tiến/lùi với bốn preset CSS riêng: wipe, depth, focus và rise; tiêu đề, phần mô tả, từng ý chính và ảnh có nhịp xuất hiện riêng.
+- Trong quiz, bấm một đáp án là nhận phản hồi đúng/sai và lời giải thích ngay trên slide. Không có nút “hiện đáp án” hoặc nút “câu tiếp theo” lớn; chạm vùng slide hoặc phím mũi tên để chuyển sang câu kế tiếp.
+- Âm báo đúng/sai và chuyển slide có thể bật/tắt; chế độ giảm chuyển động vẫn được tôn trọng.
+
 ## Hình ảnh và thiết kế
 - Mỗi trang trong bài Bài 32 có một URL ảnh thực riêng (32 trang có ảnh minh họa và nguồn ghi kèm), mô tả thay thế, ghi nguồn và liên kết mở nguồn; một số trang có thêm thẻ ảnh phụ.
 - Ảnh được tải trực tiếp từ nguồn trực tuyến khi mở trang. Nguồn sử dụng gồm Wikimedia Commons (sơ đồ giải phẫu/ảnh y khoa có giấy phép ghi trên trang file), Unsplash, Pexels và một số nguồn y tế/giáo dục như WHO. Ví dụ: [sơ đồ hệ tiêu hóa trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg), [ảnh răng sâu trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Dental_Caries_Cavity_1.JPG), [ảnh nội soi ổ loét dạ dày](https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg), [ảnh trẻ chải răng trên Pexels](https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/).
