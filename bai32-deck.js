@@ -5,7 +5,7 @@ window.BIOSPHERE_BAI32_SEED = {
   subject: 'biology',
   status: 'ready',
   date: '2026-10-14',
-  description: 'KHTN 8 · Tập 1 · Bài 32 · 20 trang · Kiến thức SGK kết hợp nguồn y tế chính thống.',
+  description: 'KHTN 8 · Tập 1 · Bài 32 · 21 trang · Có bài kiểm tra tương tác · Kiến thức SGK kết hợp nguồn y tế chính thống.',
   isSeed: true,
   slides: [
     {
