@@ -695,7 +695,7 @@
     if (!currentDeck || slideIndex <= 0) return;
     slideIndex -= 1;
     playSlideSound(false);
-    renderSlide();
+    renderSlide({ direction: 'backward' });
   }
 
   async function exitPresentation() {
