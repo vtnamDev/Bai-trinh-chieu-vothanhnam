@@ -1340,3 +1340,28 @@ body{
   animation:none!important;filter:none!important;clip-path:none!important;transition:none!important;
 }
 
+
+
+/* Quiz answer changes are in-place: keep the headline and live photo steady. */
+.viewer .slide-page[data-direction="reveal"] .slide-kicker,
+.viewer .slide-page[data-direction="reveal"] .slide-title,
+.viewer .slide-page[data-direction="reveal"] .slide-subtitle,
+.viewer .slide-page[data-direction="reveal"] .slide-point,
+.viewer .slide-page[data-direction="reveal"] .slide-source,
+.viewer .slide-page[data-direction="reveal"] .slide-links,
+.viewer .slide-page[data-direction="reveal"] .photo-scene,
+.viewer .slide-page[data-direction="reveal"] .photo-frame{
+  animation:none!important;filter:none!important;clip-path:none!important;
+}
+.viewer .quiz-panel{transition:border-color .2s,box-shadow .25s}
+.viewer .quiz-feedback{animation:motion-quiz-feedback-pop .38s cubic-bezier(.16,.82,.2,1) both}
+.viewer .quiz-feedback.is-correct .quiz-feedback-icon{animation:motion-correct-stamp .48s cubic-bezier(.16,.9,.2,1) both}
+.viewer .quiz-feedback.is-wrong .quiz-feedback-icon{animation:motion-wrong-stamp .4s cubic-bezier(.18,.75,.2,1) both}
+@keyframes motion-quiz-feedback-pop{
+  0%{opacity:0;transform:translate3d(0,9px,0) scale(.985)}
+  72%{opacity:1;transform:translate3d(0,-1px,0) scale(1.003)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .viewer .quiz-feedback,.viewer .quiz-feedback-icon{animation:none!important}
+}
