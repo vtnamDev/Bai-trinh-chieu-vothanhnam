@@ -334,7 +334,7 @@
   function ensureThreeLibrary() {
     if (window.THREE && window.THREE.WebGLRenderer) return Promise.resolve(window.THREE);
     if (threeLoadPromise) return threeLoadPromise;
-    threeLoadPromise = new Promise((resolve, reject) => {
+    const pending = new Promise((resolve, reject) => {
       const existing = document.querySelector('script[data-biosphere-three]');
       if (existing) {
         existing.addEventListener('load', () => window.THREE ? resolve(window.THREE) : reject(new Error('3D library did not initialize')), { once: true });
@@ -348,6 +348,11 @@
       script.onload = () => window.THREE ? resolve(window.THREE) : reject(new Error('3D library did not initialize'));
       script.onerror = () => reject(new Error('3D library failed to load'));
       document.head.appendChild(script);
+    });
+    threeLoadPromise = pending.catch(error => {
+      threeLoadPromise = null;
+      document.querySelector('script[data-biosphere-three]')?.remove();
+      throw error;
     });
     return threeLoadPromise;
   }
@@ -531,7 +536,7 @@
   function ensureModelViewerLibrary() {
     if (window.customElements?.get('model-viewer')) return Promise.resolve();
     if (modelViewerLoadPromise) return modelViewerLoadPromise;
-    modelViewerLoadPromise = new Promise((resolve, reject) => {
+    const pending = new Promise((resolve, reject) => {
       const done = () => window.customElements?.whenDefined('model-viewer').then(resolve, reject);
       const existing = document.querySelector('script[data-biosphere-model-viewer]');
       if (existing) {
@@ -546,6 +551,11 @@
       script.onload = done;
       script.onerror = () => reject(new Error('Model viewer CDN unavailable'));
       document.head.appendChild(script);
+    });
+    modelViewerLoadPromise = pending.catch(error => {
+      modelViewerLoadPromise = null;
+      document.querySelector('script[data-biosphere-model-viewer]')?.remove();
+      throw error;
     });
     return modelViewerLoadPromise;
   }
