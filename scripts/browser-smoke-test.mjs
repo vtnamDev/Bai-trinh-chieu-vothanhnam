@@ -22,7 +22,7 @@ try {
   await page.locator('#mobileMenu').click();
   await page.locator('#mainNav [data-view="settings"]').click();
   await page.locator('#performanceStatus').waitFor({ state: 'visible' });
-  assert.equal(await page.locator('[data-performance-mode]').count(), 3);
+  assert.equal(await page.locator('button[data-performance-mode]').count(), 3);
   await page.locator('[data-performance-mode="cinema"]').click();
   assert.equal(await page.locator('html').getAttribute('data-performance-mode'), 'cinema');
   await page.locator('[data-performance-mode="smooth"]').click();
