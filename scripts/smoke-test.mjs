@@ -2,11 +2,12 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
-const [html, app, deckSource, css] = await Promise.all([
+const [html, app, deckSource, css, serviceWorker] = await Promise.all([
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../app.js', import.meta.url), 'utf8'),
   readFile(new URL('../bai32-deck.js', import.meta.url), 'utf8'),
   readFile(new URL('../styles.css', import.meta.url), 'utf8'),
+  readFile(new URL('../service-worker.js', import.meta.url), 'utf8'),
 ]);
 
 // Parse the bundled deck without executing application code in a browser.
@@ -68,13 +69,19 @@ assert.ok(html.includes('data-performance-mode="auto"'), 'The automatic performa
 assert.ok(html.includes('data-performance-mode="smooth"') && html.includes('data-performance-mode="cinema"'), 'All three performance presets must be present.');
 assert.ok(html.includes('id="performanceStatus"'), 'Settings must explain the active performance profile.');
 assert.ok(app.includes('function getPerformanceProfile()'), 'Runtime decisions should use the adaptive performance profile.');
-assert.ok(app.includes("$('button[data-performance-mode]').forEach"), 'Performance status sync must iterate over the preset buttons, not a single document query result.');
-assert.ok(app.includes("$('.live-video', $('#slideStage')).forEach"), 'Adaptive mode must iterate over all stage videos before pausing.');
-assert.ok(app.includes("$('.photo-frame.video-playing', $('#slideStage')).forEach"), 'Adaptive mode must iterate over all playing photo frames before clearing state.');
-assert.ok(app.includes("$('.live-video', imageView).forEach"), 'Switching into 3D must safely pause any video layers.');
+const allQuery = '$' + '$(';
+assert.ok(app.includes(allQuery + "'button[data-performance-mode]').forEach"), 'Performance status sync must iterate over preset buttons with querySelectorAll.');
+assert.ok(app.includes(allQuery + "'.live-video', $('#slideStage')).forEach"), 'Adaptive mode must iterate over all stage videos before pausing.');
+assert.ok(app.includes(allQuery + "'.photo-frame.video-playing', $('#slideStage')).forEach"), 'Adaptive mode must iterate over all playing photo frames before clearing state.');
+assert.ok(app.includes(allQuery + "'.live-video', imageView).forEach"), 'Switching into 3D must safely pause all video layers.');
 assert.ok(app.includes("renderMediaModeBar('media-mode-bar--mobile')"), 'Mobile must render a foreground image/3D switch.');
 assert.ok(app.includes("target.closest('.media-experience') || slidePage?.querySelector('.media-experience')"), 'Both desktop and foreground mobile controls must target the same media experience.');
 assert.ok(css.includes('.slide-content>.media-mode-bar--mobile'), 'The foreground switch needs dedicated mobile presentation styling.');
+assert.ok(app.includes("slidePage?.classList.toggle('is-model-active', showModel)"), 'Mobile mode changes must enable pointer interaction with the 3D model.');
+assert.ok(app.includes("navigator.serviceWorker.register('./service-worker.js'"), 'The app shell should register its service worker on secure origins.');
+assert.ok(serviceWorker.includes("const SHELL_VERSION = '" + assetVersions[0] + "'"), 'Service-worker cache version must match the cache-busted app assets.');
+assert.ok(serviceWorker.includes('await self.skipWaiting()') && serviceWorker.includes('await self.clients.claim()'), 'The service worker must activate and claim clients after installing the shell.');
+assert.ok(!/https?:\/\//i.test(serviceWorker), 'The shell cache must not prefetch remote images, videos or model assets.');
 assert.ok(app.includes('navigator.deviceMemory') && app.includes('navigator.hardwareConcurrency'), 'Adaptive mode should consider hardware signals when supported.');
 const warmupStart = app.indexOf('function warmAdjacentPhotos()');
 const warmupEnd = app.indexOf('\n  function renderQuiz', warmupStart);
