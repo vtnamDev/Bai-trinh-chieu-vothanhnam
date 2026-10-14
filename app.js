@@ -29,6 +29,8 @@
   let atmosphereParticles = [];
   let atmospherePointer = { x: 0.5, y: 0.5 };
   let atmosphereCanvasContext = null;
+  let activeAnatomy3D = null;
+  let threeLoadPromise = null;
 
   function loadDecks() {
     try {
@@ -239,6 +241,318 @@
     renderSlide();
     if (location.hash !== '#present/' + encodeURIComponent(currentDeck.id)) {
       history.pushState({ presentation: currentDeck.id }, '', '#present/' + encodeURIComponent(currentDeck.id));
+    }
+  }
+
+
+  function renderInteractive3D(slide) {
+    const type = String(slide.model3D || 'intestine');
+    const image = String(slide.modelFallback || slide.image || '').trim();
+    const alt = String(slide.modelFallbackAlt || slide.imageAlt || 'Hình minh họa mô hình giải phẫu');
+    const title = String(slide.modelTitle || 'Mô hình tương tác');
+    const description = String(slide.modelDescription || 'Mô hình sơ đồ tương tác.');
+    return '<aside class="anatomy3d-panel" data-anatomy3d="' + escapeHTML(type) + '" aria-label="' + escapeHTML(title) + '">' +
+      '<div class="anatomy3d-topline"><span>BIOSPHERE / 3D</span><span class="anatomy3d-status" role="status" aria-live="polite">Đang chuẩn bị mô hình…</span></div>' +
+      (image ? '<img class="anatomy3d-fallback" src="' + escapeHTML(image) + '" alt="' + escapeHTML(alt) + '" decoding="async" loading="eager">' : '') +
+      '<div class="anatomy3d-canvas" aria-hidden="true"></div>' +
+      '<div class="anatomy3d-title"><strong>' + escapeHTML(title) + '</strong><span>' + escapeHTML(description) + '</span></div>' +
+      '<div class="anatomy3d-controls" role="group" aria-label="Điều khiển mô hình 3D">' +
+        '<button type="button" data-model-action="rotate" aria-pressed="true">Tự xoay</button>' +
+        '<button type="button" data-model-action="zoom-out" aria-label="Thu nhỏ mô hình">−</button>' +
+        '<button type="button" data-model-action="zoom-in" aria-label="Phóng to mô hình">＋</button>' +
+        '<button type="button" data-model-action="reset">Đặt lại</button>' +
+      '</div>' +
+      '<div class="anatomy3d-footnote">Kéo chuột để xoay · lăn chuột để phóng to · mô hình sơ đồ minh họa</div>' +
+    '</aside>';
+  }
+
+  function ensureThreeLibrary() {
+    if (window.THREE && window.THREE.WebGLRenderer) return Promise.resolve(window.THREE);
+    if (threeLoadPromise) return threeLoadPromise;
+    threeLoadPromise = new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-biosphere-three]');
+      if (existing) {
+        existing.addEventListener('load', () => window.THREE ? resolve(window.THREE) : reject(new Error('3D library did not initialize')), { once: true });
+        existing.addEventListener('error', () => reject(new Error('3D library failed to load')), { once: true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js';
+      script.async = true;
+      script.dataset.biosphereThree = 'true';
+      script.onload = () => window.THREE ? resolve(window.THREE) : reject(new Error('3D library did not initialize'));
+      script.onerror = () => reject(new Error('3D library failed to load'));
+      document.head.appendChild(script);
+    });
+    return threeLoadPromise;
+  }
+
+  function disposeInteractiveModel() {
+    const model = activeAnatomy3D;
+    if (!model) return;
+    if (model.frame) cancelAnimationFrame(model.frame);
+    model.resizeObserver?.disconnect();
+    window.removeEventListener('resize', model.onResize);
+    model.panel.removeEventListener('pointerdown', model.onPointerDown);
+    model.panel.removeEventListener('pointermove', model.onPointerMove);
+    model.panel.removeEventListener('pointerup', model.onPointerUp);
+    model.panel.removeEventListener('pointercancel', model.onPointerUp);
+    model.panel.removeEventListener('wheel', model.onWheel);
+    model.group.traverse(object => {
+      if (object.geometry?.dispose) object.geometry.dispose();
+      if (object.material) {
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.forEach(material => material.dispose?.());
+      }
+    });
+    model.renderer.dispose();
+    model.renderer.domElement.remove();
+    activeAnatomy3D = null;
+  }
+
+  function makeTube(THREE, group, points, color, radius = 0.07, tubularSegments = 56) {
+    const curve = new THREE.CatmullRomCurve3(points.map(point => new THREE.Vector3(point[0], point[1], point[2] || 0)));
+    const geometry = new THREE.TubeGeometry(curve, tubularSegments, radius, 10, false);
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.48, metalness: 0.02 });
+    const mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+    return mesh;
+  }
+
+  function makeEllipsoid(THREE, group, position, scale, color) {
+    const geometry = new THREE.SphereGeometry(1, 24, 18);
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.38, metalness: 0.02 });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(position[0], position[1], position[2] || 0);
+    mesh.scale.set(scale[0], scale[1], scale[2]);
+    group.add(mesh);
+    return mesh;
+  }
+
+  function makeExtrudedShape(THREE, group, shape, color, depth = 0.34, z = 0, bevel = 0.045) {
+    const geometry = new THREE.ExtrudeGeometry(shape, {
+      depth, bevelEnabled: true, bevelSegments: 3, steps: 1,
+      bevelSize: bevel, bevelThickness: bevel, curveSegments: 24
+    });
+    geometry.translate(0, 0, -depth / 2);
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.015 });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.z = z;
+    group.add(mesh);
+    return mesh;
+  }
+
+  function makeToothShape(THREE, scale = 1) {
+    const shape = new THREE.Shape();
+    const p = (x, y) => [x * scale, y * scale];
+    let a = p(-0.58, 0.84); shape.moveTo(a[0], a[1]);
+    a = p(-0.28, 1.02); const b = p(0.12, 0.98); const c = p(0.51, 0.82);
+    shape.bezierCurveTo(a[0], a[1], b[0], b[1], c[0], c[1]);
+    a = p(0.90, 0.63); const d = p(0.76, 0.28); const e = p(0.49, 0.06);
+    shape.bezierCurveTo(a[0], a[1], d[0], d[1], e[0], e[1]);
+    a = p(0.33, -0.10); const f = p(0.38, -0.53); const g = p(0.20, -0.92);
+    shape.bezierCurveTo(a[0], a[1], f[0], f[1], g[0], g[1]);
+    a = p(0.13, -1.06); const h = p(-0.02, -1.06); const i = p(-0.12, -0.91);
+    shape.bezierCurveTo(a[0], a[1], h[0], h[1], i[0], i[1]);
+    a = p(-0.30, -0.55); const j = p(-0.27, -0.18); const k = p(-0.43, 0.04);
+    shape.bezierCurveTo(a[0], a[1], j[0], j[1], k[0], k[1]);
+    a = p(-0.72, 0.25); const l = p(-0.88, 0.60); const m = p(-0.58, 0.84);
+    shape.bezierCurveTo(a[0], a[1], l[0], l[1], m[0], m[1]);
+    shape.closePath();
+    return shape;
+  }
+
+  function makeStomachShape(THREE) {
+    const shape = new THREE.Shape();
+    shape.moveTo(-0.16, 0.82);
+    shape.bezierCurveTo(-0.36, 0.66, -0.34, 0.43, -0.23, 0.25);
+    shape.bezierCurveTo(-0.43, 0.08, -0.63, -0.24, -0.43, -0.48);
+    shape.bezierCurveTo(-0.21, -0.76, 0.18, -0.78, 0.43, -0.54);
+    shape.bezierCurveTo(0.63, -0.35, 0.54, -0.12, 0.37, 0.02);
+    shape.bezierCurveTo(0.19, 0.18, 0.19, 0.34, 0.37, 0.43);
+    shape.bezierCurveTo(0.54, 0.52, 0.61, 0.68, 0.47, 0.82);
+    shape.bezierCurveTo(0.29, 0.99, 0.03, 0.95, -0.16, 0.82);
+    shape.closePath();
+    return shape;
+  }
+
+  function buildModelGeometry(THREE, type, group) {
+    if (type === 'tooth') {
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 1), '#e8e0cf', 0.38, 0, 0.06);
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.73), '#d99d60', 0.18, 0.24, 0.025);
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.32), '#d96682', 0.10, 0.35, 0.012);
+      makeEllipsoid(THREE, group, [-0.31, 0.54, 0.35], [0.11, 0.18, 0.035], '#fff4db');
+      return;
+    }
+    if (type === 'stomach') {
+      makeExtrudedShape(THREE, group, makeStomachShape(THREE), '#d77d91', 0.36, 0.03, 0.06);
+      makeTube(THREE, group, [[-0.16, 1.22, 0.04], [-0.18, 0.94, 0.12], [-0.16, 0.71, 0.15], [-0.17, 0.49, 0.20]], '#f0b4a9', 0.095);
+      makeTube(THREE, group, [[0.37, -0.42, 0.20], [0.57, -0.42, 0.16], [0.69, -0.24, 0.08], [0.55, -0.04, 0.08]], '#e7a8a0', 0.075);
+      makeEllipsoid(THREE, group, [-0.04, 0.08, 0.25], [0.12, 0.10, 0.04], '#f2c9a0');
+      return;
+    }
+    if (type === 'intestine') {
+      makeTube(THREE, group, [[-0.62, 0.62, 0], [-0.69, 0.20, 0.02], [-0.68, -0.37, 0], [-0.48, -0.62, 0], [0.02, -0.67, 0], [0.49, -0.60, 0], [0.67, -0.32, 0.02], [0.65, 0.28, 0], [0.47, 0.65, 0], [0.21, 0.67, 0]], '#b96880', 0.14, 90);
+      makeTube(THREE, group, [[-0.43, 0.30, 0.14], [-0.15, 0.40, 0.22], [0.18, 0.30, 0.14], [0.38, 0.12, 0.18], [0.12, 0.00, 0.24], [-0.31, 0.08, 0.17], [-0.40, -0.13, 0.22], [-0.08, -0.25, 0.17], [0.31, -0.17, 0.22], [0.40, -0.36, 0.13], [0.08, -0.45, 0.20], [-0.25, -0.37, 0.13]], '#eea0aa', 0.060, 120);
+      return;
+    }
+    if (type === 'worm') {
+      makeTube(THREE, group, [[-0.62, 0.66, -0.05], [-0.26, 0.40, 0.10], [0.33, 0.51, 0.0], [0.54, 0.21, 0.13], [0.08, -0.05, 0.05], [-0.45, -0.38, 0.12], [-0.05, -0.68, 0.0]], '#e7bf9e', 0.074, 120);
+      makeTube(THREE, group, [[0.48, 0.66, -0.16], [0.13, 0.39, -0.02], [-0.36, 0.29, -0.14], [-0.45, -0.03, 0.02], [0.05, -0.28, -0.10], [0.42, -0.57, 0.0]], '#f0d3b0', 0.055, 120);
+      for (let i = 0; i < 7; i++) {
+        const angle = i * 0.85;
+        makeEllipsoid(THREE, group, [Math.cos(angle) * 0.22, -0.84 + Math.sin(angle) * 0.07, 0.04], [0.05, 0.07, 0.05], '#e9d6a0');
+      }
+      return;
+    }
+    if (type === 'liver') {
+      const shape = new THREE.Shape();
+      shape.moveTo(-0.84, 0.30);
+      shape.bezierCurveTo(-0.72, 0.72, -0.22, 0.74, 0.10, 0.55);
+      shape.bezierCurveTo(0.44, 0.37, 0.61, 0.52, 0.78, 0.30);
+      shape.bezierCurveTo(0.83, 0.12, 0.61, -0.28, 0.32, -0.42);
+      shape.bezierCurveTo(0.08, -0.54, -0.05, -0.39, -0.22, -0.35);
+      shape.bezierCurveTo(-0.49, -0.32, -0.68, -0.20, -0.84, 0.30);
+      shape.closePath();
+      makeExtrudedShape(THREE, group, shape, '#985365', 0.34, 0, 0.06);
+      makeEllipsoid(THREE, group, [0.24, -0.46, 0.24], [0.12, 0.22, 0.10], '#75a77c');
+      makeTube(THREE, group, [[0.18, -0.24, 0.30], [0.13, -0.04, 0.28], [-0.01, 0.10, 0.21]], '#e4bd81', 0.035, 32);
+    }
+  }
+
+  function initInteractiveModels(root) {
+    const panel = root.querySelector('.anatomy3d-panel');
+    if (!panel) return;
+    ensureThreeLibrary().then(THREE => {
+      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel) return;
+      disposeInteractiveModel();
+      try {
+        const surface = panel.querySelector('.anatomy3d-canvas');
+        const width = Math.max(220, surface.clientWidth || panel.clientWidth || 420);
+        const height = Math.max(240, surface.clientHeight || panel.clientHeight || 420);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+        renderer.setSize(width, height, false);
+        renderer.domElement.setAttribute('aria-hidden', 'true');
+        surface.appendChild(renderer.domElement);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
+        camera.position.set(0, 0, 5.4);
+        scene.add(new THREE.AmbientLight(0xffffff, 1.65));
+        const keyLight = new THREE.DirectionalLight(0xffffff, 2.1);
+        keyLight.position.set(-3, 4, 6);
+        scene.add(keyLight);
+        const rimLight = new THREE.DirectionalLight(0x80e8de, 1.25);
+        rimLight.position.set(3, 1.2, -4);
+        scene.add(rimLight);
+        const group = new THREE.Group();
+        scene.add(group);
+        buildModelGeometry(THREE, panel.dataset.anatomy3d, group);
+        group.scale.setScalar(1.0);
+
+        const model = {
+          panel, renderer, scene, camera, group, frame: 0,
+          autoRotate: motionEnabled && !reducedMotion.matches,
+          dragging: false, lastX: 0, lastY: 0, resizeObserver: null, onResize: null,
+          onPointerDown: null, onPointerMove: null, onPointerUp: null, onWheel: null
+        };
+        model.onResize = () => {
+          if (!panel.isConnected) return;
+          const w = Math.max(1, surface.clientWidth);
+          const h = Math.max(1, surface.clientHeight);
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        };
+        model.onPointerDown = event => {
+          if (event.target.closest('button')) return;
+          model.dragging = true;
+          model.lastX = event.clientX;
+          model.lastY = event.clientY;
+          panel.classList.add('is-dragging');
+          panel.setPointerCapture?.(event.pointerId);
+        };
+        model.onPointerMove = event => {
+          if (!model.dragging) return;
+          const dx = event.clientX - model.lastX;
+          const dy = event.clientY - model.lastY;
+          model.lastX = event.clientX;
+          model.lastY = event.clientY;
+          group.rotation.y += dx * 0.010;
+          group.rotation.x = Math.max(-1.0, Math.min(1.0, group.rotation.x + dy * 0.008));
+        };
+        model.onPointerUp = event => {
+          model.dragging = false;
+          panel.classList.remove('is-dragging');
+          try { panel.releasePointerCapture?.(event.pointerId); } catch { /* pointer capture may already be released */ }
+        };
+        model.onWheel = event => {
+          event.preventDefault();
+          const scale = group.scale.x * (event.deltaY < 0 ? 1.08 : 0.92);
+          group.scale.setScalar(Math.max(0.68, Math.min(1.7, scale)));
+        };
+        panel.addEventListener('pointerdown', model.onPointerDown);
+        panel.addEventListener('pointermove', model.onPointerMove);
+        panel.addEventListener('pointerup', model.onPointerUp);
+        panel.addEventListener('pointercancel', model.onPointerUp);
+        panel.addEventListener('wheel', model.onWheel, { passive: false });
+        if (window.ResizeObserver) {
+          model.resizeObserver = new ResizeObserver(model.onResize);
+          model.resizeObserver.observe(surface);
+        } else {
+          window.addEventListener('resize', model.onResize);
+        }
+        activeAnatomy3D = model;
+        panel.classList.add('is-3d-ready');
+        const status = panel.querySelector('.anatomy3d-status');
+        if (status) status.textContent = 'Mô hình 3D sẵn sàng';
+        const rotate = panel.querySelector('[data-model-action="rotate"]');
+        if (rotate) rotate.setAttribute('aria-pressed', String(model.autoRotate));
+        model.onResize();
+
+        const tick = () => {
+          if (activeAnatomy3D !== model || !panel.isConnected) return;
+          if (model.autoRotate && motionEnabled && !reducedMotion.matches && !model.dragging) {
+            group.rotation.y += 0.004;
+          }
+          renderer.render(scene, camera);
+          model.frame = requestAnimationFrame(tick);
+        };
+        tick();
+      } catch (error) {
+        panel.classList.remove('is-3d-ready');
+        const status = panel.querySelector('.anatomy3d-status');
+        if (status) status.textContent = 'Đang dùng hình minh họa dự phòng';
+      }
+    }).catch(() => {
+      if (!panel.isConnected) return;
+      const status = panel.querySelector('.anatomy3d-status');
+      if (status) status.textContent = 'Không tải được 3D · đang dùng hình minh họa';
+    });
+  }
+
+  function controlInteractiveModel(button) {
+    const panel = button.closest('.anatomy3d-panel');
+    const model = activeAnatomy3D;
+    if (!panel || !model || model.panel !== panel) return;
+    const action = button.dataset.modelAction;
+    if (action === 'rotate') {
+      model.autoRotate = !model.autoRotate;
+      button.setAttribute('aria-pressed', String(model.autoRotate));
+      button.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+    } else if (action === 'zoom-in') {
+      model.group.scale.setScalar(Math.min(1.7, model.group.scale.x * 1.12));
+    } else if (action === 'zoom-out') {
+      model.group.scale.setScalar(Math.max(0.68, model.group.scale.x * 0.89));
+    } else if (action === 'reset') {
+      model.group.rotation.set(0, 0, 0);
+      model.group.scale.setScalar(1);
+      model.autoRotate = motionEnabled && !reducedMotion.matches;
+      const rotate = panel.querySelector('[data-model-action="rotate"]');
+      if (rotate) {
+        rotate.setAttribute('aria-pressed', String(model.autoRotate));
+        rotate.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      }
     }
   }
 
@@ -664,6 +978,7 @@
   }
 
   function renderSlide({ direction = 'forward', animate = true } = {}) {
+    disposeInteractiveModel();
     if (!currentDeck) return;
     const slides = Array.isArray(currentDeck.slides) && currentDeck.slides.length ? currentDeck.slides : seedDeck.slides;
     slideIndex = Math.max(0, Math.min(slideIndex, slides.length - 1));
@@ -727,7 +1042,7 @@
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
             pointHtml + promptHtml + quizHtml + endingHtml + sourceHtml + linksHtml +
           '</section>' +
-          '<div class="slide-side-content">' + (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : '')) + '</div>' +
+          '<div class="slide-side-content">' + (slide.model3D ? renderInteractive3D(slide) : (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : ''))) + '</div>' +
         '</div>' +
       '</article>';
 
@@ -746,6 +1061,7 @@
 
     attachLiveImageFallbacks(stage);
     attachVideoBackgrounds(stage);
+    initInteractiveModels(stage);
     warmAdjacentPhotos();
     const label = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
     $('#viewerSlideCaption').textContent = label;
@@ -847,6 +1163,7 @@
     viewer.hidden = true;
     document.body.style.overflow = '';
     stopStageAtmosphere();
+    disposeInteractiveModel();
     if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
     transitionCleanupTimer = 0;
     activeTransitionGhost?.remove();
@@ -1028,6 +1345,7 @@
       }
       return;
     }
+    if (target.matches('[data-model-action]')) { controlInteractiveModel(target); return; }
     if (target.matches('[data-quiz-answer]')) answerQuiz(Number(target.dataset.quizAnswer));
     if (target.matches('[data-quiz-restart]')) restartQuiz();
     if (target.id === 'viewerSound') toggleQuizSound();
