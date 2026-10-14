@@ -1,6 +1,6 @@
 # BioSphere Slides — Bài 32 KHTN 8
 
-Website trình chiếu khoa học tối ưu cho màn hình điện thoại và máy tính. Bài mẫu hiện có 21 trang về **5 bệnh thường gặp liên quan đến đường tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
+Website trình chiếu khoa học tối ưu cho màn hình điện thoại và máy tính. Bài mẫu hiện có 32 trang về **5 bệnh thường gặp liên quan đến đường tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
 
 ## Cấu trúc
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
@@ -11,7 +11,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 - `vercel.json` — cấu hình hosting tĩnh.
 
 ## Hình ảnh và thiết kế
-- Mỗi trang trong bài Bài 32 có một URL ảnh thực riêng (21/21 ảnh khác nhau), mô tả thay thế, ghi nguồn và liên kết mở nguồn; một số trang có thêm thẻ ảnh phụ.
+- Mỗi trang trong bài Bài 32 có một URL ảnh thực riêng (32 trang có ảnh minh họa và nguồn ghi kèm), mô tả thay thế, ghi nguồn và liên kết mở nguồn; một số trang có thêm thẻ ảnh phụ.
 - Ảnh được tải trực tiếp từ nguồn trực tuyến khi mở trang. Nguồn sử dụng gồm Wikimedia Commons (sơ đồ giải phẫu/ảnh y khoa có giấy phép ghi trên trang file), Unsplash, Pexels và một số nguồn y tế/giáo dục như WHO. Ví dụ: [sơ đồ hệ tiêu hóa trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg), [ảnh răng sâu trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Dental_Caries_Cavity_1.JPG), [ảnh nội soi ổ loét dạ dày](https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg), [ảnh trẻ chải răng trên Pexels](https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/).
 - Vì ảnh tải trực tiếp từ máy chủ nguồn, thiết bị cần Internet; chất lượng/tốc độ có thể thay đổi theo nguồn ảnh. Trình chiếu sẽ thử dùng ảnh dự phòng nếu một URL không tải được.
 
