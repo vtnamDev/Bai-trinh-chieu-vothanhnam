@@ -326,8 +326,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK TR. 130 · ĐỐI CHIẾU: NIDDK, “PEPTIC ULCERS”",
       "visual": "stomach",
       "image": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gastric_Ulcer_Antrum.jpg",
-      "imageAlt": "Minh họa cảm giác khó chịu, đau vùng bụng; không phải ảnh nội soi",
-      "imageCredit": "Med_Chaos / Wikimedia Commons · public domain",
+      "imageAlt": "Ảnh nội soi cho thấy nhiều ổ loét tại hang vị dạ dày; ảnh minh họa y khoa, không đại diện cho một trường hợp cụ thể.",
+      "imageCredit": "Med_Chaos · Wikimedia Commons · Public domain",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg",
       "palette": "coral",
       "video": "https://videos.pexels.com/video-files/7297871/7297871-hd_1920_1080_30fps.mp4",
@@ -340,7 +340,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng",
       "model3D": "stomach",
       "modelTitle": "Mô hình dạ dày",
-      "modelDescription": "Sơ đồ dạ dày và đoạn tá tràng tiếp nối."
+      "modelDescription": "Sơ đồ dạ dày và đoạn tá tràng tiếp nối.",
+      "modelFallback": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gastric_Ulcer_Antrum.jpg",
+      "modelFallbackAlt": "Ảnh nội soi cho thấy nhiều ổ loét tại hang vị dạ dày; ảnh minh họa y khoa, không đại diện cho một trường hợp cụ thể."
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
