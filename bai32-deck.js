@@ -452,9 +452,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoAlt": "Người uống nước từ cốc thủy tinh",
       "model3D": "intestine",
       "modelTitle": "Mô hình ruột",
-      "modelDescription": "Sơ đồ ruột non và đại tràng; hình diễn giải, không phải ảnh giải phẫu lâm sàng.",
+      "modelDescription": "Mô hình tham chiếu ruột non từ Human Reference Atlas. Các điểm đánh dấu trên mô hình thuộc dữ liệu gốc; đây không phải mô hình mô tả tổn thương do tiêu chảy.",
       "modelFallback": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
-      "modelFallbackAlt": "Sơ đồ hệ tiêu hóa người từ Wikimedia Commons."
+      "modelFallbackAlt": "Sơ đồ hệ tiêu hóa người từ Wikimedia Commons.",
+      "modelSrc": "https://ccf-ontology.hubmapconsortium.org/objects/v1.2/VH_M_Small_Intestine.glb",
+      "modelCredit": "Human Reference Atlas / HuBMAP · mô hình ruột non nam · CC BY 4.0",
+      "modelLicense": "https://creativecommons.org/licenses/by/4.0/",
+      "modelSourceUrl": "https://apps.humanatlas.io/kg-explorer/ref-organ/small-intestine-male/v1.2"
     },
     {
       "kicker": "BỆNH 03 · MẤT NƯỚC",
@@ -666,9 +670,13 @@ window.BIOSPHERE_BAI32_SEED = {
       "video4k": null,
       "model3D": "liver",
       "modelTitle": "Mô hình gan",
-      "modelDescription": "Sơ đồ gan và túi mật để định vị cơ quan.",
+      "modelDescription": "Mô hình tham chiếu giải phẫu gan từ Human Reference Atlas; dùng để định vị cơ quan, không mô tả tổn thương viêm gan A.",
       "modelFallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Liver.svg/1280px-Liver.svg.png?utm_campaign=index&utm_content=thumbnail&utm_source=commons.wikimedia.org",
-      "modelFallbackAlt": "Sơ đồ giải phẫu gan người, dùng để định vị cơ quan; không phải ảnh tổn thương viêm gan A."
+      "modelFallbackAlt": "Sơ đồ giải phẫu gan người, dùng để định vị cơ quan; không phải ảnh tổn thương viêm gan A.",
+      "modelSrc": "https://ccf-ontology.hubmapconsortium.org/objects/v1.2/VH_M_Liver.glb",
+      "modelCredit": "Human Reference Atlas / HuBMAP · mô hình gan nam · CC BY 4.0",
+      "modelLicense": "https://creativecommons.org/licenses/by/4.0/",
+      "modelSourceUrl": "https://apps.humanatlas.io/kg-explorer/ref-organ/liver-male/v1.2"
     },
     {
       "kicker": "BỆNH 05 · ĐƯỜNG LÂY VÀ DẤU HIỆU",
