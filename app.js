@@ -606,6 +606,7 @@
   }
 
   function initCustomThreeModel(panel, requestId = panel.dataset.modelRequest) {
+    if (panel.dataset.modelRequest === requestId) panel.dataset.modelInitializing = '1';
     ensureThreeLibrary().then(THREE => {
       if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden || panel.dataset.modelRequest !== requestId) {
         if (panel.dataset.modelRequest === requestId) delete panel.dataset.modelInitializing;
