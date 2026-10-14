@@ -422,6 +422,12 @@
     showView('library');
   });
 
+  $('#slideStage').addEventListener('click', event => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    if (event.clientX < bounds.left + bounds.width / 2) goPrevious();
+    else goNext();
+  });
+
   $('#searchDecks').addEventListener('input', renderDecks);
   $('#createForm').addEventListener('submit', event => {
     event.preventDefault();
