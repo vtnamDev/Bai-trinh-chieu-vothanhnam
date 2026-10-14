@@ -53,10 +53,14 @@ try {
   assert.equal((await page.locator('#viewerSlideCaption').textContent()).trim(), '01 / 32');
   assert.equal(await page.evaluate(() => Boolean(document.querySelector('script[data-biosphere-three]'))), false,
     'The 3D library must not load before a user selects a 3D scene.');
-  await page.locator('#slideNext').click();
-  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent === '02 / 32');
-  await page.locator('#slidePrev').click();
-  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent === '01 / 32');
+  const stage = page.locator('#slideStage');
+  const stageBounds = await stage.boundingBox();
+  assert.ok(stageBounds && stageBounds.width > 0 && stageBounds.height > 0, 'The mobile slide stage must have a measurable tap surface.');
+  // Side arrows are hidden on phones by design; use the tap-on-either-half interaction instead.
+  await stage.click({ position: { x: Math.round(stageBounds.width * 0.84), y: Math.round(stageBounds.height * 0.5) } });
+  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '02 / 32');
+  await stage.click({ position: { x: Math.round(stageBounds.width * 0.16), y: Math.round(stageBounds.height * 0.5) } });
+  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 32');
   const presentationWidth = await page.evaluate(() => ({
     viewport: window.innerWidth,
     document: document.documentElement.scrollWidth,
