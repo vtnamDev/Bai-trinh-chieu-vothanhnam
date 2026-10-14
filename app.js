@@ -744,8 +744,8 @@
       attachVideoBackgrounds($('#slideStage'));
     } else {
       stopStageAtmosphere();
-      $('.live-video', $('#slideStage')).forEach(video => video.pause());
-      $('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
+      $$('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
     }
   }
 
@@ -900,8 +900,8 @@
       attachVideoBackgrounds($('#slideStage'));
     } else {
       stopStageAtmosphere();
-      $('.live-video', $('#slideStage')).forEach(video => video.pause());
-      $('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
+      $$('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
     }
   }
 
@@ -1073,7 +1073,7 @@
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       stopStageAtmosphere();
-      $('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $$('.live-video', $('#slideStage')).forEach(video => video.pause());
     } else if (!$('#presentationViewer').hidden && motionEnabled && !reducedMotion.matches) {
       startStageAtmosphere();
       attachVideoBackgrounds($('#slideStage'));
