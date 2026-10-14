@@ -64,4 +64,16 @@ assert.ok(!app.includes(`data-fallback="' + fallback + '"`), 'Fallback URLs must
 assert.match(css, /prefers-reduced-motion\s*:\s*reduce/, 'Reduced-motion preferences must be supported.');
 assert.match(css, /@media\s*\(max-width:\s*600px\)/, 'The compact mobile layout must remain present.');
 
+assert.ok(html.includes('data-performance-mode="auto"'), 'The automatic performance preset must be available in settings.');
+assert.ok(html.includes('data-performance-mode="smooth"') && html.includes('data-performance-mode="cinema"'), 'All three performance presets must be present.');
+assert.ok(html.includes('id="performanceStatus"'), 'Settings must explain the active performance profile.');
+assert.ok(app.includes('function getPerformanceProfile()'), 'Runtime decisions should use the adaptive performance profile.');
+assert.ok(app.includes('navigator.deviceMemory') && app.includes('navigator.hardwareConcurrency'), 'Adaptive mode should consider hardware signals when supported.');
+const warmupStart = app.indexOf('function warmAdjacentPhotos()');
+const warmupEnd = app.indexOf('\n  function renderQuiz', warmupStart);
+const warmupSource = app.slice(warmupStart, warmupEnd);
+assert.ok(warmupSource.includes('profile.saveData') && warmupSource.includes('profile.slowConnection'), 'Image preloading must respect bandwidth limits.');
+assert.ok(app.includes('getPerformanceProfile().lite) {\n      atmosphereFrame = 0;\n      return;'), 'The background render loop must stop rather than spin while hidden.');
+assert.ok(css.includes('html[data-performance-lite="true"]'), 'Low-power mode must reduce expensive visual effects.');
+
 console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, ${quizSlides.length} quiz slides.`);
