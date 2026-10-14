@@ -895,8 +895,14 @@
     $('#settingsMotion').setAttribute('aria-checked', String(motionEnabled));
     $('#viewerPlayMotion').setAttribute('aria-pressed', String(motionEnabled));
     $('#presentationViewer').classList.toggle('motion-off', !motionEnabled);
-    if (motionEnabled) startStageAtmosphere();
-    else stopStageAtmosphere();
+    if (motionEnabled && !reducedMotion.matches) {
+      startStageAtmosphere();
+      attachVideoBackgrounds($('#slideStage'));
+    } else {
+      stopStageAtmosphere();
+      $('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
+    }
   }
 
   // Shared event delegation avoids accumulating listeners when the library rerenders.
