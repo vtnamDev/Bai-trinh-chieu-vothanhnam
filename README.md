@@ -62,3 +62,10 @@ Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript v
 
 ## Deploy
 GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính sẽ tạo deployment mới.
+
+
+## Hiệu năng thích ứng
+- Cài đặt có ba mức: Tự động, Mượt nhẹ và Điện ảnh. Tự động xem xét tín hiệu mạng, Data Saver, số luồng CPU và dung lượng RAM ước tính nếu trình duyệt cung cấp.
+- Trên kết nối chậm hoặc thiết bị giới hạn, website giảm hiệu ứng nền nặng, giới hạn độ phân giải canvas/3D và bỏ tải trước ảnh láng giềng. Video nền chỉ phát khi phù hợp với cài đặt chuyển động và điều kiện kết nối.
+- Mức Điện ảnh có thể tăng chất lượng hiệu ứng, nhưng không bỏ qua Data Saver, trạng thái ngoại tuyến hoặc tuỳ chọn giảm chuyển động. Mô hình 3D vẫn tải theo yêu cầu; ảnh tĩnh không bị thay thế.
+- Tải trước ảnh slide được trì hoãn một nhịp để nhường ưu tiên mạng cho ảnh đang xem; Tự động chỉ làm ấm ảnh kế tiếp, còn Điện ảnh có thể làm ấm cả slide trước và sau trên mạng phù hợp.
