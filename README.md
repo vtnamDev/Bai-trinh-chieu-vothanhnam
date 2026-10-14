@@ -5,7 +5,8 @@ Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có c
 ## Cấu trúc
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
 - `styles.css` — giao diện responsive nhiều bảng màu, bố cục ảnh editorial, hiệu ứng chiều sâu và chuyển động.
-- `app.js` — thư viện, tìm kiếm, nhập/xuất JSON, điều hướng slide, chia sẻ link, toàn màn hình.
+- `app.js` — thư viện, tìm kiếm, nhập/xuất JSON, điều hướng slide, chia sẻ link, toàn màn hình; dữ liệu nhập được kiểm tra cấu trúc và URL tài nguyên chỉ chấp nhận HTTP(S).
+- `scripts/smoke-test.mjs` và `.github/workflows/static-validation.yml` — kiểm tra tự động cú pháp, cấu trúc bài, URL tài nguyên và phiên bản cache của các tệp tĩnh.
 - `bai32-deck.js` — dữ liệu 32 slide, kịch bản 5 bệnh, tình huống hỏi đáp, URL hình ảnh/video, chú thích và nguồn tham khảo.
 - `assets/mark.svg` — biểu tượng BioSphere.
 - `vercel.json` — cấu hình hosting tĩnh.
@@ -55,6 +56,9 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 - Human Reference Atlas / HuBMAP: [Small intestine, male v1.2](https://apps.humanatlas.io/kg-explorer/ref-organ/small-intestine-male/v1.2) and [3D Reference Object Library](https://humanatlas.io/3d-reference-library), licensed CC BY 4.0. GLB endpoints: [VH_M_Small_Intestine.glb](https://ccf-ontology.hubmapconsortium.org/objects/v1.2/VH_M_Small_Intestine.glb), [VH_M_Liver.glb](https://ccf-ontology.hubmapconsortium.org/objects/v1.2/VH_M_Liver.glb).
 - CDC: [About Cavities (Tooth Decay)](https://www.cdc.gov/oral-health/about/cavities-tooth-decay.html), [DPDx — Ascariasis](https://www.cdc.gov/dpdx/ascariasis/).
 - NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes).
+
+## Kiểm tra tự động
+Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript và bộ smoke test cho 32 slide, 5 tình huống thảo luận, 5 cảnh 3D, các câu hỏi tương tác, 156 URL tài nguyên hiện tại và cache key thống nhất. Các kiểm tra này bắt lỗi dữ liệu/cấu trúc cơ bản; chúng không thay thế kiểm thử trực quan trên trình duyệt hoặc kiểm tra khả dụng theo thời gian thực của máy chủ ảnh/video.
 
 ## Deploy
 GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính sẽ tạo deployment mới.
