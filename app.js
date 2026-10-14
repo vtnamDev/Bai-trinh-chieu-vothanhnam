@@ -92,7 +92,7 @@
     const profile = getPerformanceProfile();
     document.documentElement.dataset.performanceMode = performanceMode;
     document.documentElement.dataset.performanceLite = String(profile.lite);
-    $('[data-performance-mode]').forEach(button => {
+    $('button[data-performance-mode]').forEach(button => {
       const active = button.dataset.performanceMode === performanceMode;
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
