@@ -2440,3 +2440,22 @@ html[data-performance-mode="smooth"] .photo-frame.video-playing .photo-still{opa
   #presentationViewer .slide-content>.media-mode-bar--mobile,
   #presentationViewer .slide-content>.media-mode-bar--mobile .media-mode-button{transition:none!important}
 }
+
+
+/* Keep 3D canvases interactive behind readable copy on phone-sized layouts. */
+@media(max-width:800px){
+  #presentationViewer .slide-page.is-model-active .slide-side-content{
+    z-index:2!important;pointer-events:auto!important;
+  }
+  #presentationViewer .slide-page.is-model-active .slide-side-content .media-3d-view:not([hidden]),
+  #presentationViewer .slide-page.is-model-active .slide-side-content .media-3d-view:not([hidden]) *{
+    pointer-events:auto!important;
+  }
+  #presentationViewer .slide-page.is-model-active .slide-content{
+    pointer-events:none!important;
+  }
+  #presentationViewer .slide-page.is-model-active .slide-content>.media-mode-bar--mobile,
+  #presentationViewer .slide-page.is-model-active .slide-content>.media-mode-bar--mobile *{
+    pointer-events:auto!important;
+  }
+}
