@@ -224,7 +224,12 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5099678/5099678-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Nha sĩ kiểm tra răng cho bệnh nhân"
+      "videoAlt": "Nha sĩ kiểm tra răng cho bệnh nhân",
+      "model3D": "tooth",
+      "modelTitle": "Mô hình răng",
+      "modelDescription": "Lớp men, ngà và tủy răng trong mặt cắt sơ đồ.",
+      "modelFallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Dental_Caries_Cavity_1.JPG/960px-Dental_Caries_Cavity_1.JPG",
+      "modelFallbackAlt": "Ảnh răng sâu của Wikimedia Commons, dùng làm hình dự phòng khi mô hình tương tác không tải."
     },
     {
       "kicker": "BỆNH 01 · NGUYÊN NHÂN",
@@ -332,7 +337,10 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng"
+      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng",
+      "model3D": "stomach",
+      "modelTitle": "Mô hình dạ dày",
+      "modelDescription": "Sơ đồ dạ dày và đoạn tá tràng tiếp nối."
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -439,7 +447,12 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-drinking-a-glass-of-water-4731190/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Người uống nước từ cốc thủy tinh"
+      "videoAlt": "Người uống nước từ cốc thủy tinh",
+      "model3D": "intestine",
+      "modelTitle": "Mô hình ruột",
+      "modelDescription": "Sơ đồ ruột non và đại tràng; hình diễn giải, không phải ảnh giải phẫu lâm sàng.",
+      "modelFallback": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
+      "modelFallbackAlt": "Sơ đồ hệ tiêu hóa người từ Wikimedia Commons."
     },
     {
       "kicker": "BỆNH 03 · MẤT NƯỚC",
@@ -548,7 +561,10 @@ window.BIOSPHERE_BAI32_SEED = {
       "video4k": null,
       "imageFit": "contain",
       "imageFallback": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Ascaris_lumbricoides1.jpg",
-      "videoAlt": null
+      "videoAlt": null,
+      "model3D": "worm",
+      "modelTitle": "Mô hình giun đường ruột",
+      "modelDescription": "Minh họa hình dạng giun; vòng lây truyền vẫn được giải thích bằng sơ đồ CDC."
     },
     {
       "kicker": "BỆNH 04 · DẤU HIỆU VÀ TÁC ĐỘNG",
@@ -645,7 +661,10 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFit": "contain",
       "videoAlt": null,
       "imageFallback": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
-      "video4k": null
+      "video4k": null,
+      "model3D": "liver",
+      "modelTitle": "Mô hình gan",
+      "modelDescription": "Sơ đồ gan và túi mật để định vị cơ quan."
     },
     {
       "kicker": "BỆNH 05 · ĐƯỜNG LÂY VÀ DẤU HIỆU",
