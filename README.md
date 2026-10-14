@@ -10,6 +10,11 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 - `assets/mark.svg` — biểu tượng BioSphere.
 - `vercel.json` — cấu hình hosting tĩnh.
 
+## Video nền trực tuyến
+- Slide sử dụng video MP4 nền thật từ Pexels và Mixkit, chọn theo chủ đề (rau củ/nấu ăn, nha khoa, tư vấn y tế, hoạt hình y khoa). Video lặp im lặng, có ảnh poster để hiển thị ngay trong khi video tải.
+- Pexels có bản 3840×2160 cho ba cảnh; website chỉ chọn master 4K trên màn hình lớn và đường truyền phù hợp. Trên điện thoại, website dùng bản 1080p/720p để tránh tải tệp 25 MB+ và giảm nhiệt/pin. Video chỉ tải cho slide đang xem; khi ẩn tab hoặc tắt chuyển động, video dừng.
+- Các video dẫn về trang nguồn để ghi công. Pexels và Mixkit có điều kiện sử dụng riêng; kiểm tra giấy phép của từng video trước khi tái sử dụng ngoài mục đích bài thuyết trình học tập.
+
 ## Chuyển cảnh và hỏi đáp
 - Chuyển trang theo hướng tiến/lùi với bốn preset CSS riêng: wipe, depth, focus và rise; tiêu đề, phần mô tả, từng ý chính và ảnh có nhịp xuất hiện riêng.
 - Trong quiz, bấm một đáp án là nhận phản hồi đúng/sai và lời giải thích ngay trên slide. Không có nút “hiện đáp án” hoặc nút “câu tiếp theo” lớn; chạm vùng slide hoặc phím mũi tên để chuyển sang câu kế tiếp.
