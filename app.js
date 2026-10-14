@@ -542,7 +542,7 @@
     if (!source) throw new Error('No reference model source');
     await ensureModelViewerLibrary();
     if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden || panel.dataset.modelRequest !== requestId) {
-      delete panel.dataset.modelInitializing;
+      if (panel.dataset.modelRequest === requestId) delete panel.dataset.modelInitializing;
       return;
     }
     const slot = panel.querySelector('.anatomy3d-native-slot');
@@ -608,7 +608,7 @@
   function initCustomThreeModel(panel, requestId = panel.dataset.modelRequest) {
     ensureThreeLibrary().then(THREE => {
       if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden || panel.dataset.modelRequest !== requestId) {
-        delete panel.dataset.modelInitializing;
+        if (panel.dataset.modelRequest === requestId) delete panel.dataset.modelInitializing;
         return;
       }
       try {
