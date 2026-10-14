@@ -271,7 +271,7 @@
   }
 
   function attachLiveImageFallbacks(root = document) {
-    $('.live-photo, .photo-support-image, .deck-cover-photo, .hero-photo-img', root).forEach(img => {
+    $$('.live-photo, .photo-support-image, .deck-cover-photo, .hero-photo-img', root).forEach(img => {
       if (img.dataset.fallbackBound === '1') return;
       img.dataset.fallbackBound = '1';
       img.addEventListener('error', () => {
