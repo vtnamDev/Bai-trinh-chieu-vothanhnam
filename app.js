@@ -418,6 +418,7 @@
   });
 
   $('#slideStage').addEventListener('click', event => {
+    if (event.target.closest('a, button, input, select, textarea')) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     if (event.clientX < bounds.left + bounds.width / 2) goPrevious();
     else goNext();
