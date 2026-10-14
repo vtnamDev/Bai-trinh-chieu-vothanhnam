@@ -18,6 +18,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 ## Responsive presentation
 - Desktop and TV use a full-width 16:9-style two-column layout with large text on the left and media on the right. Touch devices held in portrait mode force a full-screen portrait layout even if a browser requests a desktop viewport.
 - Real footage uses stable framing without continuous zoom/rotation; movement comes from the clip itself and the slide transition. True 4K masters only load on wide landscape screens (1800px+), never on coarse-pointer portrait screens; slower networks and data-saver mode prefer lower resolution.
+- Video descriptions are distinct from poster-image descriptions, so captions reflect the footage that actually plays.
 - Media mapping was reviewed by subject. A Wikimedia Commons digestive-system diagram is used for the anatomy slide; abdominal discomfort, dental care, drinking water, handwashing, food preparation and classroom clips are assigned to matching topics. Specific ORS/mold slides retain relevant still images rather than substituting unrelated footage.
 
 ## Chuyển cảnh và hỏi đáp
