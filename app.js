@@ -136,6 +136,7 @@
 
     $('#emptyState').classList.toggle('hidden', filtered.length > 0);
     $('#deckGrid').classList.toggle('hidden', filtered.length === 0);
+    attachLiveImageFallbacks($('#deckGrid'));
   }
 
   function showView(view, updateURL = true) {
@@ -196,6 +197,7 @@
     decks.unshift(deck);
     persist();
     renderDecks();
+  attachLiveImageFallbacks(document);
     closeModal($('#createModal'));
     $('#createForm').reset();
     showView('library');
