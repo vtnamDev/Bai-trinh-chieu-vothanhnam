@@ -32,6 +32,9 @@ try {
 
   // The setting must survive reload and remain responsive on a phone-sized viewport.
   await page.reload({ waitUntil: 'domcontentloaded' });
+  // Reopen settings explicitly so the assertion tests persisted mode, not URL restoration semantics.
+  await page.locator('#mobileMenu').click();
+  await page.locator('#mainNav [data-view="settings"]').click();
   await page.locator('#performanceStatus').waitFor({ state: 'visible' });
   assert.equal(await page.locator('html').getAttribute('data-performance-mode'), 'smooth');
   const settingsWidth = await page.evaluate(() => ({
