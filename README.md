@@ -15,6 +15,11 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 - Pexels có bản master 3840×2160 cho năm cảnh gồm rửa rau, chuẩn bị thực phẩm và khám răng; website chỉ chọn master 4K trên màn hình lớn và đường truyền phù hợp. Trên điện thoại, website dùng bản 1080p/720p để tránh tải tệp 25 MB+ và giảm nhiệt/pin. Video chỉ tải cho slide đang xem; khi ẩn tab hoặc tắt chuyển động, video dừng.
 - Các video dẫn về trang nguồn để ghi công. Pexels và Mixkit có điều kiện sử dụng riêng; kiểm tra giấy phép của từng video trước khi tái sử dụng ngoài mục đích bài thuyết trình học tập.
 
+## Responsive presentation
+- Desktop and TV use a full-width 16:9-style two-column layout with large text on the left and media on the right. Touch devices held in portrait mode force a full-screen portrait layout even if a browser requests a desktop viewport.
+- Real footage uses stable framing without continuous zoom/rotation; movement comes from the clip itself and the slide transition. True 4K masters only load on wide landscape screens (1800px+), never on coarse-pointer portrait screens; slower networks and data-saver mode prefer lower resolution.
+- Media mapping was reviewed by subject. A Wikimedia Commons digestive-system diagram is used for the anatomy slide; abdominal discomfort, dental care, drinking water, handwashing, food preparation and classroom clips are assigned to matching topics. Specific ORS/mold slides retain relevant still images rather than substituting unrelated footage.
+
 ## Chuyển cảnh và hỏi đáp
 - Chuyển trang theo hướng tiến/lùi với bốn preset CSS riêng: wipe, depth, focus và rise; tiêu đề, phần mô tả, từng ý chính và ảnh có nhịp xuất hiện riêng.
 - Trong quiz, bấm một đáp án là nhận phản hồi đúng/sai và lời giải thích ngay trên slide. Không có nút “hiện đáp án” hoặc nút “câu tiếp theo” lớn; chạm vùng slide hoặc phím mũi tên để chuyển sang câu kế tiếp.
