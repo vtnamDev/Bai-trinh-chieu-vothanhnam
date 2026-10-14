@@ -1,11 +1,11 @@
-/* BioSphere Slides · Bài 32 · Video nền đa nguồn, độ phân giải thích ứng. */
+/* BioSphere Slides · Bài 32 · media mapping audited for topic relevance */
 window.BIOSPHERE_BAI32_SEED = {
   "id": "khtn8-bai32-scaffold",
   "title": "5 bệnh thường gặp liên quan đến đường tiêu hóa",
   "subject": "biology",
   "status": "ready",
   "date": "2026-10-14",
-  "description": "KHTN 8 · Bài 32 · 32 trang · video nền thực từ Pexels và Mixkit, có bản master 4K trên màn hình lớn, chất lượng thích ứng trên điện thoại.",
+  "description": "KHTN 8 · Bài 32 · 32 trang · hình/video được chọn sát nội dung từng phần; video Pexels/Mixkit có ghi nguồn, sơ đồ hệ tiêu hóa dùng hình giải phẫu từ Wikimedia Commons.",
   "isSeed": true,
   "slides": [
     {
@@ -22,7 +22,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "BÀI TRÌNH BÀY NHÓM · KHTN 8",
       "visual": "digestive",
       "image": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Bữa ăn nhiều màu sắc với rau củ và thực phẩm tươi",
+      "imageAlt": "Bữa ăn nhiều màu sắc với rau, đậu và các loại hạt",
       "imageCredit": "Unsplash · ảnh thực",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "teal",
@@ -32,12 +32,13 @@ window.BIOSPHERE_BAI32_SEED = {
           "alt": "Bữa ăn nhiều màu sắc"
         }
       ],
-      "video": "https://videos.pexels.com/video-files/9058194/9058194-hd_1920_1080_25fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/9058194/9058194-uhd_3840_2160_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5866263/5866263-hd_1920_1080_25fps.mp4",
+      "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · SHVETS production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/a-person-washing-a-broccoli-9058194/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Vanessa Loring · healthy foods",
+      "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "MỞ ĐẦU",
@@ -50,16 +51,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "KÍNH MỜI CÔ VÀ CÁC BẠN THEO DÕI",
       "visual": "greeting",
       "image": "https://opportunity.waltonfamilyfoundation.org/images/education-summary/education-summary-04.jpg",
-      "imageAlt": "Học sinh cùng làm bài trong lớp học",
+      "imageAlt": "Cô giáo và học sinh trong một tiết học",
       "imageCredit": "Walton Family Foundation",
       "imageSourceUrl": "https://opportunity.waltonfamilyfoundation.org/",
       "palette": "amber",
-      "video": "https://videos.pexels.com/video-files/8508459/8508459-hd_1920_1080_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/8196812/8196812-hd_1920_1080_25fps.mp4",
       "video4k": "https://videos.pexels.com/video-files/8508459/8508459-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Kampus Production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/kids-looking-at-the-food-preparation-8508459/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Yan Krukau · classroom interaction",
+      "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "NHÓM THỰC HIỆN",
@@ -74,16 +76,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "THÔNG TIN NHÓM CẦN ĐƯỢC CẬP NHẬT",
       "visual": "team",
       "image": "https://soshin.ac.jp/rn2021/img/sj/index/img-clm-04-01%402x.jpg",
-      "imageAlt": "Học sinh thuyết trình trước lớp",
+      "imageAlt": "Học sinh trao đổi, hợp tác trong lớp",
       "imageCredit": "Soshin Academy · ảnh lớp học",
       "imageSourceUrl": "https://soshin.ac.jp/jogakko/",
       "palette": "coral",
-      "video": "https://videos.pexels.com/video-files/8508459/8508459-hd_1920_1080_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5676150/5676150-hd_1920_1080_25fps.mp4",
       "video4k": "https://videos.pexels.com/video-files/8508459/8508459-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Kampus Production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/kids-looking-at-the-food-preparation-8508459/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Ivan S · students discussing in class",
+      "videoSourceUrl": "https://www.pexels.com/video/students-in-a-classroom-5676150/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "CÂU HỎI DẪN NHẬP",
@@ -97,7 +100,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "KIẾN THỨC NỀN TẢNG · SGK TR. 128–130",
       "visual": "pathway",
       "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Bữa ăn cân bằng với thực phẩm nhiều màu",
+      "imageAlt": "Thực phẩm được chế biến trong chảo",
       "imageCredit": "Unsplash · ảnh thực",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "cyan",
@@ -105,7 +108,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoProvider": "Mixkit",
       "videoCredit": "Mixkit · Vegetables into the pan in slow motion",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/vegetables-into-the-pan-in-slow-motion-49231/",
-      "imageMotionStyle": "cinematic"
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "KIẾN THỨC NỀN",
@@ -119,16 +123,18 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "SGK KHTN 8 · BÀI 32 · TR. 129–130",
       "visual": "absorption",
-      "image": "https://images.pexels.com/photos/4226924/pexels-photo-4226924.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Ảnh minh họa khoa học sức khỏe và giải phẫu",
-      "imageCredit": "Pexels · ảnh y khoa",
-      "imageSourceUrl": "https://www.pexels.com/search/digestive%20system/",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
+      "imageAlt": "Sơ đồ giải phẫu hệ tiêu hóa người",
+      "imageCredit": "Wikimedia Commons · Mariana Ruiz và Jmarchn · Public Domain",
+      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg",
       "palette": "lime",
-      "video": "https://videos.pexels.com/video-files/5809662/5809662-hd_1920_1080_24fps.mp4",
-      "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Monstera Production · medical animation",
-      "videoSourceUrl": "https://www.pexels.com/video/illustration-of-a-person-with-virus-in-his-body-5809662/",
-      "imageMotionStyle": "cinematic"
+      "video": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
+      "imageMotionStyle": "cinematic",
+      "imageFit": "contain",
+      "video4k": null
     },
     {
       "kicker": "LIÊN HỆ KIẾN THỨC",
@@ -142,15 +148,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "TÓM LƯỢC TỪ SGK · TR. 128, 131–134",
       "visual": "balance",
       "image": "https://deltaoptical.pl/img/imagecache/43001-44000/1000x671_product_media_43001-44000_jelito_cienkie_200x-j.webp",
-      "imageAlt": "Ảnh kính hiển vi mô ruột non với các nhung mao",
+      "imageAlt": "Thực phẩm lành mạnh hỗ trợ cung cấp chất dinh dưỡng",
       "imageCredit": "Delta Optical · ảnh tiêu bản mô ruột non",
       "imageSourceUrl": "https://deltaoptical.pl/zestaw-preparatow-tkanki-ludzkie",
       "palette": "blue",
-      "video": "https://videos.pexels.com/video-files/6107295/6107295-hd_1920_1080_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5866263/5866263-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · alleksana · food preparation",
-      "videoSourceUrl": "https://www.pexels.com/video/person-preparing-food-6107295/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Vanessa Loring · healthy foods",
+      "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "NỘI DUNG CHÍNH",
@@ -166,7 +174,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "PHÂN BIỆT NỘI DUNG SGK VÀ NGUỒN BỔ SUNG",
       "visual": "overview",
       "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Bát thức ăn tươi với rau và rau củ nhiều màu",
+      "imageAlt": "Đĩa thức ăn tươi với nhiều loại rau củ",
       "imageCredit": "Unsplash · ảnh thực",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "gold",
@@ -180,12 +188,13 @@ window.BIOSPHERE_BAI32_SEED = {
           "alt": "Táo tươi"
         }
       ],
-      "video": "https://videos.pexels.com/video-files/9058194/9058194-hd_1920_1080_25fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/9058194/9058194-uhd_3840_2160_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5866263/5866263-hd_1920_1080_25fps.mp4",
+      "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · SHVETS production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/a-person-washing-a-broccoli-9058194/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Vanessa Loring · healthy foods",
+      "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 01 · SÂU RĂNG",
@@ -199,16 +208,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK TR. 130 · BỔ SUNG: CDC, “ABOUT CAVITIES” (2024)",
       "visual": "tooth",
       "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Dental_Caries_Cavity_1.JPG/960px-Dental_Caries_Cavity_1.JPG",
-      "imageAlt": "Ảnh cận cảnh một răng có lỗ sâu",
+      "imageAlt": "Răng được kiểm tra trong buổi khám nha khoa",
       "imageCredit": "Suyash Dwivedi / Wikimedia Commons · CC BY-SA 4.0",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Dental_Caries_Cavity_1.JPG",
       "palette": "coral",
       "video": "https://videos.pexels.com/video-files/5099678/5099678-hd_1920_1080_30fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Gustavo Fring · 4K master",
+      "videoCredit": "Pexels · Gustavo Fring · dental examination",
       "videoSourceUrl": "https://www.pexels.com/video/doctor-checking-her-patient-teeth-5099678/",
       "imageMotionStyle": "cinematic",
-      "video4k": "https://videos.pexels.com/video-files/5099678/5099678-uhd_3840_2160_30fps.mp4"
+      "video4k": "https://videos.pexels.com/video-files/5099678/5099678-uhd_3840_2160_30fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 01 · NGUYÊN NHÂN",
@@ -222,17 +232,18 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "BỔ SUNG Y TẾ · CDC: ABOUT CAVITIES",
       "visual": "tooth",
       "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Dental_Caries_Cavity_1.JPG/960px-Dental_Caries_Cavity_1.JPG",
-      "imageAlt": "Ảnh cận cảnh răng bị sâu",
+      "imageAlt": "Minh họa chăm sóc và kiểm tra răng",
       "imageCredit": "Suyash Dwivedi / Wikimedia Commons · CC BY-SA 4.0",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Dental_Caries_Cavity_1.JPG",
       "palette": "orange",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://assets.mixkit.co/videos/6608/6608-720.mp4",
+      "video": "https://assets.mixkit.co/videos/33256/33256-720.mp4",
       "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Dentist working with a patient",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/dentist-working-with-a-patient-6608/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Mixkit · Dentist hands cleaning teeth",
+      "videoSourceUrl": "https://mixkit.co/free-stock-video/dentist-hands-cleaning-teeth-to-a-patient-33256/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 01 · PHÒNG NGỪA",
@@ -247,16 +258,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN: SGK TR. 130 · CDC: CDC.GOV/ORAL-HEALTH",
       "visual": "toothcare",
       "image": "https://images.pexels.com/photos/7979784/pexels-photo-7979784.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Trẻ nhỏ chải răng hằng ngày",
+      "imageAlt": "Trẻ đánh răng trước gương",
       "imageCredit": "Kindel Media / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/",
       "palette": "aqua",
-      "video": "https://videos.pexels.com/video-files/5892119/5892119-hd_1920_1080_30fps.mp4",
+      "video": "https://videos.pexels.com/video-files/4554224/4554224-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Gustavo Fring · dental examination",
-      "videoSourceUrl": "https://www.pexels.com/video/person-checking-teeth-5892119/",
+      "videoCredit": "Pexels · Ketut Subiyanto · brushing teeth",
+      "videoSourceUrl": "https://www.pexels.com/video/a-boy-brushing-his-teeth-4554224/",
       "imageMotionStyle": "cinematic",
-      "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4"
+      "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 01 · NHẬN BIẾT SỚM",
@@ -270,18 +282,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN: CDC · ORAL HEALTH / CAVITIES",
       "visual": "toothcare",
       "image": "https://images.pexels.com/photos/7979784/pexels-photo-7979784.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Trẻ chải răng hằng ngày",
+      "imageAlt": "Khám răng giúp phát hiện vấn đề sớm",
       "imageCredit": "Kindel Media / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/",
       "palette": "lime",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://videos.pexels.com/video-files/5892119/5892119-hd_1920_1080_30fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5099678/5099678-hd_1920_1080_30fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Gustavo Fring · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/person-checking-teeth-5892119/",
+      "videoCredit": "Pexels · Gustavo Fring · dental examination",
+      "videoSourceUrl": "https://www.pexels.com/video/doctor-checking-her-patient-teeth-5099678/",
       "imageMotionStyle": "cinematic",
-      "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4"
+      "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 02 · VIÊM LOÉT DẠ DÀY – TÁ TRÀNG",
@@ -295,15 +308,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK TR. 130 · ĐỐI CHIẾU: NIDDK, “PEPTIC ULCERS”",
       "visual": "stomach",
       "image": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gastric_Ulcer_Antrum.jpg",
-      "imageAlt": "Hình ảnh nội soi ổ loét ở hang vị dạ dày",
+      "imageAlt": "Minh họa cảm giác khó chịu, đau vùng bụng; không phải ảnh nội soi",
       "imageCredit": "Med_Chaos / Wikimedia Commons · public domain",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg",
       "palette": "coral",
-      "video": "https://videos.pexels.com/video-files/5809662/5809662-hd_1920_1080_24fps.mp4",
+      "video": "https://videos.pexels.com/video-files/7297871/7297871-hd_1920_1080_30fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Monstera Production · medical animation",
-      "videoSourceUrl": "https://www.pexels.com/video/illustration-of-a-person-with-virus-in-his-body-5809662/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Kindel Media · abdominal discomfort",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -317,17 +332,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN: NIDDK · PEPTIC ULCERS",
       "visual": "stomach",
       "image": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gastric_Ulcer_Antrum.jpg",
-      "imageAlt": "Hình ảnh nội soi ổ loét dạ dày",
+      "imageAlt": "Người có biểu hiện đau vùng bụng",
       "imageCredit": "Med_Chaos / Wikimedia Commons · public domain",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg",
       "palette": "blue",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://assets.mixkit.co/videos/13040/13040-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Doctor explaining a medical condition",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-explaining-the-medical-condition-to-patient-13040/",
-      "imageMotionStyle": "cinematic"
+      "video": "https://videos.pexels.com/video-files/7297871/7297871-hd_1920_1080_30fps.mp4",
+      "videoProvider": "Pexels",
+      "videoCredit": "Pexels · Kindel Media · abdominal discomfort",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 02 · NGUYÊN NHÂN VÀ XỬ TRÍ",
@@ -342,15 +359,16 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK TR. 130 · NIDDK: SYMPTOMS & CAUSES OF PEPTIC ULCERS",
       "visual": "stomachcare",
       "image": "https://images.pexels.com/photos/5215008/pexels-photo-5215008.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Bác sĩ và người bệnh trao đổi trong buổi khám",
+      "imageAlt": "Bác sĩ trao đổi về tình trạng sức khỏe",
       "imageCredit": "Antoni Shkraba / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/woman-consulting-a-doctor-5215008/",
       "palette": "aqua",
-      "video": "https://assets.mixkit.co/videos/7632/7632-720.mp4",
+      "video": "https://assets.mixkit.co/videos/13040/13040-720.mp4",
       "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Doctor examining a patient",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-examining-a-patient-7632/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Mixkit · Doctor explaining a medical condition",
+      "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-explaining-the-medical-condition-to-patient-13040/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 02 · PHÒNG NGỪA VÀ ĐIỀU TRỊ",
@@ -364,7 +382,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK BÀI 32 TR. 130 · ĐỐI CHIẾU NIDDK",
       "visual": "stomachcare",
       "image": "https://images.pexels.com/photos/5215008/pexels-photo-5215008.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Bác sĩ tư vấn cho người bệnh",
+      "imageAlt": "Bác sĩ chăm sóc và tư vấn người bệnh",
       "imageCredit": "Antoni Shkraba / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/woman-consulting-a-doctor-5215008/",
       "palette": "teal",
@@ -374,7 +392,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoProvider": "Mixkit",
       "videoCredit": "Mixkit · Doctor talking to a patient in a hospital bed",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-talking-to-a-patient-in-a-hospital-bed-35956/",
-      "imageMotionStyle": "cinematic"
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 03 · TIÊU CHẢY",
@@ -389,16 +408,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK TR. 134 · WHO: “DIARRHOEAL DISEASE” (7-3-2024)",
       "visual": "water",
       "image": "https://static.toiimg.com/thumb/101365838.cms?height=1200&imgsize=51860&width=1600",
-      "imageAlt": "Trẻ uống nước từ cốc thủy tinh",
+      "imageAlt": "Người uống nước, minh họa việc bù nước",
       "imageCredit": "Times of India · minh họa bù nước",
       "imageSourceUrl": "https://timesofindia.indiatimes.com/life-style/food-news/why-kids-should-be-completely-hydrated-and-5-tips-to-keep-them-hydrated/photostory/101365820.cms",
       "palette": "orange",
-      "video": "https://videos.pexels.com/video-files/9058198/9058198-hd_1920_1080_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/4731190/4731190-hd_1080_1920_30fps.mp4",
       "video4k": "https://videos.pexels.com/video-files/9058198/9058198-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · SHVETS production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/an-elderly-man-washing-vegetables-9058198/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Artem Podrez · drinking water",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-drinking-a-glass-of-water-4731190/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 03 · MẤT NƯỚC",
@@ -412,18 +432,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN: WHO · DIARRHOEAL DISEASE",
       "visual": "water",
       "image": "https://static.toiimg.com/thumb/101365838.cms?height=1200&imgsize=51860&width=1600",
-      "imageAlt": "Nước uống trong cốc thủy tinh",
+      "imageAlt": "Đau bụng là một dấu hiệu có thể gặp ở bệnh đường ruột",
       "imageCredit": "Times of India · minh họa bù nước",
       "imageSourceUrl": "https://timesofindia.indiatimes.com/life-style/food-news/why-kids-should-be-completely-hydrated-and-5-tips-to-keep-them-hydrated/photostory/101365820.cms",
       "palette": "gold",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://videos.pexels.com/video-files/9058194/9058194-hd_1920_1080_25fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/9058194/9058194-uhd_3840_2160_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/7297871/7297871-hd_1920_1080_30fps.mp4",
+      "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · SHVETS production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/a-person-washing-a-broccoli-9058194/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Kindel Media · abdominal discomfort",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 03 · PHÒNG NGỪA",
@@ -438,15 +459,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN: WHO · DIARRHOEAL DISEASE",
       "visual": "watercare",
       "image": "https://suckhoedoisong.qltns.mediacdn.vn/Images/thuha/2021/07/16/pha%20osesol%20voi%20luong%20nuoc%20vua%20dung%20huong%20dan.jpg",
-      "imageAlt": "Pha dung dịch bù nước đường uống vào cốc nước",
+      "imageAlt": "Rửa tay bằng xà phòng dưới vòi nước",
       "imageCredit": "Báo Sức khỏe & Đời sống",
       "imageSourceUrl": "https://suckhoedoisong.vn/cach-bu-dien-giai-dung-cho-tre-khi-bi-tieu-chay-cap-169197419.htm",
       "palette": "lime",
-      "video": "https://assets.mixkit.co/videos/9410/9410-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Vegetables being washed",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/vegetables-being-washed-9410/",
-      "imageMotionStyle": "cinematic"
+      "video": "https://videos.pexels.com/video-files/4333840/4333840-hd_1920_1080_25fps.mp4",
+      "videoProvider": "Pexels",
+      "videoCredit": "Pexels · Ketut Subiyanto · hand hygiene",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 03 · XỬ TRÍ AN TOÀN",
@@ -460,18 +483,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN: WHO · DIARRHOEAL DISEASE",
       "visual": "watercare",
       "image": "https://suckhoedoisong.qltns.mediacdn.vn/Images/thuha/2021/07/16/pha%20osesol%20voi%20luong%20nuoc%20vua%20dung%20huong%20dan.jpg",
-      "imageAlt": "Pha dung dịch bù nước đường uống",
-      "imageCredit": "Báo Sức khỏe & Đời sống",
-      "imageSourceUrl": "https://suckhoedoisong.vn/cach-bu-dien-giai-dung-cho-tre-khi-bi-tieu-chay-cap-169197419.htm",
+      "imageAlt": "Minh họa pha Oresol đúng lượng nước hướng dẫn",
+      "imageCredit": "Báo Sức khỏe & Đời sống · hình minh họa",
+      "imageSourceUrl": "https://suckhoedoisong.vn/",
       "palette": "teal",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://videos.pexels.com/video-files/9058198/9058198-hd_1920_1080_25fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/9058198/9058198-uhd_3840_2160_25fps.mp4",
-      "videoProvider": "Pexels",
-      "videoCredit": "Pexels · SHVETS production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/an-elderly-man-washing-vegetables-9058198/",
-      "imageMotionStyle": "cinematic"
+      "video": null,
+      "video4k": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 04 · NGỘ ĐỘC THỰC PHẨM",
@@ -486,15 +510,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK TR. 133 · BỔ SUNG: WHO, “FOOD SAFETY IN VIET NAM”",
       "visual": "food",
       "image": "https://images.unsplash.com/photo-1694022887658-3f71dcedfe41?auto=format&fit=crop&fm=jpg&q=80&w=1600",
-      "imageAlt": "Thực phẩm bị mốc trong một chiếc bát",
-      "imageCredit": "Unsplash · ảnh thực",
-      "imageSourceUrl": "https://unsplash.com/s/photos/rotten-food",
+      "imageAlt": "Thực phẩm có dấu hiệu hư hỏng, cần kiểm tra an toàn trước khi ăn",
+      "imageCredit": "Unsplash · ảnh thực phẩm",
+      "imageSourceUrl": "https://unsplash.com/license",
       "palette": "blue",
-      "video": "https://assets.mixkit.co/videos/49231/49231-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Vegetables into the pan in slow motion",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/vegetables-into-the-pan-in-slow-motion-49231/",
-      "imageMotionStyle": "cinematic"
+      "video": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
+      "imageMotionStyle": "cinematic",
+      "video4k": null,
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 04 · NHẬN BIẾT",
@@ -508,18 +534,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK BÀI 32 TR. 133–134 · BỔ SUNG: WHO FOOD SAFETY",
       "visual": "food",
       "image": "https://images.unsplash.com/photo-1694022887658-3f71dcedfe41?auto=format&fit=crop&fm=jpg&q=80&w=1600",
-      "imageAlt": "Thực phẩm bị mốc trong bát",
+      "imageAlt": "Người có biểu hiện đau vùng bụng, minh họa triệu chứng có thể gặp khi ngộ độc",
       "imageCredit": "Unsplash · ảnh thực",
       "imageSourceUrl": "https://unsplash.com/s/photos/rotten-food",
       "palette": "aqua",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://videos.pexels.com/video-files/9058194/9058194-hd_1920_1080_25fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/9058194/9058194-uhd_3840_2160_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/7297871/7297871-hd_1920_1080_30fps.mp4",
+      "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · SHVETS production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/a-person-washing-a-broccoli-9058194/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Kindel Media · abdominal discomfort",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 04 · PHÒNG NGỪA",
@@ -534,7 +561,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "SGK TR. 133–134 · WHO: FOOD SAFETY",
       "visual": "foodsafety",
       "image": "https://www.who.int/images/default-source/searo---images/health-topics/food-safety/infographics/200511-fao-social-media-instagram-v19-no2.jpg?sfvrsn=4d892145_2",
-      "imageAlt": "Infographic WHO về rửa tay và vệ sinh khi chuẩn bị thức ăn",
+      "imageAlt": "Rửa tay giúp giảm nguy cơ nhiễm bẩn thực phẩm",
       "imageCredit": "WHO / FAO / WFP · An toàn thực phẩm",
       "imageSourceUrl": "https://www.who.int/indonesia/news/novel-coronavirus/new-infographics/food-safety",
       "palette": "coral",
@@ -548,11 +575,13 @@ window.BIOSPHERE_BAI32_SEED = {
           "alt": "Thực phẩm tươi"
         }
       ],
-      "video": "https://assets.mixkit.co/videos/9410/9410-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Vegetables being washed",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/vegetables-being-washed-9410/",
-      "imageMotionStyle": "cinematic"
+      "video": "https://videos.pexels.com/video-files/4333840/4333840-hd_1920_1080_25fps.mp4",
+      "videoProvider": "Pexels",
+      "videoCredit": "Pexels · Ketut Subiyanto · hand hygiene",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 04 · XỬ TRÍ",
@@ -566,7 +595,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUYÊN TẮC AN TOÀN · THÔNG TIN GIÁO DỤC, KHÔNG THAY THẾ KHÁM BỆNH",
       "visual": "foodsafety",
       "image": "https://www.who.int/images/default-source/searo---images/health-topics/food-safety/infographics/200511-fao-social-media-instagram-v19-no2.jpg?sfvrsn=4d892145_2",
-      "imageAlt": "Infographic vệ sinh an toàn thực phẩm",
+      "imageAlt": "Bác sĩ tư vấn cách xử trí an toàn",
       "imageCredit": "WHO / FAO / WFP · An toàn thực phẩm",
       "imageSourceUrl": "https://www.who.int/indonesia/news/novel-coronavirus/new-infographics/food-safety",
       "palette": "cyan",
@@ -576,7 +605,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoProvider": "Mixkit",
       "videoCredit": "Mixkit · Doctor explaining a medical condition",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-explaining-the-medical-condition-to-patient-13040/",
-      "imageMotionStyle": "cinematic"
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 05 · TÁO BÓN",
@@ -591,15 +621,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "PHẦN BỔ SUNG NGOÀI SGK · NGUỒN: NIDDK, CONSTIPATION IN CHILDREN",
       "visual": "fiber",
       "image": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Táo tươi và thực phẩm giàu chất xơ",
+      "imageAlt": "Rau, trái cây, đậu và ngũ cốc nguyên hạt cung cấp chất xơ",
       "imageCredit": "Unsplash · ảnh thực",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "orange",
-      "video": "https://videos.pexels.com/video-files/6107295/6107295-hd_1920_1080_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5866263/5866263-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · alleksana · food preparation",
-      "videoSourceUrl": "https://www.pexels.com/video/person-preparing-food-6107295/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Vanessa Loring · healthy foods",
+      "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 05 · YẾU TỐ NGUY CƠ",
@@ -613,17 +645,18 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "BỔ SUNG Y TẾ · NIDDK: CONSTIPATION IN CHILDREN",
       "visual": "fiber",
       "image": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Táo tươi và thực phẩm giàu chất xơ",
+      "imageAlt": "Chuẩn bị rau củ cho bữa ăn",
       "imageCredit": "Unsplash · ảnh thực",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "lime",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://assets.mixkit.co/videos/22687/22687-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Preparing vegetables in a pan",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/preparing-vegetables-in-a-pan-22687/",
-      "imageMotionStyle": "cinematic"
+      "video": "https://videos.pexels.com/video-files/6327114/6327114-hd_1080_1920_25fps.mp4",
+      "videoProvider": "Pexels",
+      "videoCredit": "Pexels · Tima Miroshnichenko · preparing vegetables",
+      "videoSourceUrl": "https://www.pexels.com/video/vegetables-being-taken-with-a-fork-6327114/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "SO SÁNH NHANH",
@@ -639,7 +672,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "DẤU HIỆU CÓ THỂ KHÁC NHAU GIỮA MỖI NGƯỜI",
       "visual": "comparison",
       "image": "https://images.pexels.com/photos/3992806/pexels-photo-3992806.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Bác sĩ trao đổi và thăm khám người bệnh",
+      "imageAlt": "Bác sĩ thăm khám khi có dấu hiệu đáng lo",
       "imageCredit": "CDC Images / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/woman-having-a-check-up-3992806/",
       "palette": "gold",
@@ -657,7 +690,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoProvider": "Mixkit",
       "videoCredit": "Mixkit · Doctor examining a patient",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-examining-a-patient-7632/",
-      "imageMotionStyle": "cinematic"
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "VẬN DỤNG VÀO ĐỜI SỐNG",
@@ -674,7 +708,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "LIÊN HỆ SGK BÀI 32 · TR. 128–134",
       "visual": "habits",
       "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Rửa tay bằng xà phòng dưới vòi nước",
+      "imageAlt": "Rửa tay kỹ bằng xà phòng",
       "imageCredit": "Ivan S / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
       "palette": "teal",
@@ -688,11 +722,13 @@ window.BIOSPHERE_BAI32_SEED = {
           "alt": "Trẻ chải răng"
         }
       ],
-      "video": "https://assets.mixkit.co/videos/9410/9410-720.mp4",
-      "videoProvider": "Mixkit",
-      "videoCredit": "Mixkit · Vegetables being washed",
-      "videoSourceUrl": "https://mixkit.co/free-stock-video/vegetables-being-washed-9410/",
-      "imageMotionStyle": "cinematic"
+      "video": "https://videos.pexels.com/video-files/4333840/4333840-hd_1920_1080_25fps.mp4",
+      "videoProvider": "Pexels",
+      "videoCredit": "Pexels · Ketut Subiyanto · hand hygiene",
+      "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
+      "imageMotionStyle": "cinematic",
+      "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
+      "imageFit": "cover"
     },
     {
       "kicker": "BỆNH 05 · KẾ HOẠCH HẰNG NGÀY",
@@ -706,18 +742,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN: NIDDK · CONSTIPATION IN CHILDREN",
       "visual": "habits",
       "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Bữa ăn tươi với rau quả nhiều màu",
+      "imageAlt": "Bữa ăn nhiều rau và thực phẩm giàu chất xơ",
       "imageCredit": "Ivan S / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
       "palette": "blue",
       "supportImages": [],
       "interactiveQuiz": false,
-      "video": "https://videos.pexels.com/video-files/8508459/8508459-hd_1920_1080_25fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/8508459/8508459-uhd_3840_2160_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5866263/5866263-hd_1920_1080_25fps.mp4",
+      "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Kampus Production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/kids-looking-at-the-food-preparation-8508459/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Vanessa Loring · healthy foods",
+      "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "TƯƠNG TÁC CẢ LỚP · THẢO LUẬN NHÓM",
@@ -727,7 +764,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "CHỌN ĐÁP ÁN · ĐỌC PHẢN HỒI · THẢO LUẬN CÙNG LỚP",
       "visual": "team",
       "image": "https://soshin.ac.jp/rn2021/img/sj/index/img-clm-04-01%402x.jpg",
-      "imageAlt": "Học sinh cùng trao đổi trong lớp học",
+      "imageAlt": "Học sinh tương tác và thảo luận trong lớp",
       "imageCredit": "Soshin Academy · ảnh lớp học",
       "imageSourceUrl": "https://soshin.ac.jp/jogakko/",
       "palette": "cyan",
@@ -768,12 +805,13 @@ window.BIOSPHERE_BAI32_SEED = {
           "explanation": "Chất xơ, đủ nước, vận động và thói quen đi vệ sinh đều đặn hỗ trợ phòng táo bón. Nếu kéo dài hoặc có dấu hiệu cảnh báo, hãy báo người lớn."
         }
       ],
-      "video": "https://videos.pexels.com/video-files/8508459/8508459-hd_1920_1080_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/8196812/8196812-hd_1920_1080_25fps.mp4",
       "video4k": "https://videos.pexels.com/video-files/8508459/8508459-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Kampus Production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/kids-looking-at-the-food-preparation-8508459/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Yan Krukau · classroom interaction",
+      "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "THỬ THÁCH TƯƠNG TÁC · CẢ LỚP CÙNG CHƠI",
@@ -783,7 +821,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "CHỌN MỘT ĐÁP ÁN · NHẬN PHẢN HỒI NGAY · CÓ THỂ CHƠI LẠI",
       "visual": "team",
       "image": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Học sinh trong lớp học cùng trao đổi bài",
+      "imageAlt": "Học sinh trao đổi câu trả lời cùng nhau",
       "imageCredit": "Unsplash · ảnh lớp học",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "amber",
@@ -845,11 +883,12 @@ window.BIOSPHERE_BAI32_SEED = {
           "explanation": "Chất xơ, đủ nước, vận động và thói quen đi vệ sinh đều đặn có thể hỗ trợ phòng táo bón. Nếu kéo dài hoặc có dấu hiệu cảnh báo, cần báo người lớn và đi khám."
         }
       ],
-      "video": "https://videos.pexels.com/video-files/5809662/5809662-hd_1920_1080_24fps.mp4",
+      "video": "https://videos.pexels.com/video-files/5676150/5676150-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Monstera Production · medical animation",
-      "videoSourceUrl": "https://www.pexels.com/video/illustration-of-a-person-with-virus-in-his-body-5809662/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Ivan S · students discussing in class",
+      "videoSourceUrl": "https://www.pexels.com/video/students-in-a-classroom-5676150/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "KẾT LUẬN · NGUỒN THAM KHẢO",
@@ -863,8 +902,8 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "NGUỒN NGOÀI SGK ĐƯỢC PHÂN BIỆT RÕ TRONG BÀI",
       "visual": "sources",
       "image": "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Kệ sách trong thư viện",
-      "imageCredit": "Unsplash · ảnh thực",
+      "imageAlt": "Kệ sách và tài liệu tham khảo",
+      "imageCredit": "Unsplash · thư viện",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "orange",
       "links": [
@@ -889,12 +928,13 @@ window.BIOSPHERE_BAI32_SEED = {
           "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/symptoms-causes"
         }
       ],
-      "video": "https://videos.pexels.com/video-files/9058194/9058194-hd_1920_1080_25fps.mp4",
-      "video4k": "https://videos.pexels.com/video-files/9058194/9058194-uhd_3840_2160_25fps.mp4",
-      "videoProvider": "Pexels",
-      "videoCredit": "Pexels · SHVETS production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/a-person-washing-a-broccoli-9058194/",
-      "imageMotionStyle": "cinematic"
+      "video": null,
+      "video4k": null,
+      "videoProvider": null,
+      "videoCredit": null,
+      "videoSourceUrl": null,
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     },
     {
       "kicker": "LỜI KẾT",
@@ -907,16 +947,17 @@ window.BIOSPHERE_BAI32_SEED = {
       "note": "KÍNH CHÚC CÔ VÀ CÁC BẠN SỨC KHỎE",
       "visual": "closing",
       "image": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Không gian lớp học với học sinh và giáo viên",
+      "imageAlt": "Không khí lớp học khi kết thúc phần trình bày",
       "imageCredit": "Unsplash · ảnh lớp học",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "gold",
-      "video": "https://videos.pexels.com/video-files/8508459/8508459-hd_1920_1080_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/8196812/8196812-hd_1920_1080_25fps.mp4",
       "video4k": "https://videos.pexels.com/video-files/8508459/8508459-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
-      "videoCredit": "Pexels · Kampus Production · 4K master",
-      "videoSourceUrl": "https://www.pexels.com/video/kids-looking-at-the-food-preparation-8508459/",
-      "imageMotionStyle": "cinematic"
+      "videoCredit": "Pexels · Yan Krukau · classroom interaction",
+      "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
+      "imageMotionStyle": "cinematic",
+      "imageFit": "cover"
     }
   ]
 };
