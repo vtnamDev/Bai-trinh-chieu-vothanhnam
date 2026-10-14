@@ -248,7 +248,9 @@
     const video4kUrl = String(slide.video4k || '').trim();
     const saveData = Boolean(navigator.connection?.saveData);
     const connectionType = String(navigator.connection?.effectiveType || '');
-    const use4k = Boolean(video4kUrl && window.matchMedia('(min-width: 1200px)').matches &&
+    const coarsePortrait = window.matchMedia('(pointer: coarse) and (orientation: portrait)').matches;
+    const use4k = Boolean(video4kUrl && window.matchMedia('(min-width: 1800px) and (orientation: landscape)').matches &&
+      !coarsePortrait && !navigator.connection?.saveData &&
       !saveData && !['slow-2g', '2g', '3g'].includes(connectionType) &&
       motionEnabled && !reducedMotion.matches);
     const selectedVideo = use4k ? video4kUrl : videoUrl;
@@ -276,7 +278,7 @@
       '<div class="photo-halo photo-halo--one"></div><div class="photo-halo photo-halo--two"></div>' +
       '<div class="photo-frame">' +
         videoMarkup +
-        '<img class="live-photo" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
+        '<img class="live-photo' + (slide.imageFit === 'contain' ? ' is-contained-diagram' : '') + '" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
         '<div class="photo-color-wash"></div><div class="photo-vignette"></div>' +
         '<div class="photo-topline"><span><i></i> ' + (selectedVideo ? 'VIDEO THỰC / ' + escapeHTML(provider.toUpperCase()) + (use4k ? ' · 4K' : '') : 'ẢNH THỰC / LIVE SOURCE') + '</span><b>' + photoNo + '</b></div>' +
         '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'CINEMATIC FOOTAGE' : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(slide.imageAlt || 'Ảnh minh họa') + '</strong></div>' +
