@@ -1567,3 +1567,177 @@ body{
   .viewer .photo-topline span{margin-right:auto}
   .viewer .photo-topline b{flex-shrink:0}
 }
+
+
+/* ================================================================
+   DESKTOP / CLASSROOM EDITION
+   Wide stage, true two-column composition, media owns one side.
+   ================================================================ */
+@media(min-width:801px) and (orientation:landscape){
+  .viewer .slide-stage{
+    display:grid!important;place-items:stretch!important;overflow:hidden!important;
+    background:
+      radial-gradient(ellipse at 18% 18%,#20b99d17,transparent 43%),
+      radial-gradient(ellipse at 96% 86%,#e6bd6613,transparent 37%),
+      linear-gradient(115deg,#06171c,#0a2022 52%,#0b1c1d)!important;
+  }
+  .viewer .slide-page{
+    box-sizing:border-box!important;display:flex!important;align-items:stretch!important;
+    width:100%!important;height:100%!important;min-height:0!important;
+    padding:clamp(20px,3.5vh,44px) clamp(24px,4.1vw,82px)!important;
+    overflow:hidden!important;
+  }
+  .viewer .slide-layout{
+    width:min(1720px,100%)!important;height:100%!important;min-height:0!important;
+    grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr)!important;
+    align-items:stretch!important;gap:clamp(24px,3.15vw,62px)!important;
+    padding:0!important;margin:auto!important;
+  }
+  .viewer .slide-content{
+    box-sizing:border-box!important;align-self:center!important;width:100%!important;
+    max-width:none!important;min-width:0!important;margin:0!important;padding:0!important;
+    border:0!important;border-radius:0!important;
+    background:transparent!important;box-shadow:none!important;
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+    overflow:visible!important;
+  }
+  .viewer .slide-kicker{
+    margin:0 0 clamp(13px,2.2vh,23px)!important;padding:8px 12px!important;
+    font-size:clamp(9px,.68vw,12px)!important;letter-spacing:.12em!important;
+    background:linear-gradient(115deg,color-mix(in srgb,var(--stage-accent) 15%,transparent),#ffffff04)!important;
+    border-color:color-mix(in srgb,var(--stage-accent) 42%,transparent)!important;
+  }
+  .viewer .slide-title{
+    max-width:820px!important;margin:0 0 clamp(13px,2vh,21px)!important;
+    font-size:clamp(38px,3.55vw,72px)!important;line-height:.98!important;
+    letter-spacing:-.064em!important;text-wrap:balance!important;
+  }
+  .viewer .slide-subtitle{
+    max-width:760px!important;margin:0!important;
+    font-size:clamp(15px,1.18vw,21px)!important;line-height:1.48!important;
+    color:#e3f1ee!important;
+  }
+  .viewer .slide-points{
+    display:grid!important;max-width:none!important;margin-top:clamp(15px,2.1vh,24px)!important;
+    gap:clamp(6px,.85vh,10px)!important;
+  }
+  .viewer .slide-point{
+    align-items:flex-start!important;gap:12px!important;
+    padding:clamp(9px,1.25vh,13px) clamp(11px,1vw,16px)!important;
+    border-radius:12px!important;font-size:clamp(13px,1vw,17px)!important;
+    line-height:1.38!important;
+    background:linear-gradient(110deg,#102b30d9,#0c2229bb)!important;
+    border-color:#d7fff32b!important;backdrop-filter:blur(8px)!important;
+  }
+  .viewer .slide-point b{font-size:10px!important;min-width:21px!important;color:var(--stage-accent)!important}
+  .viewer .slide-source{
+    max-width:100%!important;margin-top:clamp(12px,1.7vh,18px)!important;
+    padding:10px 13px!important;font-size:9px!important;line-height:1.5!important;
+    background:linear-gradient(90deg,color-mix(in srgb,var(--stage-accent) 12%,transparent),#ffffff02)!important;
+  }
+  .viewer .slide-links{margin-top:14px!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .viewer .slide-links-title{grid-column:1/-1!important;font-size:9px!important}
+  .viewer .slide-links a{padding:9px 11px!important;font-size:12px!important;border-radius:11px!important}
+  .viewer .slide-side-content{
+    position:relative!important;isolation:isolate!important;display:flex!important;
+    flex-direction:column!important;justify-content:stretch!important;align-items:stretch!important;
+    width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;
+    overflow:visible!important;gap:0!important;pointer-events:auto!important;
+  }
+  .viewer .photo-scene{
+    position:relative!important;isolation:isolate!important;display:block!important;
+    width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;
+    margin:0!important;overflow:visible!important;perspective:1200px!important;
+    --photo-accent:var(--stage-accent)!important;--photo-secondary:var(--stage-secondary)!important;
+  }
+  .viewer .photo-halo{opacity:.15!important;filter:blur(36px)!important}
+  .viewer .photo-frame{
+    position:relative!important;isolation:isolate!important;
+    width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;
+    aspect-ratio:auto!important;overflow:hidden!important;border-radius:22px!important;
+    border:1px solid color-mix(in srgb,var(--stage-accent) 48%,#ffffff28)!important;
+    transform:perspective(1400px) rotateY(-2.2deg)!important;
+    animation:classroom-media-enter .9s cubic-bezier(.18,.78,.2,1) both!important;
+    box-shadow:0 25px 75px #0005,inset 0 1px #ffffff52!important;
+    background:#102321!important;
+  }
+  .viewer .photo-frame:before{
+    inset:8px!important;border-radius:15px!important;border-color:#ffffff25!important;z-index:6!important;
+  }
+  .viewer .live-photo,.viewer .live-video{
+    position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+    object-fit:cover!important;object-position:center!important;
+    filter:saturate(1.19) contrast(1.06) brightness(1.04)!important;
+  }
+  .viewer .live-video{z-index:1!important;transform:scale(1.035)!important}
+  .viewer .photo-frame.video-playing .live-video{transform:scale(1.09)!important}
+  .viewer .photo-frame.video-playing .live-photo{opacity:0!important}
+  .viewer .photo-color-wash{
+    z-index:2!important;opacity:.2!important;mix-blend-mode:soft-light!important;
+    background:linear-gradient(130deg,#75e8c21c,transparent 45%,#ffd27b12)!important;
+  }
+  .viewer .photo-vignette{
+    z-index:3!important;
+    background:linear-gradient(180deg,#05121b14 0%,#05121b00 42%,#04151978 100%),
+      linear-gradient(90deg,#051b2140 0%,transparent 32%,transparent 100%)!important;
+  }
+  .viewer .photo-topline{
+    top:17px!important;left:17px!important;right:17px!important;
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    gap:12px!important;font-size:9px!important;color:#f8fffb!important;text-shadow:0 2px 12px #0009!important;
+  }
+  .viewer .photo-topline span{
+    padding:8px 11px!important;border-radius:999px!important;
+    border:1px solid #e6fff03d!important;background:#051b1caf!important;
+    backdrop-filter:blur(12px)!important;
+  }
+  .viewer .photo-topline b{
+    flex-shrink:0!important;padding:7px 9px!important;border:1px solid #ffffff32!important;
+    border-radius:9px!important;background:#07191cb8!important;color:#f2fff8!important;
+  }
+  .viewer .photo-bottomline{
+    z-index:5!important;left:24px!important;right:24px!important;bottom:25px!important;
+    display:flex!important;align-items:flex-end!important;justify-content:space-between!important;
+    gap:13px!important;
+  }
+  .viewer .photo-caption-copy span{font-size:9px!important;letter-spacing:.17em!important;color:var(--stage-accent)!important}
+  .viewer .photo-caption-copy strong{max-width:36ch!important;font-size:clamp(12px,1vw,16px)!important;line-height:1.35!important;color:#fff!important;text-shadow:0 2px 18px #000!important}
+  .viewer .photo-source-link{
+    flex:0 0 auto!important;white-space:nowrap!important;padding:9px 11px!important;
+    font-size:10px!important;border:1px solid #f1fff04d!important;border-radius:11px!important;
+    color:#fff!important;background:#061b20bd!important;backdrop-filter:blur(12px)!important;
+  }
+  .viewer .photo-credit-line{display:none!important}
+  .viewer .photo-scanline{z-index:5!important;opacity:.22!important}
+  .viewer .slide-page:not(.slide-transition-ghost) .slide-content .slide-point:nth-child(1){animation-delay:.15s!important}
+  .viewer .slide-page:not(.slide-transition-ghost) .slide-content .slide-point:nth-child(2){animation-delay:.22s!important}
+  .viewer .slide-page:not(.slide-transition-ghost) .slide-content .slide-point:nth-child(3){animation-delay:.29s!important}
+  .viewer .slide-page:not(.slide-transition-ghost) .slide-content .slide-point:nth-child(4){animation-delay:.36s!important}
+  .viewer .slide-page:not(.slide-transition-ghost) .slide-content .slide-point:nth-child(5){animation-delay:.43s!important}
+  .viewer .slide-page:not(.slide-transition-ghost) .slide-content .slide-point:nth-child(6){animation-delay:.50s!important}
+  .viewer .slide-page:not(.slide-transition-ghost) .photo-scene{animation:classroom-photo-arrive .8s .07s cubic-bezier(.16,.82,.2,1) both!important}
+  .viewer .viewer-corner-mark{display:block!important;opacity:.5!important;color:#92b9b1!important}
+}
+@media(min-width:801px) and (max-width:1100px) and (orientation:landscape){
+  .viewer .slide-page{padding:20px 24px!important}
+  .viewer .slide-layout{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)!important;gap:22px!important}
+  .viewer .slide-title{font-size:clamp(32px,4vw,46px)!important}
+  .viewer .slide-subtitle{font-size:14px!important}
+  .viewer .slide-point{font-size:12px!important;padding:8px 10px!important}
+  .viewer .slide-source{font-size:8px!important;padding:8px 10px!important}
+  .viewer .photo-bottomline{left:15px!important;right:15px!important;bottom:15px!important;flex-wrap:wrap!important}
+}
+@keyframes classroom-media-enter{
+  0%{opacity:.2;transform:perspective(1400px) translate3d(28px,0,-70px) rotateY(-8deg) scale(.965);filter:saturate(.8)}
+  68%{opacity:1;transform:perspective(1400px) translate3d(-2px,0,8px) rotateY(-1deg) scale(1.008);filter:saturate(1.15)}
+  100%{opacity:1;transform:perspective(1400px) translate3d(0,0,0) rotateY(-2.2deg) scale(1);filter:saturate(1.1)}
+}
+@keyframes classroom-photo-arrive{
+  0%{opacity:.3;clip-path:inset(0 0 0 16% round 22px);transform:translate3d(26px,0,0) scale(.99)}
+  70%{opacity:1;clip-path:inset(0 0 0 0 round 22px);transform:translate3d(-2px,0,0) scale(1.005)}
+  100%{opacity:1;clip-path:inset(0 0 0 0 round 22px);transform:translate3d(0,0,0) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .viewer .photo-frame,.viewer .photo-scene{animation:none!important;transform:none!important}
+}
+.viewer.motion-off .photo-frame,.viewer.motion-off .photo-scene{animation:none!important;transform:none!important}
