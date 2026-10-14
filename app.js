@@ -345,6 +345,13 @@
     '</section>';
   }
 
+  function refreshQuizPanel() {
+    const slide = currentDeck?.slides?.[slideIndex];
+    const panel = $('#slideStage .quiz-panel');
+    if (!slide?.interactiveQuiz || !panel) return;
+    panel.outerHTML = renderQuiz(slide);
+  }
+
   function answerQuiz(optionIndex) {
     const slide = currentDeck?.slides?.[slideIndex];
     if (!slide?.interactiveQuiz || !Array.isArray(slide.quizQuestions)) return;
@@ -355,7 +362,7 @@
     quizSession.answers[index] = Number(optionIndex);
     if (isCorrect) quizSession.score += 1;
     playQuizSound(isCorrect);
-    renderSlide({ direction: 'reveal', animate: false });
+    refreshQuizPanel();
   }
 
   function nextQuizQuestion() {
@@ -363,7 +370,7 @@
     if (!slide?.interactiveQuiz) return;
     quizSession.questionIndex = Math.min(quizSession.questionIndex + 1, slide.quizQuestions.length);
     playSlideSound(true);
-    renderSlide({ direction: 'forward' });
+    refreshQuizPanel();
   }
 
   function restartQuiz() {
@@ -371,7 +378,7 @@
     if (!slide?.interactiveQuiz) return;
     quizSession = { deckId: currentDeck.id, slideIndex, questionIndex: 0, answers: {}, score: 0 };
     playQuizSound(true, true);
-    renderSlide({ direction: 'reveal', animate: false });
+    refreshQuizPanel();
   }
 
   function playQuizSound(correct, soft = false) {
