@@ -68,7 +68,13 @@ assert.ok(html.includes('data-performance-mode="auto"'), 'The automatic performa
 assert.ok(html.includes('data-performance-mode="smooth"') && html.includes('data-performance-mode="cinema"'), 'All three performance presets must be present.');
 assert.ok(html.includes('id="performanceStatus"'), 'Settings must explain the active performance profile.');
 assert.ok(app.includes('function getPerformanceProfile()'), 'Runtime decisions should use the adaptive performance profile.');
-assert.ok(app.includes("$$('button[data-performance-mode]').forEach"), 'Performance status sync must iterate over the preset buttons, not a single document query result.');
+assert.ok(app.includes("$('button[data-performance-mode]').forEach"), 'Performance status sync must iterate over the preset buttons, not a single document query result.');
+assert.ok(app.includes("$('.live-video', $('#slideStage')).forEach"), 'Adaptive mode must iterate over all stage videos before pausing.');
+assert.ok(app.includes("$('.photo-frame.video-playing', $('#slideStage')).forEach"), 'Adaptive mode must iterate over all playing photo frames before clearing state.');
+assert.ok(app.includes("$('.live-video', imageView).forEach"), 'Switching into 3D must safely pause any video layers.');
+assert.ok(app.includes("renderMediaModeBar('media-mode-bar--mobile')"), 'Mobile must render a foreground image/3D switch.');
+assert.ok(app.includes("target.closest('.media-experience') || slidePage?.querySelector('.media-experience')"), 'Both desktop and foreground mobile controls must target the same media experience.');
+assert.ok(css.includes('.slide-content>.media-mode-bar--mobile'), 'The foreground switch needs dedicated mobile presentation styling.');
 assert.ok(app.includes('navigator.deviceMemory') && app.includes('navigator.hardwareConcurrency'), 'Adaptive mode should consider hardware signals when supported.');
 const warmupStart = app.indexOf('function warmAdjacentPhotos()');
 const warmupEnd = app.indexOf('\n  function renderQuiz', warmupStart);
