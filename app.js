@@ -121,6 +121,8 @@
       return `
         <article class="deck-card">
           <div class="deck-cover">
+            ${deck.slides?.[0]?.image ? '<img class="deck-cover-photo" src="' + escapeHTML(deck.slides[0].image) + '" alt="" loading="lazy" decoding="async" data-fallback="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1000&q=70">' : ''}
+            <div class="deck-cover-shade"></div>
             <div class="cover-top"><span>${formatSubject(deck.subject)}</span><span>${String(position + 1).padStart(2, '0')} / ${escapeHTML(deck.date || 'LOCAL')}</span></div>
             <div class="cover-title">${escapeHTML(deck.title)}</div>
             <div class="cover-foot"><span>BIOSPHERE / SLIDES</span><span>${deck.isSeed ? 'BÀI 32 · 20 TRANG' : 'BẢN NHÁP'}</span></div>
