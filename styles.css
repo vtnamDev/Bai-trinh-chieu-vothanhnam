@@ -1006,3 +1006,22 @@ body{
 @media(prefers-reduced-motion:reduce){
   .viewer .slide-stage:before,.viewer .slide-stage:after,.viewer .slide-page,.viewer .live-photo{animation:none!important;transition:none!important}
 }
+
+
+/* Final palette pass: remove violet/magenta wash; use ocean, mint, citrus and coral. */
+#presentationViewer:before{
+  background:conic-gradient(from 32deg,#31d7bc24,#4ba5dc24,#dce97b20,#f7a36c25,#ff88791c,#31d7bc24)!important;
+}
+.hero-photo-ambient{
+  background:conic-gradient(from 35deg,#32d3b423,#48b9eb21,#dce97b20,#f7a36c22,#32d3b423)!important;
+}
+.hero-photo-main:after{
+  background:linear-gradient(180deg,#08101b05 12%,#08101b30 45%,#070b18dc 100%),linear-gradient(120deg,#36d9ce35,#d0e57c14 49%,#ffb17b26)!important;
+}
+.hero-photo-main{background:linear-gradient(145deg,#174b59,#80b9a1)!important}
+.hero-photo-tile--digestive{background:linear-gradient(145deg,#eef8df,#b0dbbf)!important}
+.hero-photo-tile--food{background:linear-gradient(145deg,#fff0d1,#efab78)!important}
+.deck-cover{background:linear-gradient(135deg,#0d5861,#16415a,#a95738)!important}
+.viewer .quiz-panel:before{background:conic-gradient(from 90deg,#5ee4d228,transparent,#ffb36b25,transparent,#bce98920,transparent)!important}
+.viewer .photo-halo--one{background:var(--photo-accent,#73e9d2)!important}
+.viewer .photo-halo--two{background:var(--photo-secondary,#ffb16e)!important}
