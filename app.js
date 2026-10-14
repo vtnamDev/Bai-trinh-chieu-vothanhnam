@@ -319,6 +319,7 @@
     activeAnatomy3D = null;
     delete model.panel.dataset.modelInitializing;
     if (model.kind === 'native') {
+      if (model.visibilityHandler) document.removeEventListener('visibilitychange', model.visibilityHandler);
       model.viewer.removeEventListener('load', model.onLoad);
       model.viewer.removeEventListener('error', model.onError);
       model.viewer.removeEventListener('progress', model.onProgress);
@@ -571,7 +572,7 @@
       viewer.setAttribute('rotation-per-second', '12deg');
     }
     slot.appendChild(viewer);
-    const model = { kind: 'native', panel, viewer, autoRotate: viewer.hasAttribute('auto-rotate'), onLoad: null, onError: null, onProgress: null };
+    const model = { kind: 'native', panel, viewer, autoRotate: viewer.hasAttribute('auto-rotate'), onLoad: null, onError: null, onProgress: null, visibilityHandler: null };
     activeAnatomy3D = model;
     panel.classList.add('is-native-loading');
     const status = panel.querySelector('.anatomy3d-status');
@@ -600,6 +601,13 @@
       delete panel.dataset.modelInitializing;
       initCustomThreeModel(panel, requestId);
     };
+    model.visibilityHandler = () => {
+      if (activeAnatomy3D !== model) return;
+      const tabHidden = document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden;
+      if (tabHidden || !motionEnabled || reducedMotion.matches || !model.autoRotate) viewer.removeAttribute('auto-rotate');
+      else viewer.setAttribute('auto-rotate', '');
+    };
+    document.addEventListener('visibilitychange', model.visibilityHandler);
     viewer.addEventListener('load', model.onLoad);
     viewer.addEventListener('progress', model.onProgress);
     viewer.addEventListener('error', model.onError);
@@ -1611,6 +1619,9 @@
         button.setAttribute('aria-pressed', String(active));
       });
       const showModel = mode === 'model';
+      const imageVideos = $('.live-video', imageView);
+      if (showModel) imageVideos.forEach(video => video.pause());
+      else if (motionEnabled && !reducedMotion.matches) attachVideoBackgrounds(imageView);
       imageView.hidden = showModel;
       modelView.hidden = !showModel;
       imageView.classList.toggle('is-active', !showModel);
