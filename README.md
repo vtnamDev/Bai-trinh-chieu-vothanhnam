@@ -6,7 +6,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
 - `styles.css` — giao diện responsive nhiều bảng màu, bố cục ảnh editorial, hiệu ứng chiều sâu và chuyển động.
 - `app.js` — thư viện, tìm kiếm, nhập/xuất JSON, điều hướng slide, chia sẻ link, toàn màn hình.
-- `bai32-deck.js` — nội dung 20 trang, URL ảnh thực riêng cho từng slide, chú thích/nguồn ảnh và liên kết tham khảo.
+- `bai32-deck.js` — dữ liệu 32 slide, kịch bản 5 bệnh, tình huống hỏi đáp, URL hình ảnh/video, chú thích và nguồn tham khảo.
 - `assets/mark.svg` — biểu tượng BioSphere.
 - `vercel.json` — cấu hình hosting tĩnh.
 
@@ -19,7 +19,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 - Desktop and TV use a full-width 16:9-style two-column layout with large text on the left and media on the right. Touch devices held in portrait mode force a full-screen portrait layout even if a browser requests a desktop viewport.
 - Real footage uses stable framing without continuous zoom/rotation; movement comes from the clip itself and the slide transition. True 4K masters only load on wide landscape screens (1800px+), never on coarse-pointer portrait screens; slower networks and data-saver mode prefer lower resolution.
 - Video descriptions are distinct from poster-image descriptions, so captions reflect the footage that actually plays.
-- Media mapping was reviewed by subject. A Wikimedia Commons digestive-system diagram is used for the anatomy slide; abdominal discomfort, dental care, drinking water, handwashing, food preparation and classroom clips are assigned to matching topics. Specific ORS/mold slides retain relevant still images rather than substituting unrelated footage.
+- Media mapping was reviewed by subject. A Wikimedia Commons digestive-system diagram is used for the anatomy slide; abdominal discomfort, dental care, drinking water, handwashing, food preparation and classroom clips are assigned to matching topics. Các cảnh hướng dẫn ORS, nhiễm giun và viêm gan A dùng tài nguyên tĩnh/video được chọn theo nội dung; ảnh dự phòng có thể thay đổi theo nguồn.
 
 ## Chuyển cảnh và hỏi đáp
 - Chuyển trang theo hướng tiến/lùi với bốn preset CSS riêng: wipe, depth, focus và rise; tiêu đề, phần mô tả, từng ý chính và ảnh có nhịp xuất hiện riêng.
@@ -42,7 +42,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 ## Nội dung khoa học
 - Nền tảng theo SGK KHTN 8, Bài 32, trang in 128–134.
 - Bài 32 trình bày cụ thể sâu răng, viêm loét dạ dày–tá tràng; đề cập tiêu chảy du lịch và an toàn vệ sinh thực phẩm.
-- Táo bón và một số chi tiết y tế được bổ sung, phân biệt rõ, từ WHO, CDC và NIDDK.
+- Bài trình chiếu tập trung vào năm bệnh: sâu răng, viêm loét dạ dày–tá tràng, tiêu chảy do nhiễm trùng, nhiễm giun đường ruột và viêm gan A. Hai bệnh đầu là phần được trình bày trực tiếp trong SGK; các phần mở rộng được gắn nguồn WHO/CDC/NIDDK phù hợp.
 - Bài mang tính giáo dục sức khỏe, không dùng để tự chẩn đoán hay tự điều trị. Khi có dấu hiệu nặng, cần báo người lớn và đến cơ sở y tế.
 
 ## Giới hạn hiện tại
@@ -50,8 +50,8 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 
 ## Nguồn tham khảo chính
 - SGK Khoa học Tự nhiên 8, tập 1 — Bài 32, trang in 128–134.
-- WHO: [Diarrhoeal disease](https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease), [Food safety in Viet Nam](https://www.who.int/vietnam/health-topics/food-safety/food-safety).
-- CDC: [About Cavities (Tooth Decay)](https://www.cdc.gov/oral-health/about/cavities-tooth-decay.html).
+- WHO: [Diarrhoeal disease](https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease), [Soil-transmitted helminth infections](https://www.who.int/news-room/fact-sheets/detail/soil-transmitted-helminth-infections), [Hepatitis A](https://www.who.int/news-room/fact-sheets/detail/hepatitis-a), [Food safety in Viet Nam](https://www.who.int/vietnam/health-topics/food-safety/food-safety).
+- CDC: [About Cavities (Tooth Decay)](https://www.cdc.gov/oral-health/about/cavities-tooth-decay.html), [DPDx — Ascariasis](https://www.cdc.gov/dpdx/ascariasis/).
 - NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes), [Constipation in children](https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/symptoms-causes).
 
 ## Deploy
