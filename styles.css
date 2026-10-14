@@ -2112,3 +2112,49 @@ body{
 #presentationViewer .ending-action span{font-size:16px;opacity:.8}
 @media(max-width:600px){#presentationViewer .ending-actions{gap:7px}#presentationViewer .ending-action{min-height:40px;padding:0 12px}}
 @media(prefers-reduced-motion:reduce){#presentationViewer .ending-action{transition:none}}
+
+
+/* Selective interactive anatomy models: WebGL view with bundled-slide image fallback. */
+#presentationViewer .anatomy3d-panel{
+  position:relative;isolation:isolate;flex:1 1 auto;width:100%;height:min(66vh,720px);min-height:420px;max-height:740px;
+  overflow:hidden;border:1px solid #bce9f538;border-radius:24px;
+  background:radial-gradient(ellipse at 48% 37%,#28617758,transparent 44%),linear-gradient(145deg,#0e2636,#09121e 70%,#101624);
+  box-shadow:0 28px 75px #0008,inset 0 1px #ffffff38;cursor:grab;touch-action:pan-y;
+}
+#presentationViewer .anatomy3d-panel:before{content:"";position:absolute;inset:9%;z-index:0;border:1px solid #d1f4ff14;border-radius:50%;transform:rotateX(64deg) rotateZ(-20deg);pointer-events:none}
+#presentationViewer .anatomy3d-panel:after{content:"";position:absolute;inset:14% 12%;z-index:0;border:1px dashed #b4eaf01b;border-radius:50%;transform:rotateY(58deg) rotateZ(21deg);pointer-events:none}
+#presentationViewer .anatomy3d-panel.is-dragging{cursor:grabbing}
+#presentationViewer .anatomy3d-canvas{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity .3s ease;pointer-events:none}
+#presentationViewer .anatomy3d-canvas canvas{display:block;width:100%;height:100%}
+#presentationViewer .anatomy3d-panel.is-3d-ready .anatomy3d-canvas{opacity:1}
+#presentationViewer .anatomy3d-fallback{position:absolute;z-index:1;left:8%;top:13%;width:84%;height:70%;object-fit:contain;opacity:.9;pointer-events:none;transition:opacity .25s ease;filter:drop-shadow(0 22px 30px #0005)}
+#presentationViewer .anatomy3d-panel.is-3d-ready .anatomy3d-fallback{opacity:0}
+#presentationViewer .anatomy3d-topline{position:absolute;z-index:4;top:15px;left:17px;right:17px;display:flex;justify-content:space-between;align-items:center;gap:12px;pointer-events:none}
+#presentationViewer .anatomy3d-topline>span:first-child{color:#a9e8f0;font:800 8px/1.4 ui-monospace,monospace;letter-spacing:.16em}
+#presentationViewer .anatomy3d-status{padding:5px 8px;border:1px solid #c5edff19;border-radius:999px;background:#07121bc4;color:#bdd1dc;font:8px/1.2 ui-monospace,monospace;letter-spacing:.03em;text-align:right}
+#presentationViewer .anatomy3d-title{position:absolute;z-index:4;left:18px;right:18px;bottom:82px;display:grid;gap:5px;pointer-events:none;text-shadow:0 2px 18px #0009}
+#presentationViewer .anatomy3d-title strong{font-size:clamp(15px,1.35vw,21px);letter-spacing:-.035em;color:#f0fbff}
+#presentationViewer .anatomy3d-title span{max-width:95%;color:#b5cbd7;font-size:clamp(10px,.82vw,12px);line-height:1.4}
+#presentationViewer .anatomy3d-controls{position:absolute;z-index:5;left:14px;right:14px;bottom:38px;display:flex;justify-content:center;gap:6px;visibility:hidden;pointer-events:none}
+#presentationViewer .anatomy3d-panel.is-3d-ready .anatomy3d-controls{visibility:visible;pointer-events:auto}
+#presentationViewer .anatomy3d-controls button{min-height:32px;padding:0 11px;border:1px solid #d5f5ff2c;border-radius:999px;background:#07131ddf;color:#effaff;font-size:10px;font-weight:700;backdrop-filter:blur(12px)}
+#presentationViewer .anatomy3d-controls button:hover{border-color:#8ce8f0aa;background:#153646eb}
+#presentationViewer .anatomy3d-controls button[aria-pressed="true"]{background:#b1eddf;color:#0a2529;border-color:transparent}
+#presentationViewer .anatomy3d-footnote{position:absolute;z-index:4;left:17px;right:17px;bottom:13px;text-align:center;color:#8ea7b8;font-size:8px;line-height:1.25;pointer-events:none}
+#presentationViewer .anatomy3d-panel.is-3d-ready .anatomy3d-footnote{color:#a8c2d0}
+@media(max-width:1099px){
+  #presentationViewer .anatomy3d-panel{height:clamp(340px,50vh,500px);min-height:340px;max-height:500px}
+}
+@media(max-width:600px){
+  #presentationViewer .anatomy3d-panel{height:clamp(285px,39vh,370px);min-height:285px;border-radius:19px}
+  #presentationViewer .anatomy3d-topline{top:11px;left:11px;right:11px}
+  #presentationViewer .anatomy3d-topline>span:first-child{font-size:7px}
+  #presentationViewer .anatomy3d-status{font-size:7px;padding:4px 6px}
+  #presentationViewer .anatomy3d-title{left:12px;right:12px;bottom:76px}
+  #presentationViewer .anatomy3d-controls{left:7px;right:7px;bottom:35px;gap:4px}
+  #presentationViewer .anatomy3d-controls button{min-height:30px;padding:0 8px;font-size:9px}
+  #presentationViewer .anatomy3d-footnote{bottom:10px;font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+  #presentationViewer .anatomy3d-canvas,#presentationViewer .anatomy3d-fallback{transition:none}
+}
