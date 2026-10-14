@@ -1775,6 +1775,7 @@
         button.setAttribute('aria-pressed', String(active));
       });
       const showModel = mode === 'model';
+      slidePage?.classList.toggle('is-model-active', showModel);
       if (showModel) $$('.live-video', imageView).forEach(video => video.pause());
       else if (motionEnabled && !reducedMotion.matches) attachVideoBackgrounds(imageView);
       imageView.hidden = showModel;
@@ -1980,6 +1981,12 @@
   }
   initStageAtmosphere();
   updatePerformanceUI();
+
+  if ('serviceWorker' in navigator && window.isSecureContext) {
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' }).catch(() => {
+      // The app remains fully usable if service workers are blocked by browser or hosting policy.
+    });
+  }
 
   const initialHash = location.hash.slice(1);
   if (initialHash.startsWith('present/')) {
