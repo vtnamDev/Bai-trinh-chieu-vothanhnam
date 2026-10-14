@@ -52,7 +52,7 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 - SGK Khoa học Tự nhiên 8, tập 1 — Bài 32, trang in 128–134.
 - WHO: [Diarrhoeal disease](https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease), [Soil-transmitted helminth infections](https://www.who.int/news-room/fact-sheets/detail/soil-transmitted-helminth-infections), [Hepatitis A](https://www.who.int/news-room/fact-sheets/detail/hepatitis-a), [Food safety in Viet Nam](https://www.who.int/vietnam/health-topics/food-safety/food-safety).
 - CDC: [About Cavities (Tooth Decay)](https://www.cdc.gov/oral-health/about/cavities-tooth-decay.html), [DPDx — Ascariasis](https://www.cdc.gov/dpdx/ascariasis/).
-- NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes), [Constipation in children](https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/symptoms-causes).
+- NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes), [Hepatitis A](https://www.who.int/news-room/fact-sheets/detail/hepatitis-a).
 
 ## Deploy
 GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính sẽ tạo deployment mới.
