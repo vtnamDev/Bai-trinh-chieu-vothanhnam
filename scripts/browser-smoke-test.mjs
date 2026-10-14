@@ -87,6 +87,36 @@ try {
   await modelToggle.click();
   await page.locator('#slideStage .media-3d-view:not([hidden])').waitFor({ state: 'visible', timeout: 5000 });
   await page.screenshot({ path: `${outputDir}/mobile-model-view.png` });
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost)').evaluate(el => el.classList.contains('is-model-active')), true,
+    'The active mobile model view must enable the interaction layer.');
+  assert.equal(await page.locator('#slideStage .media-mode-bar--mobile button[data-media-mode="model"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('#slideStage .media-mode-bar--mobile button[data-media-mode="image"]').getAttribute('aria-pressed'), 'false');
+  const interactionLayers = await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost)').evaluate(el => ({
+    copy: getComputedStyle(el.querySelector('.slide-content')).pointerEvents,
+    media: getComputedStyle(el.querySelector('.slide-side-content')).pointerEvents,
+    controls: getComputedStyle(el.querySelector('.media-mode-bar--mobile')).pointerEvents,
+  }));
+  assert.deepEqual(interactionLayers, { copy: 'none', media: 'auto', controls: 'auto' },
+    'Mobile 3D gestures must reach the model, while the foreground mode switch remains tappable.');
+
+  // The shell should reload without network by caching only same-origin app files, not remote media.
+  const workerReady = await page.evaluate(async () => {
+    if (!('serviceWorker' in navigator)) return false;
+    const registration = await navigator.serviceWorker.ready;
+    return Boolean(registration.active);
+  });
+  assert.equal(workerReady, true, 'The app shell service worker should install in a secure context.');
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), { timeout: 10000 });
+  await page.context().setOffline(true);
+  try {
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 15000 });
+    await page.locator('#heroSample').waitFor({ state: 'visible', timeout: 10000 });
+    assert.equal(await page.locator('#performanceStatus').count(), 1,
+      'Core HTML/JS must remain available after an offline reload.');
+  } finally {
+    await page.context().setOffline(false);
+  }
 
   assert.deepEqual(pageErrors, [], `Unexpected JavaScript errors: ${pageErrors.join(' | ')}`);
   console.log('BioSphere browser smoke test passed: mobile layout, settings persistence, slide navigation, lazy 3D loading, and model view.');
