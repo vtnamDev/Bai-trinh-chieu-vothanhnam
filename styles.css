@@ -1975,3 +1975,128 @@ body{
   .viewer .quiz-feedback p{font-size:clamp(12px,1.15vw,15px)!important}
   .viewer .photo-frame.video-playing .live-video{transform:none!important}
 }
+
+
+/* BioSphere 16:9 HDMI pass — final overrides centralize projector rules. */
+#presentationViewer{background:#050a12;color:#f4f8ff}
+#presentationViewer .viewer-topbar{min-height:54px;padding:7px clamp(14px,2.5vw,34px);gap:10px}
+#presentationViewer .viewer-brand{gap:8px;font-size:13px}
+#presentationViewer .viewer-brand img{width:25px;height:25px}
+#presentationViewer .viewer-title{font-size:11px;opacity:.86}
+#presentationViewer .viewer-control{min-height:34px;padding:0 12px;font-size:10px;background:#08111edc;border-color:#ffffff1c}
+#presentationViewer .viewer-controls{gap:5px}
+#presentationViewer .viewer-bottom{min-height:44px;padding:6px clamp(14px,2.5vw,34px);display:flex;align-items:center;justify-content:flex-end;gap:10px}
+#presentationViewer .viewer-bottom>#viewerSlideCaption,#presentationViewer .viewer-bottom>.progress-track{display:none!important}
+#presentationViewer .viewer-bottom-actions{margin-left:auto;gap:7px}
+#presentationViewer .key-hint{font-size:10px}
+#presentationViewer .viewer-mini{min-height:32px;padding:0 10px}
+#presentationViewer .side-hit{width:8%;opacity:.12;transition:opacity .2s,background .2s}
+#presentationViewer:hover .side-hit,#presentationViewer .side-hit:focus-visible{opacity:.72}
+#presentationViewer .side-hit .hit-label{font-size:8px;letter-spacing:.1em}
+#presentationViewer.ui-hidden .viewer-topbar,#presentationViewer.ui-hidden .viewer-bottom{opacity:0;pointer-events:none;transform:translateY(-8px)}
+#presentationViewer.ui-hidden .viewer-bottom{transform:translateY(8px)}
+#presentationViewer.ui-hidden .side-hit{opacity:0!important;pointer-events:none}
+#presentationViewer .viewer-topbar,#presentationViewer .viewer-bottom{transition:opacity .22s ease,transform .22s ease}
+#presentationViewer .slide-stage{background:radial-gradient(ellipse at 78% 18%,#1d68712a,transparent 38%),linear-gradient(135deg,#07131c,#050810 75%)}
+#presentationViewer .slide-stage:before,#presentationViewer .slide-stage:after{opacity:.42}
+#presentationViewer .slide-page{overflow:hidden;padding:clamp(24px,3.6vh,48px) clamp(28px,4.2vw,80px);align-items:center}
+#presentationViewer .slide-layout{width:min(1680px,100%);height:100%;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);align-items:center;gap:clamp(24px,3.2vw,64px)}
+#presentationViewer .slide-content{width:100%;max-width:none;min-width:0;max-height:100%;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ffffff2a transparent;padding:4px 3px 8px 0}
+#presentationViewer .slide-kicker{font-size:clamp(9px,.78vw,12px);letter-spacing:.13em;margin-bottom:clamp(11px,1.8vh,22px);padding:7px 11px}
+#presentationViewer .slide-title{max-width:100%;font-size:clamp(40px,4.6vw,78px);line-height:.98;letter-spacing:-.065em;margin-bottom:clamp(12px,1.7vh,22px)}
+#presentationViewer .slide-subtitle{max-width:100%;font-size:clamp(16px,1.42vw,22px);line-height:1.48;color:#e0e9f3}
+#presentationViewer .slide-points{max-width:100%;margin-top:clamp(13px,1.8vh,23px);gap:clamp(7px,.9vh,11px)}
+#presentationViewer .slide-point{padding:clamp(9px,1.2vh,15px) clamp(11px,1.1vw,17px);font-size:clamp(15px,1.18vw,19px);line-height:1.38;background:linear-gradient(110deg,#0c1d29eb,#0a1721d9);border-color:#e2f1ff21}
+#presentationViewer .slide-point b{font-size:10px;min-width:22px;padding-top:2px}
+#presentationViewer .slide-source{margin-top:clamp(11px,1.4vh,18px);padding:8px 10px;font-size:clamp(8px,.68vw,10px);line-height:1.4}
+#presentationViewer .slide-side-content{width:100%;max-width:none;min-width:0;min-height:0;align-self:stretch;display:flex;align-items:center;justify-content:center}
+#presentationViewer .photo-scene{width:100%;max-width:none;min-width:0;height:min(66vh,720px);min-height:0;margin:0;display:flex;flex-direction:column;justify-content:center}
+#presentationViewer .photo-frame{width:100%;height:min(62vh,690px);min-height:0;max-height:690px;transform:none;border-radius:24px;animation:photo-frame-enter .55s ease both}
+#presentationViewer .photo-frame .live-photo{object-fit:cover}
+#presentationViewer .photo-frame .live-photo.is-contained-diagram{object-fit:contain;background:linear-gradient(135deg,#101923,#0a101b);padding:clamp(8px,1.4vw,18px)}
+#presentationViewer .photo-credit-line{font-size:8px;margin-top:8px}
+#presentationViewer .photo-bottomline{gap:10px}
+#presentationViewer .photo-caption-copy strong{font-size:clamp(10px,.86vw,13px);max-width:min(30vw,360px)}
+#presentationViewer .photo-support-strip{margin-top:8px}
+#presentationViewer .classroom-prompt{margin-top:clamp(12px,1.55vh,20px);padding:clamp(12px,1.25vw,18px);border:1px solid color-mix(in srgb,var(--stage-accent) 42%,#ffffff20);border-radius:17px;background:linear-gradient(130deg,color-mix(in srgb,var(--stage-accent) 10%,#0a1721),#08121cef);box-shadow:0 14px 40px #0002}
+#presentationViewer .classroom-prompt-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px;color:var(--stage-accent);font-size:9px;font-weight:800;letter-spacing:.12em}
+#presentationViewer .classroom-prompt-kicker b{font-size:8px;color:#9aadc0;font-weight:600;letter-spacing:.04em;text-align:right}
+#presentationViewer .classroom-scenario{margin:0 0 8px;color:#d7e5f0;font-size:clamp(13px,1vw,16px);line-height:1.4}
+#presentationViewer .classroom-question{margin:0 0 9px;font-size:clamp(15px,1.22vw,19px);line-height:1.35;letter-spacing:-.02em}
+#presentationViewer .reveal-answer-btn{display:inline-flex;align-items:center;gap:10px;min-height:35px;padding:0 13px;border:1px solid color-mix(in srgb,var(--stage-accent) 46%,#ffffff1f);border-radius:999px;background:color-mix(in srgb,var(--stage-accent) 13%,#07111b);color:#f5fcff;font-size:11px;font-weight:750}
+#presentationViewer .reveal-answer-btn:hover{background:color-mix(in srgb,var(--stage-accent) 24%,#07111b)}
+#presentationViewer .classroom-answer{margin-top:11px;padding-top:10px;border-top:1px solid #ffffff24}
+#presentationViewer .classroom-answer[hidden]{display:none!important}
+#presentationViewer .classroom-answer strong{color:#c8f3df;font-size:11px}
+#presentationViewer .classroom-answer p{font-size:clamp(12px,.95vw,15px);line-height:1.42;margin:5px 0;color:#f0f6fb}
+#presentationViewer .classroom-answer small{display:block;color:#afc3d1;line-height:1.4;font-size:clamp(10px,.78vw,12px)}
+.contents-overlay{position:absolute;inset:0;z-index:30;display:grid;place-items:center;padding:clamp(12px,2vw,28px);background:#030711ed;backdrop-filter:blur(22px)}
+.contents-overlay[hidden]{display:none!important}
+.contents-panel{width:min(100%,1240px);height:min(100%,900px);min-height:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid #ffffff20;border-radius:24px;background:linear-gradient(145deg,#111d2b,#08111b);box-shadow:0 35px 120px #000a}
+.contents-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:clamp(18px,2.4vw,30px);border-bottom:1px solid #ffffff17}
+.contents-eyebrow{color:#81e5d1;font:800 9px/1.4 ui-monospace,monospace;letter-spacing:.18em}
+.contents-header h2{margin:8px 0 5px;font-size:clamp(24px,3vw,38px);letter-spacing:-.05em}
+.contents-header p{margin:0;color:#a9bac8;font-size:12px}
+.contents-close{border:1px solid #ffffff24;border-radius:999px;min-height:38px;padding:0 13px;color:#ecf7ff;background:#ffffff09;white-space:nowrap}
+.contents-close span{opacity:.55;margin-left:7px}
+.contents-progress-row{display:flex;align-items:center;gap:15px;padding:11px clamp(18px,2.4vw,30px);font-size:10px;color:#adc1d0}
+.contents-progress-track{height:3px;flex:1;border-radius:9px;background:#ffffff15;overflow:hidden}
+.contents-progress-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,#7ee5d2,#99b9ff);transition:width .25s ease}
+.contents-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:0 clamp(18px,2.4vw,30px) clamp(18px,2.4vw,30px);overflow:auto;overscroll-behavior:contain}
+.contents-item{display:flex;align-items:center;gap:13px;min-width:0;padding:12px 13px;border:1px solid #ffffff14;border-radius:13px;background:#ffffff05;color:#eef6ff;text-align:left;transition:background .18s,border-color .18s,transform .18s}
+.contents-item:hover{background:#ffffff0d;border-color:#ffffff36;transform:translateY(-1px)}
+.contents-item.is-current{border-color:#80e2d38b;background:linear-gradient(110deg,#79ead01a,#9eaaff0b)}
+.contents-item-number{align-self:flex-start;min-width:30px;color:#80dfd1;font:800 11px/1.6 ui-monospace,monospace}
+.contents-item-copy{display:grid;gap:4px;min-width:0}
+.contents-item-copy small{color:#8298aa;font-size:8px;letter-spacing:.08em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.contents-item-copy strong{font-size:clamp(11px,.95vw,14px);line-height:1.3;font-weight:650}
+.contents-item-arrow{margin-left:auto;color:#8299ab;font-size:13px}
+#presentationViewer.ui-hidden .viewer-topbar,#presentationViewer.ui-hidden .viewer-bottom{visibility:hidden}
+#presentationViewer.ui-hidden .viewer-corner-mark{opacity:0}
+@media(min-width:1100px) and (min-aspect-ratio:4/3){
+  #presentationViewer .slide-page{padding:clamp(20px,3.1vh,42px) clamp(30px,4vw,76px)}
+  #presentationViewer .slide-layout{grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(25px,3vw,58px)}
+  #presentationViewer .photo-scene{height:min(67vh,740px)}
+  #presentationViewer .photo-frame{height:min(63vh,700px)}
+}
+@media(max-width:1099px){
+  #presentationViewer .slide-page{overflow-y:auto;align-items:flex-start}
+  #presentationViewer .slide-layout{height:auto;min-height:100%;grid-template-columns:minmax(0,1fr);align-content:start;gap:18px}
+  #presentationViewer .slide-content{overflow:visible;max-height:none}
+  #presentationViewer .slide-side-content{min-height:0}
+  #presentationViewer .photo-scene{width:min(100%,760px);height:auto;min-height:0}
+  #presentationViewer .photo-frame{height:clamp(270px,48vh,460px)}
+  #presentationViewer .slide-title{font-size:clamp(34px,5.6vw,58px)}
+  #presentationViewer .slide-subtitle{font-size:clamp(15px,2vw,18px)}
+  #presentationViewer .slide-point{font-size:clamp(14px,1.8vw,17px)}
+  #presentationViewer .classroom-question{font-size:clamp(15px,2vw,19px)}
+  .contents-list{grid-template-columns:minmax(0,1fr)}
+  .contents-panel{height:min(100%,900px);border-radius:18px}
+}
+@media(max-width:600px){
+  #presentationViewer .viewer-title{display:none}
+  #presentationViewer .viewer-control{padding:0 8px;font-size:9px}
+  #presentationViewer #viewerControlsToggle{display:none}
+  #presentationViewer .viewer-bottom{min-height:38px}
+  #presentationViewer .viewer-bottom-actions{gap:3px}
+  #presentationViewer .key-hint{display:none}
+  #presentationViewer .slide-page{padding:20px 17px 28px}
+  #presentationViewer .slide-kicker{font-size:8px;margin-bottom:12px}
+  #presentationViewer .slide-title{font-size:clamp(33px,9.5vw,48px)}
+  #presentationViewer .slide-subtitle{font-size:14px}
+  #presentationViewer .slide-point{font-size:12px;padding:9px 10px}
+  #presentationViewer .photo-frame{height:clamp(210px,34vh,280px)}
+  #presentationViewer .classroom-prompt{padding:12px}
+  #presentationViewer .classroom-prompt-kicker b{display:none}
+  #presentationViewer .classroom-scenario{font-size:13px}
+  #presentationViewer .classroom-question{font-size:15px}
+  #presentationViewer .classroom-answer small{font-size:10px}
+  .contents-header{padding:15px}
+  .contents-list{padding:0 15px 15px}
+  .contents-item{padding:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  #presentationViewer .contents-progress-track span{transition:none}
+  #presentationViewer .contents-item{transition:none}
+  #presentationViewer .classroom-prompt,.contents-overlay{scroll-behavior:auto}
+}
