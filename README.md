@@ -4,11 +4,16 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 
 ## Cấu trúc
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
-- `styles.css` — giao diện responsive, chuyển cảnh và minh họa vector.
+- `styles.css` — giao diện responsive nhiều bảng màu, bố cục ảnh editorial, hiệu ứng chiều sâu và chuyển động.
 - `app.js` — thư viện, tìm kiếm, nhập/xuất JSON, điều hướng slide, chia sẻ link, toàn màn hình.
-- `bai32-deck.js` — nội dung 20 trang, ghi chú nguồn theo slide và liên kết tham khảo.
+- `bai32-deck.js` — nội dung 20 trang, URL ảnh thực riêng cho từng slide, chú thích/nguồn ảnh và liên kết tham khảo.
 - `assets/mark.svg` — biểu tượng BioSphere.
 - `vercel.json` — cấu hình hosting tĩnh.
+
+## Hình ảnh và thiết kế
+- Mỗi trang trong bài Bài 32 có một URL ảnh thực riêng (20/20 ảnh khác nhau), mô tả thay thế, ghi nguồn và liên kết mở nguồn; một số trang có thêm thẻ ảnh phụ.
+- Ảnh được tải trực tiếp từ nguồn trực tuyến khi mở trang. Nguồn sử dụng gồm Wikimedia Commons (sơ đồ giải phẫu/ảnh y khoa có giấy phép ghi trên trang file), Unsplash, Pexels và một số nguồn y tế/giáo dục như WHO. Ví dụ: [sơ đồ hệ tiêu hóa trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg), [ảnh răng sâu trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Dental_Caries_Cavity_1.JPG), [ảnh nội soi ổ loét dạ dày](https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg), [ảnh trẻ chải răng trên Pexels](https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/).
+- Vì ảnh tải trực tiếp từ máy chủ nguồn, thiết bị cần Internet; chất lượng/tốc độ có thể thay đổi theo nguồn ảnh. Trình chiếu sẽ thử dùng ảnh dự phòng nếu một URL không tải được.
 
 ## Cách trình chiếu
 - Mở bài Bài 32 trong thư viện rồi chọn **Trình chiếu**.
@@ -23,7 +28,7 @@ Website trình chiếu khoa học tối ưu cho màn hình điện thoại và m
 - Bài mang tính giáo dục sức khỏe, không dùng để tự chẩn đoán hay tự điều trị. Khi có dấu hiệu nặng, cần báo người lớn và đến cơ sở y tế.
 
 ## Giới hạn hiện tại
-Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên kết trình chiếu bài này có thể mở trên thiết bị khác. Các bản nháp/tệp nhập được lưu trong bộ nhớ của trình duyệt hiện tại; chúng chưa đồng bộ qua tài khoản hay cơ sở dữ liệu. Link hiện chưa có bảo vệ bằng mật khẩu. Không đưa thông tin riêng tư của học sinh lên mã nguồn công khai.
+Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên kết trình chiếu bài này có thể mở trên thiết bị khác. Các bản nháp/tệp nhập được lưu trong bộ nhớ của trình duyệt hiện tại; chúng chưa đồng bộ qua tài khoản hay cơ sở dữ liệu. Ảnh của bài mẫu được tải từ nguồn trực tuyến, không được chép thành tệp ảnh nội bộ trong repository. Link hiện chưa có bảo vệ bằng mật khẩu. Không đưa thông tin riêng tư của học sinh lên mã nguồn công khai.
 
 ## Nguồn tham khảo chính
 - SGK Khoa học Tự nhiên 8, tập 1 — Bài 32, trang in 128–134.
