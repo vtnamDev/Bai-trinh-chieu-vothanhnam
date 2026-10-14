@@ -367,15 +367,18 @@
     return mesh;
   }
 
-  function makeExtrudedShape(THREE, group, shape, color, depth = 0.34, z = 0, bevel = 0.045) {
+  function makeExtrudedShape(THREE, group, shape, color, depth = 0.34, z = 0, bevel = 0.045, materialOptions = {}) {
     const geometry = new THREE.ExtrudeGeometry(shape, {
-      depth, bevelEnabled: true, bevelSegments: 3, steps: 1,
-      bevelSize: bevel, bevelThickness: bevel, curveSegments: 24
+      depth, bevelEnabled: true, bevelSegments: 4, steps: 1,
+      bevelSize: bevel, bevelThickness: bevel, curveSegments: 32
     });
     geometry.translate(0, 0, -depth / 2);
-    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.015 });
+    const base = { color, roughness: 0.42, metalness: 0.01 };
+    const material = new THREE.MeshPhysicalMaterial({ ...base, ...materialOptions });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.z = z;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     group.add(mesh);
     return mesh;
   }
@@ -416,27 +419,54 @@
 
   function buildModelGeometry(THREE, type, group) {
     if (type === 'tooth') {
-      makeExtrudedShape(THREE, group, makeToothShape(THREE, 1), '#e8e0cf', 0.38, 0, 0.06);
-      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.73), '#d99d60', 0.18, 0.24, 0.025);
-      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.32), '#d96682', 0.10, 0.35, 0.012);
-      makeEllipsoid(THREE, group, [-0.31, 0.54, 0.35], [0.11, 0.18, 0.035], '#fff4db');
+      // Explanatory cutaway schematic: enamel, dentin, pulp and a visible caries spot.
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 1), '#f0e4cb', 0.46, 0, 0.075, { roughness: 0.23, clearcoat: 0.92, clearcoatRoughness: 0.18 });
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.72), '#d9a36c', 0.22, 0.25, 0.03, { roughness: 0.42 });
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.32), '#cd6d88', 0.12, 0.39, 0.018, { roughness: 0.35 });
+      makeTube(THREE, group, [[-0.08, 0.02, 0.47], [-0.15, -0.31, 0.45], [-0.18, -0.62, 0.43], [-0.10, -0.86, 0.42]], '#be5d77', 0.025, 42);
+      makeTube(THREE, group, [[0.04, 0.01, 0.47], [0.10, -0.31, 0.45], [0.14, -0.62, 0.43], [0.12, -0.84, 0.42]], '#be5d77', 0.022, 42);
+      makeEllipsoid(THREE, group, [0.46, 0.58, 0.40], [0.16, 0.135, 0.045], '#986344');
+      makeEllipsoid(THREE, group, [0.47, 0.59, 0.445], [0.082, 0.068, 0.026], '#4d3331');
+      makeTube(THREE, group, [[-0.61, 0.20, 0.28], [-0.39, 0.07, 0.31], [-0.12, 0.02, 0.32], [0.18, 0.02, 0.31]], '#d9a4aa', 0.036, 40);
       return;
     }
     if (type === 'stomach') {
-      makeExtrudedShape(THREE, group, makeStomachShape(THREE), '#d77d91', 0.36, 0.03, 0.06);
-      makeTube(THREE, group, [[-0.16, 1.22, 0.04], [-0.18, 0.94, 0.12], [-0.16, 0.71, 0.15], [-0.17, 0.49, 0.20]], '#f0b4a9', 0.095);
-      makeTube(THREE, group, [[0.37, -0.42, 0.20], [0.57, -0.42, 0.16], [0.69, -0.24, 0.08], [0.55, -0.04, 0.08]], '#e7a8a0', 0.075);
-      makeEllipsoid(THREE, group, [-0.04, 0.08, 0.25], [0.12, 0.10, 0.04], '#f2c9a0');
+      // Stomach cutaway schematic with mucosal folds; the ulcer marker is illustrative, not clinical imagery.
+      makeExtrudedShape(THREE, group, makeStomachShape(THREE), '#c96e86', 0.42, 0.03, 0.075, { roughness: 0.34, clearcoat: 0.38, clearcoatRoughness: 0.35 });
+      makeTube(THREE, group, [[-0.16, 1.22, 0.04], [-0.18, 0.94, 0.12], [-0.16, 0.71, 0.15], [-0.17, 0.49, 0.20]], '#efb3ba', 0.095);
+      makeTube(THREE, group, [[0.37, -0.42, 0.20], [0.57, -0.42, 0.16], [0.69, -0.24, 0.08], [0.55, -0.04, 0.08]], '#e8a2ac', 0.075);
+      [
+        [[-0.30, 0.30, 0.26], [-0.14, 0.36, 0.29], [0.02, 0.28, 0.29], [0.16, 0.20, 0.26]],
+        [[-0.32, 0.12, 0.28], [-0.12, 0.18, 0.31], [0.08, 0.10, 0.30], [0.18, 0.02, 0.26]],
+        [[-0.29, -0.06, 0.28], [-0.11, -0.01, 0.31], [0.08, -0.08, 0.29], [0.17, -0.17, 0.25]],
+        [[-0.20, -0.25, 0.24], [-0.03, -0.20, 0.28], [0.13, -0.27, 0.25]]
+      ].forEach((fold, i) => makeTube(THREE, group, fold, i % 2 ? '#f2b2be' : '#e58fa3', 0.018, 38));
+      makeEllipsoid(THREE, group, [0.20, 0.19, 0.30], [0.13, 0.10, 0.035], '#f0c28f');
+      makeEllipsoid(THREE, group, [0.20, 0.19, 0.34], [0.065, 0.048, 0.022], '#8b405b');
+      makeEllipsoid(THREE, group, [0.20, 0.19, 0.36], [0.028, 0.020, 0.012], '#4d2336');
       return;
     }
     if (type === 'intestine') {
-      makeTube(THREE, group, [[-0.62, 0.62, 0], [-0.69, 0.20, 0.02], [-0.68, -0.37, 0], [-0.48, -0.62, 0], [0.02, -0.67, 0], [0.49, -0.60, 0], [0.67, -0.32, 0.02], [0.65, 0.28, 0], [0.47, 0.65, 0], [0.21, 0.67, 0]], '#b96880', 0.14, 90);
-      makeTube(THREE, group, [[-0.43, 0.30, 0.14], [-0.15, 0.40, 0.22], [0.18, 0.30, 0.14], [0.38, 0.12, 0.18], [0.12, 0.00, 0.24], [-0.31, 0.08, 0.17], [-0.40, -0.13, 0.22], [-0.08, -0.25, 0.17], [0.31, -0.17, 0.22], [0.40, -0.36, 0.13], [0.08, -0.45, 0.20], [-0.25, -0.37, 0.13]], '#eea0aa', 0.060, 120);
+      makeTube(THREE, group, [[-0.62, 0.62, 0], [-0.69, 0.20, 0.02], [-0.68, -0.37, 0], [-0.48, -0.62, 0], [0.02, -0.67, 0], [0.49, -0.60, 0], [0.67, -0.32, 0.02], [0.65, 0.28, 0], [0.47, 0.65, 0], [0.21, 0.67, 0]], '#9e4e67', 0.145, 110);
+      // Small intestine is shown as soft, nested loops rather than a random coil.
+      makeTube(THREE, group, [[-0.44, 0.34, 0.14], [-0.22, 0.43, 0.22], [0.05, 0.34, 0.20], [0.32, 0.28, 0.17], [0.39, 0.10, 0.20], [0.12, 0.04, 0.24], [-0.23, 0.11, 0.21], [-0.40, -0.04, 0.18], [-0.29, -0.22, 0.21], [0.03, -0.18, 0.25], [0.34, -0.24, 0.18], [0.30, -0.42, 0.14], [-0.05, -0.44, 0.20], [-0.32, -0.39, 0.13]], '#eab0b8', 0.062, 150);
+      for (let i = 0; i < 9; i++) {
+        const x = -0.28 + i * 0.07;
+        const y = 0.26 + Math.sin(i * 0.72) * 0.07;
+        makeTube(THREE, group, [[x, y, 0.255], [x + 0.03, y - 0.04, 0.275], [x + 0.06, y - 0.08, 0.255]], '#f5c5c9', 0.009, 14);
+      }
       return;
     }
     if (type === 'worm') {
-      makeTube(THREE, group, [[-0.62, 0.66, -0.05], [-0.26, 0.40, 0.10], [0.33, 0.51, 0.0], [0.54, 0.21, 0.13], [0.08, -0.05, 0.05], [-0.45, -0.38, 0.12], [-0.05, -0.68, 0.0]], '#e7bf9e', 0.074, 120);
-      makeTube(THREE, group, [[0.48, 0.66, -0.16], [0.13, 0.39, -0.02], [-0.36, 0.29, -0.14], [-0.45, -0.03, 0.02], [0.05, -0.28, -0.10], [0.42, -0.57, 0.0]], '#f0d3b0', 0.055, 120);
+      const first = [[-0.62, 0.66, -0.05], [-0.26, 0.40, 0.10], [0.33, 0.51, 0.0], [0.54, 0.21, 0.13], [0.08, -0.05, 0.05], [-0.45, -0.38, 0.12], [-0.05, -0.68, 0.0]];
+      const second = [[0.48, 0.66, -0.16], [0.13, 0.39, -0.02], [-0.36, 0.29, -0.14], [-0.45, -0.03, 0.02], [0.05, -0.28, -0.10], [0.42, -0.57, 0.0]];
+      makeTube(THREE, group, first, '#d9a879', 0.071, 140);
+      makeTube(THREE, group, second, '#f0d2ae', 0.053, 140);
+      first.forEach((point, i) => {
+        if (i > 0 && i < first.length - 1) {
+          makeEllipsoid(THREE, group, [point[0], point[1], (point[2] || 0) + 0.055], [0.055, 0.035, 0.022], '#bf8a65');
+        }
+      });
       for (let i = 0; i < 7; i++) {
         const angle = i * 0.85;
         makeEllipsoid(THREE, group, [Math.cos(angle) * 0.22, -0.84 + Math.sin(angle) * 0.07, 0.04], [0.05, 0.07, 0.05], '#e9d6a0');
@@ -452,7 +482,7 @@
       shape.bezierCurveTo(0.08, -0.54, -0.05, -0.39, -0.22, -0.35);
       shape.bezierCurveTo(-0.49, -0.32, -0.68, -0.20, -0.84, 0.30);
       shape.closePath();
-      makeExtrudedShape(THREE, group, shape, '#985365', 0.34, 0, 0.06);
+      makeExtrudedShape(THREE, group, shape, '#965064', 0.43, 0, 0.085, { roughness: 0.32, clearcoat: 0.42 });
       makeEllipsoid(THREE, group, [0.24, -0.46, 0.24], [0.12, 0.22, 0.10], '#75a77c');
       makeTube(THREE, group, [[0.18, -0.24, 0.30], [0.13, -0.04, 0.28], [-0.01, 0.10, 0.21]], '#e4bd81', 0.035, 32);
     }
@@ -509,7 +539,10 @@
     const source = String(panel.dataset.modelSrc || '').trim();
     if (!source) throw new Error('No reference model source');
     await ensureModelViewerLibrary();
-    if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden) return;
+    if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden) {
+      delete panel.dataset.modelInitializing;
+      return;
+    }
     const slot = panel.querySelector('.anatomy3d-native-slot');
     if (!slot) throw new Error('3D viewer slot missing');
     slot.innerHTML = '';
@@ -572,8 +605,10 @@
 
   function initCustomThreeModel(panel) {
     ensureThreeLibrary().then(THREE => {
-      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel) return;
-      disposeInteractiveModel();
+      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden) {
+        delete panel.dataset.modelInitializing;
+        return;
+      }
       try {
         const surface = panel.querySelector('.anatomy3d-canvas');
         const width = Math.max(220, surface.clientWidth || panel.clientWidth || 420);
@@ -1575,7 +1610,11 @@
       imageView.classList.toggle('is-active', !showModel);
       modelView.classList.toggle('is-active', showModel);
       if (showModel) initInteractiveModels(experience);
-      else if (activeAnatomy3D?.panel === modelView.querySelector('.anatomy3d-panel')) disposeInteractiveModel();
+      else {
+        const modelPanel = modelView.querySelector('.anatomy3d-panel');
+        if (activeAnatomy3D?.panel === modelPanel) disposeInteractiveModel();
+        else if (modelPanel) delete modelPanel.dataset.modelInitializing;
+      }
       return;
     }
     if (target.matches('[data-model-action]')) { controlInteractiveModel(target); return; }
