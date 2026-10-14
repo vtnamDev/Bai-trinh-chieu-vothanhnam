@@ -70,7 +70,7 @@ try {
   await page.screenshot({ path: `${outputDir}/mobile-presenter.png` });
 
   // Reach a curated 3D scene, then verify the image/model switch exposes the 3D panel.
-  let modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) [data-media-mode="model"]');
+  let modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) button[data-media-mode="model"]:visible');
   for (let index = 0; index < 32 && await modelToggle.count() === 0; index += 1) {
     const unansweredQuizChoices = page.locator('#slideStage [data-quiz-answer]:not([disabled])');
     if (await unansweredQuizChoices.count() > 0) {
@@ -81,7 +81,7 @@ try {
     }
     await page.keyboard.press('ArrowRight');
     await page.waitForTimeout(90);
-    modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) [data-media-mode="model"]');
+    modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) button[data-media-mode="model"]:visible');
   }
   assert.ok(await modelToggle.count() > 0, 'At least one curated 3D scene must expose the model switch.');
   await modelToggle.click();
