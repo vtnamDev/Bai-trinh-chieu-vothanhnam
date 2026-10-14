@@ -125,8 +125,8 @@
     if (profile.lite || !motionEnabled || reducedMotion.matches) stopStageAtmosphere();
     else if (!$('#presentationViewer').hidden) startStageAtmosphere();
     if (!profile.allowVideo) {
-      $('.live-video', $('#slideStage')).forEach(video => video.pause());
-      $('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
+      $$('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
     } else if (!$('#presentationViewer').hidden) {
       attachVideoBackgrounds($('#slideStage'));
     }
@@ -397,15 +397,20 @@
     '</aside>';
   }
 
+  function renderMediaModeBar(className = '') {
+    return '<div class="media-mode-bar ' + className + '">' +
+      '<span class="media-mode-label">KHÁM PHÁ HÌNH ẢNH</span>' +
+      '<div class="media-mode-switch" role="group" aria-label="Chọn cách xem hình ảnh">' +
+        '<button type="button" class="media-mode-button is-active" data-media-mode="image" aria-pressed="true"><span aria-hidden="true">▧</span> Ảnh gốc</button>' +
+        '<button type="button" class="media-mode-button" data-media-mode="model" aria-pressed="false"><span aria-hidden="true">◈</span> Mô hình 3D</button>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderMediaWithModel(slide) {
     const image = slide.image ? renderPhoto(slide) : renderVisual(slide.visual);
     return '<div class="media-experience" data-media-type="' + escapeHTML(String(slide.model3D || 'anatomy')) + '">' +
-      '<div class="media-mode-bar"><span class="media-mode-label">KHÁM PHÁ HÌNH ẢNH</span>' +
-        '<div class="media-mode-switch" role="group" aria-label="Chọn cách xem hình ảnh">' +
-          '<button type="button" class="media-mode-button is-active" data-media-mode="image" aria-pressed="true"><span aria-hidden="true">▧</span> Ảnh gốc</button>' +
-          '<button type="button" class="media-mode-button" data-media-mode="model" aria-pressed="false"><span aria-hidden="true">◈</span> Mô hình 3D</button>' +
-        '</div>' +
-      '</div>' +
+      renderMediaModeBar('media-mode-bar--desktop') +
       '<div class="media-image-view is-active">' + image + '</div>' +
       '<div class="media-3d-view" hidden>' + renderInteractive3D(slide) + '</div>' +
     '</div>';
@@ -1437,6 +1442,7 @@
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
+            (slide.model3D ? renderMediaModeBar('media-mode-bar--mobile') : '') +
             pointHtml + promptHtml + quizHtml + endingHtml + sourceHtml + linksHtml +
           '</section>' +
           '<div class="slide-side-content">' + (slide.model3D ? renderMediaWithModel(slide) : (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : ''))) + '</div>' +
@@ -1755,19 +1761,21 @@
       return;
     }
     if (target.matches('[data-media-mode]')) {
-      const experience = target.closest('.media-experience');
+      const slidePage = target.closest('.slide-page');
+      const experience = target.closest('.media-experience') || slidePage?.querySelector('.media-experience');
       if (!experience) return;
       const mode = target.dataset.mediaMode;
       const imageView = experience.querySelector('.media-image-view');
       const modelView = experience.querySelector('.media-3d-view');
-      experience.querySelectorAll('[data-media-mode]').forEach(button => {
+      if (!imageView || !modelView) return;
+      // The mobile toolbar lives with the slide copy; keep both bars in sync.
+      $$('[data-media-mode]', slidePage || experience).forEach(button => {
         const active = button.dataset.mediaMode === mode;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', String(active));
       });
       const showModel = mode === 'model';
-      const imageVideos = $('.live-video', imageView);
-      if (showModel) imageVideos.forEach(video => video.pause());
+      if (showModel) $$('.live-video', imageView).forEach(video => video.pause());
       else if (motionEnabled && !reducedMotion.matches) attachVideoBackgrounds(imageView);
       imageView.hidden = showModel;
       modelView.hidden = !showModel;
