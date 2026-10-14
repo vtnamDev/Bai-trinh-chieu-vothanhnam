@@ -137,7 +137,7 @@
             <div class="deck-cover-shade"></div>
             <div class="cover-top"><span>${formatSubject(deck.subject)}</span><span>${String(position + 1).padStart(2, '0')} / ${escapeHTML(deck.date || 'LOCAL')}</span></div>
             <div class="cover-title">${escapeHTML(deck.title)}</div>
-            <div class="cover-foot"><span>BIOSPHERE / SLIDES</span><span>${deck.isSeed ? 'BÀI 32 · 20 TRANG' : 'BẢN NHÁP'}</span></div>
+            <div class="cover-foot"><span>BIOSPHERE / SLIDES</span><span>${deck.isSeed ? 'BÀI 32 · TƯƠNG TÁC' : 'BẢN NHÁP'}</span></div>
           </div>
           <div class="deck-body">
             <h3>${escapeHTML(deck.title)}</h3>
@@ -819,6 +819,11 @@
     } else {
       showView(hash, false);
     }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopStageAtmosphere();
+    else if (!$('#presentationViewer').hidden && motionEnabled && !reducedMotion.matches) startStageAtmosphere();
   });
 
   reducedMotion.addEventListener?.('change', event => {
