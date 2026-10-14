@@ -519,3 +519,16 @@ body{
 .viewer.motion-off .hero-photo-ambient,.viewer.motion-off .hero-photo-main,.viewer.motion-off .hero-photo-main>.hero-photo-img,
 .viewer.motion-off .hero-photo-tile,.viewer.motion-off .hero-photo-orbit,.viewer.motion-off .photo-halo,
 .viewer.motion-off .photo-frame,.viewer.motion-off .live-photo,.viewer.motion-off .photo-scanline{animation:none!important;transform:none!important}
+
+
+/* Image-led thumbnails in the workspace library */
+.deck-cover{position:relative;isolation:isolate;overflow:hidden}
+.deck-cover-photo{position:absolute;inset:0;z-index:-1;display:block;width:100%;height:100%;object-fit:cover;opacity:.84;filter:saturate(1.18) contrast(1.06);transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .5s}
+.deck-cover-shade{position:absolute;z-index:0;inset:0;background:linear-gradient(100deg,#070b1bdc 0%,#0b102d7a 58%,#1512331c 100%),linear-gradient(0deg,#070b1bf0 0%,transparent 61%);pointer-events:none}
+.deck-cover:before{z-index:1;opacity:.48;mix-blend-mode:screen}
+.deck-cover:after{z-index:1}
+.cover-top,.cover-title,.cover-foot{position:relative;z-index:2;text-shadow:0 2px 18px #0009}
+.deck-card:hover .deck-cover-photo{transform:scale(1.07);filter:saturate(1.28) contrast(1.08)}
+.deck-card:hover .deck-cover-shade{background:linear-gradient(100deg,#070b1dcd 0%,#0b102d68 56%,#1512330d 100%),linear-gradient(0deg,#070b1beF 0%,transparent 61%)}
+.deck-cover-photo.photo-load-failed{opacity:0}
+.deck-cover.photo-failed{background:linear-gradient(135deg,#323b77,#6f3778,#1d777b)}
