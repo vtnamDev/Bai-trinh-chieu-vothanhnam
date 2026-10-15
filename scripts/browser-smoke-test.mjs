@@ -94,6 +94,20 @@ try {
     `The first slide must show a knowledge-map visual, got ${JSON.stringify(mobileEditorialLayout)}`);
   assert.equal(mobileEditorialLayout.mediaPosition, 'relative',
     'The photo frame must be a panel, not an absolutely positioned full-slide background.');
+  const imageQuality = await page.locator('#slideStage .live-photo').evaluate(img => {
+    const url = new URL(img.currentSrc || img.src);
+    const style = getComputedStyle(img);
+    return {
+      width: Number(url.searchParams.get('w') || 0),
+      quality: Number(url.searchParams.get('q') || 0),
+      filter: style.filter,
+      transform: style.transform,
+    };
+  });
+  assert.ok(imageQuality.width >= 768 && imageQuality.quality >= 82,
+    `Image URL must request adequate screen pixels and quality: ${JSON.stringify(imageQuality)}`);
+  assert.equal(imageQuality.filter, 'none', 'The image itself should not be blurred or color-shifted by a filter.');
+  assert.equal(imageQuality.transform, 'none', 'The photo should not be continuously zoomed, which softens edges on mobile.');
   assert.equal(await page.evaluate(() => Boolean(document.querySelector('script[data-biosphere-three]'))), false,
     'The 3D library must not load before a user selects a 3D scene.');
   assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .slide-key-idea').count(), 1,
@@ -115,6 +129,22 @@ try {
   }));
   assert.deepEqual(continuityState, { storyGroup:'foundation', bridge:'continuity', accent:'#70dfd0' },
     `Adjacent slides in one chapter should keep the same palette and continuous motion: ${JSON.stringify(continuityState)}`);
+  const oneSurfaceState = await stage.evaluate(el => {
+    const page = el.querySelector(':scope > .slide-page:not(.slide-transition-ghost)');
+    return {
+      pages:el.querySelectorAll(':scope > .slide-page').length,
+      ghosts:el.querySelectorAll(':scope > .slide-transition-ghost').length,
+      activePages:el.querySelectorAll(':scope > .slide-page:not(.slide-transition-ghost)').length,
+      duration:page ? getComputedStyle(page).animationDuration : '',
+    };
+  });
+  assert.deepEqual(
+    {pages:oneSurfaceState.pages,ghosts:oneSurfaceState.ghosts,activePages:oneSurfaceState.activePages},
+    {pages:1,ghosts:0,activePages:1},
+    `Navigation must replace the old slide immediately; no saved screenshot or full-size image may remain layered: ${JSON.stringify(oneSurfaceState)}`
+  );
+  assert.ok(Number.parseFloat(oneSurfaceState.duration) <= .35,
+    `Incoming slide animation should finish quickly, not keep the presenter feeling stuck: ${JSON.stringify(oneSurfaceState)}`);
   await stage.click({ position: { x: Math.round(stageBounds.width * 0.16), y: Math.round(stageBounds.height * 0.5) } });
   await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 25');
   const presentationWidth = await page.evaluate(() => ({
@@ -139,6 +169,10 @@ try {
       }));
       assert.deepEqual(chapterState, { storyGroup:'tooth', bridge:'chapter', palette:'coral' },
         `Entering a new disease should use its own accent and chapter transition: ${JSON.stringify(chapterState)}`);
+      assert.equal(await page.locator('#slideStage > .slide-page').count(), 1,
+        'Entering a new chapter must not keep the outgoing page in the DOM.');
+      assert.equal(await page.locator('#slideStage > .slide-transition-ghost').count(), 0,
+        'The previous slide must not be rendered as an outgoing ghost.');
     }
     caseAnswer = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .case-quiz-answer:visible');
   }
