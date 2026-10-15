@@ -12,7 +12,7 @@ const [html, app, deckSource, css, serviceWorker] = await Promise.all([
 
 // Guard against accidental bundle growth. These are source-size budgets, not gzip estimates.
 const sourceBudgets = [
-  ['app.js', app, 160 * 1024],
+  ['app.js', app, 168 * 1024],
   ['styles.css', css, 220 * 1024],
   ['bai32-deck.js', deckSource, 75 * 1024],
   ['service-worker.js', serviceWorker, 8 * 1024],
@@ -108,6 +108,8 @@ assert.ok(css.includes('.slide-key-idea') && css.includes('.slide-point--support
 assert.ok(css.includes('story-continuity-in') && css.includes('story-chapter-in'), 'Transitions must distinguish continuity within a chapter from motion between chapters.');
 assert.ok(css.includes('BioSphere v13 — one live slide'), 'The low-latency single-surface motion pass must be present.');
 assert.ok(css.includes('story-continuity-single') && css.includes('story-chapter-single'), 'Incoming-only motion must use fast continuity and chapter transitions.');
+assert.ok(css.includes('HDMI / TV projector canvas') && css.includes('.viewer.projector-mode #slideStage'), 'The desktop HDMI projector canvas must have a dedicated responsive layout.');
+assert.ok(css.includes('.viewer-projector-control') && css.includes('projector-mode .viewer-bottom'), 'Projector controls and the progress overlay must remain styled in fullscreen.');
 assert.ok(css.includes('.live-photo{') && css.includes('data-motion-bridge="instant"]'), 'Photos must remain crisp and reveal-only navigation must avoid entrance animation.');
 assert.ok(css.includes('BioSphere v10 — editorial slide system'), 'The consolidated responsive slide system must be active.');
 assert.ok(!css.includes('The actual webview in the supplied screenshot is ~720 CSS px wide.'), 'The obsolete mobile rule that turns the photo into a full-slide background must stay removed.');
@@ -118,6 +120,10 @@ assert.ok(app.includes('source[data-src]') && app.includes('video.load()'), 'MP4
 assert.ok(app.includes('lineBuckets') && app.includes('dotBuckets'), 'Canvas particles must batch draw calls instead of stroking each edge and dot independently.');
 assert.ok(!app.includes('previousPage.cloneNode(true)') && !app.includes('stage.appendChild(ghost)'), 'Slide transitions must replace the old page immediately and never render two full-size slides.');
 assert.ok(app.includes('let warmedPhotoAssets = new Map();') && app.includes('preload.decode().catch(() => {})'), 'Adjacent photos should be prewarmed and decoded before a fast tap.');
+assert.ok(app.includes('function toggleProjectorMode()') && app.includes("if (target.id === 'viewerProjector')"), 'The viewer must offer a dedicated HDMI/TV projector mode.');
+assert.ok(app.includes('function syncFullscreenControls()') && app.includes("document.addEventListener('fullscreenchange'"), 'Fullscreen button state must track the browser fullscreen state.');
+assert.ok(app.includes('upgradeProjectorImages()') && app.includes('profile.projectorMode && performanceMode === \'cinema\' ? 2880 : 1920'), 'Projector mode should upgrade the visible photo to a higher-resolution source.');
+assert.ok(app.includes('const frameInterval = performanceMode === \'cinema\' && window.innerWidth >= 1000 ? 1000 / 60 : 1000 / 30'), 'Desktop cinema mode should render ambient canvas effects at up to 60 FPS.');
 assert.ok(app.includes('const dprLimit = profile.slowConnection ? 1.5 : 2.25'), 'Image target size must account for physical pixel density.');
 assert.ok(app.includes('}, 80);'), 'Image prewarming should start early enough for the next slide.');
 assert.ok(app.includes("target.matches('[data-case-answer]')"), 'Each disease case must support immediate interactive answer feedback.');
