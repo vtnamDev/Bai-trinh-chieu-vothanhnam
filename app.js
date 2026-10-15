@@ -1082,11 +1082,15 @@
       label = 'NGUYÊN NHÂN VÀ XỬ TRÍ'; heading = 'Không tự kết luận từ cơn đau'; subline = 'Cần đánh giá nguyên nhân, nhất là khi có dấu hiệu cảnh báo.';
       nodes = [{label:'H. pylori',detail:'Một nguyên nhân thường gặp'},{label:'Một số NSAID',detail:'Có thể làm tăng nguy cơ loét'},{label:'Đánh giá y tế',detail:'Báo triệu chứng và thuốc đang dùng'}];
       mode = 'cards';
-    } else if (/viêm gan A/i.test(title)) {
+    } else if (/viêm gan A/i.test(title + ' ' + String(slide.kicker || ''))) {
       label = 'ĐƯỜNG LÂY VÀ DẤU HIỆU'; heading = 'Từ nguồn nhiễm đến gan'; subline = 'Đây là sơ đồ giải thích đường lây, không phải công cụ tự chẩn đoán.';
       nodes = [{label:'Nước / thực phẩm bẩn',detail:'Có thể mang virus HAV'},{label:'Virus vào cơ thể',detail:'Đường phân–miệng'},{label:'Gan bị viêm',detail:'Vàng da cần được đánh giá'}];
       mode = 'process';
-    } else if (/nhiễm giun/i.test(title) || visual === 'food' || visual === 'foodsafety' || visual === 'fiber') {
+    } else if (/nước sạch|bàn tay sạch|thực phẩm an toàn/i.test(title)) {
+      label = 'BA LỚP PHÒNG NGỪA'; heading = 'Chặn mầm bệnh trước khi ăn uống'; subline = 'Tạo nhiều lớp bảo vệ: vệ sinh tay, nước an toàn và thực phẩm được làm sạch/chế biến đúng cách.';
+      nodes = [{label:'Tay sạch',detail:'Rửa với xà phòng đúng lúc'},{label:'Nước an toàn',detail:'Dùng nguồn nước phù hợp'},{label:'Thực phẩm sạch',detail:'Rửa · nấu chín · bảo quản'}];
+      mode = 'cards';
+    } else if (/nhiễm giun/i.test(title + ' ' + String(slide.kicker || '')) || visual === 'food' || visual === 'foodsafety' || visual === 'fiber') {
       label = 'CẮT ĐƯỜNG LÂY'; heading = 'Tay sạch · nước sạch · thực phẩm an toàn'; subline = 'Không thể nhận biết mọi trường hợp bằng mắt; phòng ngừa cần được duy trì đều đặn.';
       nodes = [{label:'Môi trường bẩn',detail:'Đất · nước · thực phẩm'},{label:'Mầm bệnh vào miệng',detail:'Qua tay hoặc thức ăn'},{label:'Giảm nguy cơ',detail:'Rửa tay · làm sạch thực phẩm'}];
       mode = 'process';
