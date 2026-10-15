@@ -1641,19 +1641,21 @@
     const keyIdea = typeof slide.keyIdea === 'string' && slide.keyIdea.trim()
       ? slide.keyIdea.trim()
       : (points[0] || slide.title || currentDeck.title);
-    const pointHtml = !slide.interactiveQuiz && points.length
-      ? '<section class="slide-idea-stack" aria-label="Ý chính và các ý phụ">' +
-        '<div class="slide-key-idea">' +
+    const keyIdeaHtml = !slide.interactiveQuiz && points.length
+      ? '<section class="slide-key-idea" aria-label="Ý chính">' +
           '<div class="slide-key-idea-top"><span>Ý CHÍNH</span><b>TRỌNG TÂM</b></div>' +
           '<p>' + escapeHTML(keyIdea) + '</p>' +
-        '</div>' +
-        '<div class="slide-support-heading"><strong>Ý PHỤ</strong><span>Thông tin giải thích và dẫn chứng</span></div>' +
-        '<div class="slide-points" aria-label="Các ý phụ">' + points.map((point, i) =>
-          '<div class="slide-point slide-point--support" data-idea-index="' + i + '">' +
-            '<b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span>' +
-          '</div>'
-        ).join('') + '</div>' +
-      '</section>'
+        '</section>'
+      : '';
+    const pointHtml = !slide.interactiveQuiz && points.length
+      ? '<section class="slide-support-ideas" aria-label="Các ý phụ">' +
+          '<div class="slide-support-heading"><strong>Ý PHỤ</strong><span>Chi tiết, dẫn chứng và cách áp dụng</span></div>' +
+          '<div class="slide-points">' + points.map((point, i) =>
+            '<div class="slide-point slide-point--support" data-idea-index="' + i + '">' +
+              '<b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span>' +
+            '</div>'
+          ).join('') + '</div>' +
+        '</section>'
       : '';
     const quizHtml = slide.interactiveQuiz ? renderQuiz(slide) : '';
     const endingHtml = slideIndex === slides.length - 1
@@ -1707,6 +1709,7 @@
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
+            keyIdeaHtml +
             renderSlideVisualBoard(slide) +
             (slide.model3D ? renderMediaModeBar('media-mode-bar--mobile') : '') +
             pointHtml + promptHtml + quizHtml + endingHtml + sourceHtml + linksHtml +
