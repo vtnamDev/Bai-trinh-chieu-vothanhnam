@@ -2588,3 +2588,67 @@ html[data-performance-mode="smooth"] .photo-frame.video-playing .photo-still{opa
     transition:none!important;animation:none!important;transform:none!important;
   }
 }
+
+
+/* Compact process diagrams: cinematic overlays that stay cheap to render. */
+#presentationViewer .photo-process-flow{
+  position:absolute;z-index:4;left:clamp(9px,1.15vw,17px);right:clamp(9px,1.15vw,17px);
+  bottom:clamp(61px,8.8vh,92px);padding:10px 11px 11px;
+  border:1px solid #d8fff02c;border-radius:15px;
+  background:linear-gradient(125deg,#071c1bdc,#101928d4 60%,#12172be0);
+  box-shadow:0 12px 32px #02070c45,inset 0 1px #ffffff15;
+  pointer-events:none;
+  animation:process-flow-appear .48s cubic-bezier(.2,.75,.2,1) both;
+}
+#presentationViewer .photo-process-label{
+  display:block;margin:0 0 8px 2px;
+  color:#bdf7da;font-size:clamp(8px,.65vw,10px);font-weight:850;
+  letter-spacing:.15em;text-transform:uppercase;
+}
+#presentationViewer .photo-process-track{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;
+}
+#presentationViewer .photo-process-node{
+  position:relative;display:flex;align-items:center;gap:7px;min-width:0;min-height:38px;
+  padding:7px 8px;border:1px solid #d8fff01c;border-radius:10px;
+  background:linear-gradient(145deg,#ffffff12,#ffffff06);
+  animation:process-node-appear .36s cubic-bezier(.2,.75,.2,1) both;
+  animation-delay:calc(var(--flow-index,0) * 65ms);
+}
+#presentationViewer .photo-process-node:not(:last-child)::after{
+  content:"→";position:absolute;right:-12px;top:50%;transform:translate(50%,-50%);
+  color:#b8f8d7;font-size:13px;font-weight:900;text-shadow:0 0 12px #87efbb55;
+}
+#presentationViewer .photo-process-index{
+  display:grid;place-items:center;flex:0 0 21px;width:21px;height:21px;
+  border-radius:7px;background:#9ce8c01b;border:1px solid #9ce8c047;
+  color:#bcf6d7;font-size:9px;font-weight:900;font-variant-numeric:tabular-nums;
+}
+#presentationViewer .photo-process-node strong{
+  display:block;min-width:0;color:#f0fff7;font-size:clamp(9px,.82vw,12px);
+  line-height:1.25;font-weight:760;text-wrap:pretty;overflow-wrap:anywhere;
+}
+@keyframes process-flow-appear{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes process-node-appear{
+  from{opacity:0;transform:translateY(4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+html[data-performance-lite="true"] #presentationViewer .photo-process-node{
+  animation-duration:.2s;
+}
+@media(max-width:700px){
+  #presentationViewer .photo-process-flow{bottom:55px;padding:8px;border-radius:11px}
+  #presentationViewer .photo-process-label{font-size:8px;margin-bottom:6px}
+  #presentationViewer .photo-process-track{gap:9px}
+  #presentationViewer .photo-process-node{gap:4px;min-height:32px;padding:6px 5px;border-radius:8px}
+  #presentationViewer .photo-process-node:not(:last-child)::after{right:-9px;font-size:11px}
+  #presentationViewer .photo-process-index{flex-basis:17px;width:17px;height:17px;font-size:8px;border-radius:5px}
+  #presentationViewer .photo-process-node strong{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  #presentationViewer .photo-process-flow,
+  #presentationViewer .photo-process-node{animation:none!important}
+}
