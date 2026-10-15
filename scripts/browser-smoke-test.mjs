@@ -50,7 +50,18 @@ try {
   await page.locator('#mainNav [data-view="library"]').click();
   await page.locator('#heroSample').click();
   await page.locator('#presentationViewer').waitFor({ state: 'visible', timeout: 10000 });
-  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 25');
+  await page.waitForTimeout(250);
+  const initialPresentationState = await page.evaluate(() => ({
+    caption: document.querySelector('#viewerSlideCaption')?.textContent?.trim() || null,
+    title: document.querySelector('#slideStage .slide-title')?.textContent?.trim() || null,
+    bundledSlideCount: window.BIOSPHERE_BAI32_SEED?.slides?.length ?? null,
+    viewerHidden: document.querySelector('#presentationViewer')?.hidden ?? null,
+    scripts: [...document.scripts].map(script => ({ src: script.src, loaded: Boolean(script.src) })),
+  }));
+  assert.equal(initialPresentationState.bundledSlideCount, 25,
+    `Browser loaded the wrong lesson data: ${JSON.stringify(initialPresentationState)}`);
+  assert.equal(initialPresentationState.caption, '01 / 25',
+    `Presentation did not render the first slide. State: ${JSON.stringify(initialPresentationState)}. Page errors: ${pageErrors.join(' | ') || 'none'}`);
   // The counter is intentionally visually hidden on narrow phones to preserve slide space.
   assert.equal((await page.locator('#viewerSlideCaption').textContent()).trim(), '01 / 25');
   assert.equal(await page.evaluate(() => Boolean(document.querySelector('script[data-biosphere-three]'))), false,
