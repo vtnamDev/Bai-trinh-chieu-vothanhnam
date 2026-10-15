@@ -2470,13 +2470,20 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
   position:relative;
   display:flex;
   flex-direction:column;
+  width:auto;
+  height:auto;
   min-width:0;
   min-height:0;
+  max-width:none;
+  margin:0;
+  padding:0;
   overflow:hidden;
   border:1px solid var(--editorial-line);
   border-radius:13px;
   background:#0b1b20;
   box-shadow:0 8px 24px #0002;
+  transform:none;
+  animation:editorial-card-in .42s cubic-bezier(.2,.75,.2,1) both;
 }
 #presentationViewer .photo-support-image{
   display:block;
@@ -2614,6 +2621,38 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
   min-height:70px;
   border-color:color-mix(in srgb,var(--editorial-accent) 25%,#ffffff12);
 }
+
+#presentationViewer .editorial-map-core{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:max-content;max-width:100%;margin:14px auto 15px;padding:10px 20px;
+  border:1px solid color-mix(in srgb,var(--editorial-accent) 55%,#ffffff18);
+  border-radius:14px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--editorial-accent) 18%,#0a1a20),#0b2025);
+  box-shadow:0 8px 26px color-mix(in srgb,var(--editorial-accent) 10%,transparent),inset 0 1px #ffffff15;
+  text-align:center;
+}
+#presentationViewer .editorial-map-core:after{
+  content:"";position:absolute;left:50%;top:100%;width:1px;height:15px;
+  background:linear-gradient(var(--editorial-accent),#c7f9e52b);
+}
+#presentationViewer .editorial-map-core span{
+  display:block;color:var(--editorial-accent);font-size:8px;font-weight:900;letter-spacing:.15em;
+}
+#presentationViewer .editorial-map-core strong{
+  display:block;margin-top:3px;color:#f3fff8;font-size:clamp(13px,1vw,16px);letter-spacing:.01em;
+}
+#presentationViewer .editorial-diagram--mind-map .editorial-diagram-nodes{
+  position:relative;padding-top:9px;
+}
+#presentationViewer .editorial-diagram--mind-map .editorial-diagram-nodes:before{
+  content:"";position:absolute;top:0;left:16.5%;right:16.5%;height:1px;
+  background:linear-gradient(90deg,transparent,#8de8d488 12%,#8de8d488 88%,transparent);
+}
+#presentationViewer .editorial-diagram--mind-map .editorial-diagram-node:before{
+  content:"";position:absolute;left:50%;bottom:100%;height:9px;width:1px;
+  background:#8de8d477;
+}
 #presentationViewer .editorial-diagram--comparison .editorial-diagram-nodes{grid-template-columns:repeat(3,minmax(0,1fr))}
 #presentationViewer .editorial-diagram--comparison .editorial-diagram-node{min-height:76px}
 #presentationViewer .editorial-diagram--cards .editorial-diagram-node:nth-child(1){background:linear-gradient(145deg,#143b38b8,#0a1c23d9)}
@@ -2725,6 +2764,11 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
   #presentationViewer .editorial-diagram--disease-map .editorial-diagram-nodes,
   #presentationViewer .editorial-diagram--mind-map .editorial-diagram-nodes,
   #presentationViewer .editorial-diagram--comparison .editorial-diagram-nodes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #presentationViewer .editorial-map-core{margin:12px auto 14px;padding:9px 16px}
+  #presentationViewer .editorial-map-core:after{height:14px}
+  #presentationViewer .editorial-diagram--mind-map .editorial-diagram-nodes{padding-top:8px}
+  #presentationViewer .editorial-diagram--mind-map .editorial-diagram-nodes:before{left:25%;right:25%}
+  #presentationViewer .editorial-diagram--mind-map .editorial-diagram-node:before{height:8px}
   #presentationViewer .slide-points{grid-template-columns:1fr;gap:8px;margin-top:16px}
   #presentationViewer .slide-point{min-height:0;padding:12px;font-size:clamp(14px,3.5vw,16px);line-height:1.5;border-radius:12px}
   #presentationViewer .slide-point b{flex-basis:26px;width:26px;height:26px}
