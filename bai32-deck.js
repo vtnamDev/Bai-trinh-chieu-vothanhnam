@@ -194,7 +194,15 @@ window.BIOSPHERE_BAI32_SEED = {
       "modelDescription": "Lớp men, ngà và tủy răng trong mặt cắt sơ đồ.",
       "modelFallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Dental_Caries_Cavity_1.JPG/960px-Dental_Caries_Cavity_1.JPG?utm_campaign=index&utm_content=thumbnail&utm_source=commons.wikimedia.org",
       "modelFallbackAlt": "Ảnh cận cảnh răng có lỗ sâu, do Suyash.dwivedi công bố trên Wikimedia Commons.",
-      "links": []
+      "links": [],
+      "flowVisual": {
+        "label": "CƠ CHẾ SÂU RĂNG",
+        "steps": [
+          "Mảng bám",
+          "Axit từ vi khuẩn",
+          "Men răng mất khoáng"
+        ]
+      }
     },
     {
       "kicker": "BỆNH 01 · PHÒNG NGỪA",
@@ -291,7 +299,15 @@ window.BIOSPHERE_BAI32_SEED = {
       "modelTitle": "Mô hình dạ dày",
       "modelDescription": "Sơ đồ dạ dày và đoạn tá tràng tiếp nối.",
       "modelFallback": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gastric_Ulcer_Antrum.jpg",
-      "modelFallbackAlt": "Ảnh nội soi cho thấy nhiều ổ loét tại hang vị dạ dày; ảnh minh họa y khoa, không đại diện cho một trường hợp cụ thể."
+      "modelFallbackAlt": "Ảnh nội soi cho thấy nhiều ổ loét tại hang vị dạ dày; ảnh minh họa y khoa, không đại diện cho một trường hợp cụ thể.",
+      "flowVisual": {
+        "label": "CẦN XÁC ĐỊNH NGUYÊN NHÂN",
+        "steps": [
+          "H. pylori / NSAID",
+          "Niêm mạc tổn thương",
+          "Khám và đánh giá"
+        ]
+      }
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -421,7 +437,15 @@ window.BIOSPHERE_BAI32_SEED = {
       "modelCredit": "Human Reference Atlas / HuBMAP · mô hình ruột non nam · CC BY 4.0",
       "modelLicense": "https://creativecommons.org/licenses/by/4.0/",
       "modelSourceUrl": "https://apps.humanatlas.io/kg-explorer/ref-organ/small-intestine-male/v1.2",
-      "links": []
+      "links": [],
+      "flowVisual": {
+        "label": "ƯU TIÊN AN TOÀN",
+        "steps": [
+          "Tiêu chảy",
+          "Mất nước",
+          "Bù nước đúng cách"
+        ]
+      }
     },
     {
       "kicker": "BỆNH 03 · PHÒNG NGỪA",
@@ -519,7 +543,15 @@ window.BIOSPHERE_BAI32_SEED = {
       "model3D": "worm",
       "modelTitle": "Mô hình giun đường ruột",
       "modelDescription": "Minh họa hình dạng giun; vòng lây truyền vẫn được giải thích bằng sơ đồ CDC.",
-      "links": []
+      "links": [],
+      "flowVisual": {
+        "label": "ĐƯỜNG LÂY CÓ THỂ GẶP",
+        "steps": [
+          "Môi trường bẩn",
+          "Trứng vào miệng",
+          "Nhiễm giun"
+        ]
+      }
     },
     {
       "kicker": "TÌNH HUỐNG 04 · NHIỄM GIUN",
@@ -609,7 +641,15 @@ window.BIOSPHERE_BAI32_SEED = {
       "modelCredit": "Human Reference Atlas / HuBMAP · mô hình gan nam · CC BY 4.0",
       "modelLicense": "https://creativecommons.org/licenses/by/4.0/",
       "modelSourceUrl": "https://humanatlas.io/3d-reference-library",
-      "links": []
+      "links": [],
+      "flowVisual": {
+        "label": "ĐƯỜNG LÂY VIÊM GAN A",
+        "steps": [
+          "Nước / thực phẩm bẩn",
+          "Nuốt phải HAV",
+          "Gan bị viêm"
+        ]
+      }
     },
     {
       "kicker": "TÌNH HUỐNG 05 · VIÊM GAN A",
