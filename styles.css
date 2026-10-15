@@ -1511,10 +1511,10 @@ body{
 #presentationViewer.ui-hidden .viewer-bottom{transform:translateY(7px)}
 #presentationViewer.ui-hidden .side-hit{opacity:0!important;pointer-events:none}
 #presentationViewer .viewer-corner-mark{display:none!important}
-#presentationViewer .slide-stage{
+#presentationViewer #slideStage{
   background:radial-gradient(ellipse at 78% 18%,#1d68712a,transparent 38%),linear-gradient(135deg,#07131c,#050810 75%);
 }
-#presentationViewer .slide-stage:before,#presentationViewer .slide-stage:after{opacity:.38}
+#presentationViewer #slideStage:before,#presentationViewer #slideStage:after{opacity:.38}
 #presentationViewer .slide-page{
   overflow:hidden;align-items:center;
   padding:clamp(22px,3.3vh,45px) clamp(28px,4.2vw,80px);
@@ -2158,7 +2158,7 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
   color:var(--editorial-ink);
   background:#040b10;
 }
-#presentationViewer .slide-stage{
+#presentationViewer #slideStage{
   display:block;
   overflow:auto;
   overscroll-behavior:contain;
@@ -2167,8 +2167,8 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
     radial-gradient(ellipse at 100% 95%,#d8b86a0e,transparent 38%),
     linear-gradient(125deg,#06151a,#071a20 56%,#071016);
 }
-#presentationViewer .slide-stage:before{opacity:.22;pointer-events:none}
-#presentationViewer .slide-stage:after{opacity:.18;pointer-events:none}
+#presentationViewer #slideStage:before{opacity:.22;pointer-events:none}
+#presentationViewer #slideStage:after{opacity:.18;pointer-events:none}
 #presentationViewer .slide-page{
   box-sizing:border-box;
   display:block;
@@ -2703,7 +2703,7 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
 
 /* Portrait phone/tablet: photo first, then the full-width editorial article. */
 @media(max-width:800px){
-  #presentationViewer .slide-stage{overflow-x:hidden;overflow-y:auto}
+  #presentationViewer #slideStage{overflow-x:hidden;overflow-y:auto}
   #presentationViewer .slide-page{
     height:auto;min-height:100%;padding:9px;
     overflow:visible;
@@ -2800,3 +2800,9 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
   #presentationViewer .photo-frame{animation:none!important;transition:none!important}
 }
 html[data-performance-lite="true"] #presentationViewer .slide-content{backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:inset 0 1px #ffffff0b}
+
+/* Regression guard: stage is the #slideStage element, not a .slide-stage class. */
+@media(max-width:800px){
+  #presentationViewer #slideStage{overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain}
+  #presentationViewer #slideStage .slide-page{height:auto;min-height:100%;overflow:visible}
+}
