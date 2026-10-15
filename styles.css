@@ -3124,3 +3124,50 @@ html[data-performance-lite="true"] .viewer .slide-page:not(.slide-transition-gho
   .viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="continuity"]{animation-duration:.22s!important}
   .viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="chapter"]{animation-duration:.31s!important}
 }
+
+
+/* HDMI / TV projector canvas — floating glass controls, full-screen 16:9 editorial grid. */
+.viewer-projector-control{color:#b5f5e4!important;border-color:#72e4d64d!important;background:linear-gradient(125deg,#8cebd31d,#9ac7ff0a)!important}
+.viewer-projector-control[aria-pressed="true"]{color:#041715!important;background:linear-gradient(110deg,#9cebd7,#bce8df)!important;box-shadow:0 0 22px #7be9d433,inset 0 1px #ffffffa8!important}
+.viewer-projector-control .projector-label,.viewer-control .fullscreen-label{opacity:1!important}
+.projector-key{padding:2px 5px;border:1px solid #ffffff36;border-radius:5px;color:#b4cfc8;font:800 9px ui-monospace,monospace}
+.viewer.projector-mode{background:#020508;color:#f6fff9;--slideA:#071d25;--slideB:#020509}
+.viewer.projector-mode .viewer-topbar{position:absolute;inset:0 0 auto;min-height:68px;padding:10px clamp(18px,2.6vw,48px);background:linear-gradient(180deg,#03090df2,#061018c9 70%,transparent);border:0;z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.viewer.projector-mode .viewer-title{font-size:clamp(12px,.95vw,17px);max-width:30vw}
+.viewer.projector-mode .viewer-controls{gap:7px;padding:6px;border:1px solid #d9fff023;border-radius:18px;background:#07131abd;box-shadow:0 12px 40px #0003,inset 0 1px #ffffff10;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.viewer.projector-mode .viewer-control{min-height:42px;padding:0 clamp(11px,.9vw,17px);font-size:clamp(11px,.76vw,14px);border-color:#ffffff24;background:linear-gradient(120deg,#ffffff0c,#ffffff03);transition:transform .2s,border-color .2s,background .2s}
+.viewer.projector-mode .viewer-control:hover{transform:translateY(-1px);border-color:#8cebd37b;background:#a8f6e816}
+.viewer.projector-mode .slide-stage{position:absolute;inset:0;flex:none;width:100%;height:100%;min-height:100%;padding:0;overflow:hidden;background:radial-gradient(ellipse at 78% 18%,#328db32b,transparent 34%),radial-gradient(ellipse at 9% 88%,#6ee7c513,transparent 36%),linear-gradient(135deg,#071019,#020508 66%,#091421)}
+.viewer.projector-mode .slide-stage:before{width:min(112vh,70vw);right:-15%;top:-28%;border-color:#a2f4e42b;box-shadow:inset 0 0 110px #6bd6f016,0 0 130px #6bd6f012;animation-duration:35s}
+.viewer.projector-mode .slide-stage:after{width:min(54vh,48vw);left:-13%;right:auto;top:36%;border-color:#a2f4e422;background:radial-gradient(circle at 32% 28%,#d7ffe926,#47bd7d0b 31%,transparent 70%);animation:projector-orb-drift 28s ease-in-out infinite alternate}
+@keyframes projector-orb-drift{from{transform:translate3d(0,0,0) rotate(-8deg) scale(.92)}to{transform:translate3d(28px,-20px,0) rotate(9deg) scale(1.08)}}
+.viewer.projector-mode #slideStage>.slide-page:not(.slide-transition-ghost){width:100%;height:100%;min-height:0;padding:clamp(76px,8vh,104px) clamp(30px,3vw,62px) clamp(48px,5.6vh,72px);overflow:hidden;display:grid;place-items:stretch}
+.viewer.projector-mode #slideStage .slide-layout{width:min(100%,2520px);height:100%;min-height:0;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);gap:clamp(22px,2.4vw,48px);align-items:stretch}
+.viewer.projector-mode #slideStage .slide-content{width:100%;max-width:none;height:100%;min-height:0;max-height:100%;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ffffff25 transparent;padding:clamp(20px,1.8vw,40px);border-color:#dcfff01c;background:linear-gradient(145deg,#091d25ed,#08121bef 67%,#101b2beF);box-shadow:0 26px 70px #0003,inset 0 1px #ffffff12}
+.viewer.projector-mode #slideStage .slide-title{font-size:clamp(43px,4.2vw,82px);line-height:.99;max-width:16ch;letter-spacing:-.048em}
+.viewer.projector-mode #slideStage .slide-subtitle{max-width:68ch;font-size:clamp(16px,1.12vw,22px);line-height:1.55}
+.viewer.projector-mode #slideStage .slide-key-idea p{font-size:clamp(17px,1.25vw,24px);line-height:1.46}
+.viewer.projector-mode #slideStage .slide-point--support{font-size:clamp(14px,.92vw,18px);line-height:1.46;min-height:0;padding:clamp(11px,.9vw,17px)!important}
+.viewer.projector-mode #slideStage .slide-points{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.viewer.projector-mode #slideStage .slide-side-content,.viewer.projector-mode #slideStage .media-experience,.viewer.projector-mode #slideStage .media-image-view,.viewer.projector-mode #slideStage .media-3d-view{width:100%;height:100%;min-height:0;max-height:none}
+.viewer.projector-mode #slideStage .photo-scene,.viewer.projector-mode #slideStage .photo-frame,.viewer.projector-mode #slideStage .media-image-view .photo-frame{width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto!important}
+.viewer.projector-mode #slideStage .photo-frame{border-radius:clamp(18px,1.8vw,32px);box-shadow:0 30px 90px #0005,0 0 38px color-mix(in srgb,var(--stage-accent) 12%,transparent)}
+.viewer.projector-mode #slideStage .anatomy3d-panel{width:100%;height:100%;min-height:0;max-height:none}
+.viewer.projector-mode .viewer-bottom{position:absolute;inset:auto 0 0;height:43px;padding:0 clamp(18px,2.6vw,48px);z-index:20;background:linear-gradient(0deg,#03090df3,#061018c7 70%,transparent);border:0;color:#b8ccc8}
+.viewer.projector-mode .progress-track{height:3px;background:#ffffff1c}
+.viewer.projector-mode .progress-track span{background:linear-gradient(90deg,#64dfd1,#9dc8ff,#f9d596);box-shadow:0 0 12px #7ae9d545}
+.viewer.projector-mode .viewer-mini{color:#cbf6ea}
+.viewer.projector-mode .viewer-corner-mark{left:2.7vw;bottom:47px;opacity:.65}
+.viewer.projector-mode .side-hit{top:78px;bottom:42px;width:7%;opacity:0}
+.viewer.projector-mode:hover .side-hit,.viewer.projector-mode .side-hit:focus-visible{opacity:.8}
+.viewer.projector-mode .side-hit:hover{background:linear-gradient(90deg,#a9fff018,transparent)}
+.viewer.projector-mode .side-hit-right:hover{background:linear-gradient(270deg,#a9fff018,transparent)}
+.viewer.projector-mode .slide-page:not(.slide-transition-ghost)[data-motion-bridge="continuity"]{animation:projector-continuity-in .48s cubic-bezier(.16,.84,.22,1) both!important}
+.viewer.projector-mode .slide-page:not(.slide-transition-ghost)[data-motion-bridge="chapter"]{animation:projector-chapter-in .66s cubic-bezier(.14,.82,.18,1) both!important}
+@keyframes projector-continuity-in{from{opacity:0;transform:perspective(1600px) translate3d(22px,0,-48px) rotateY(-2.2deg) scale(.986)}65%{opacity:1;transform:perspective(1600px) translate3d(-.5px,0,0) rotateY(.15deg) scale(1.001)}to{opacity:1;transform:perspective(1600px) translate3d(0,0,0) rotateY(0) scale(1)}}
+@keyframes projector-chapter-in{from{opacity:0;transform:perspective(1600px) translate3d(38px,7px,-100px) rotateY(-5deg) rotateX(1.2deg) scale(.968)}68%{opacity:1;transform:perspective(1600px) translate3d(-1px,0,0) rotateY(.25deg) rotateX(0) scale(1.002)}to{opacity:1;transform:perspective(1600px) translate3d(0,0,0) rotateY(0) rotateX(0) scale(1)}}
+@media(min-width:1900px){.viewer.projector-mode #slideStage .slide-layout{width:min(100%,3000px);grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(38px,2.8vw,74px)}.viewer.projector-mode #slideStage .slide-content{padding:clamp(36px,2.25vw,62px)}.viewer.projector-mode #slideStage .slide-title{font-size:clamp(66px,4.05vw,112px)}.viewer.projector-mode #slideStage .slide-subtitle{font-size:clamp(20px,1.08vw,30px)}.viewer.projector-mode #slideStage .slide-point--support{font-size:clamp(17px,.86vw,24px)}}
+@media(max-width:1100px){.viewer.projector-mode .viewer-title{display:none}.viewer.projector-mode .viewer-topbar{padding-inline:12px}.viewer.projector-mode .viewer-controls{gap:4px;padding:4px}.viewer.projector-mode .viewer-control{min-height:37px;padding:0 9px}.viewer.projector-mode #slideStage>.slide-page:not(.slide-transition-ghost){padding:68px 16px 43px}.viewer.projector-mode #slideStage .slide-content{padding:14px}.viewer.projector-mode #slideStage .slide-title{font-size:clamp(31px,3.8vw,48px)}}
+@media(max-width:800px){.viewer-projector-control{display:none!important}.viewer.projector-mode .viewer-topbar{min-height:58px}.viewer.projector-mode .viewer-title{display:none}.viewer.projector-mode .viewer-control{min-height:34px;padding:0 7px;font-size:9px}.viewer.projector-mode #slideStage>.slide-page:not(.slide-transition-ghost){padding:60px 8px 40px}.viewer.projector-mode #slideStage .slide-layout{gap:8px}.viewer.projector-mode #slideStage .slide-content{padding:12px}.viewer.projector-mode #slideStage .slide-title{font-size:clamp(27px,6vw,40px)}}
+@media(prefers-reduced-motion:reduce){.viewer.projector-mode .slide-stage:before,.viewer.projector-mode .slide-stage:after{animation:none!important}.viewer.projector-mode .slide-page:not(.slide-transition-ghost)[data-motion-bridge]{animation:none!important;transform:none!important}}
+@media(hover:none){.viewer-projector-control{display:none!important}}
