@@ -113,7 +113,7 @@ try {
     bridge:el.dataset.motionBridge,
     accent:getComputedStyle(el).getPropertyValue('--stage-accent').trim(),
   }));
-  assert.deepEqual(continuityState, { storyGroup:'foundation', bridge:'continuity', accent:'rgb(112, 223, 208)' },
+  assert.deepEqual(continuityState, { storyGroup:'foundation', bridge:'continuity', accent:'#70dfd0' },
     `Adjacent slides in one chapter should keep the same palette and continuous motion: ${JSON.stringify(continuityState)}`);
   await stage.click({ position: { x: Math.round(stageBounds.width * 0.16), y: Math.round(stageBounds.height * 0.5) } });
   await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 25');
