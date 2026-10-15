@@ -36,6 +36,16 @@ const deck = context.window.BIOSPHERE_BAI32_SEED;
 assert.ok(deck && typeof deck === 'object', 'The bundled seed deck must exist.');
 assert.equal(deck.slides.length, 25, 'The lesson deck should contain 25 slides.');
 assert.ok(deck.slides.every(slide => slide && typeof slide.title === 'string'), 'Every slide needs a title.');
+assert.equal(deck.slides.filter(slide => typeof slide.keyIdea === 'string' && slide.keyIdea.length > 20).length, 25, 'Every slide must declare one concise core idea.');
+const chapterPalettes = new Map();
+for (const slide of deck.slides) {
+  assert.ok(typeof slide.storyGroup === 'string' && slide.storyGroup.length > 0, `Slide is missing its story group: ${slide.title}`);
+  assert.ok(typeof slide.palette === 'string' && slide.palette.length > 0, `Slide is missing its chapter palette: ${slide.title}`);
+  if (chapterPalettes.has(slide.storyGroup)) {
+    assert.equal(slide.palette, chapterPalettes.get(slide.storyGroup), `Slides inside "${slide.storyGroup}" must use a consistent palette.`);
+  } else chapterPalettes.set(slide.storyGroup, slide.palette);
+}
+assert.equal(chapterPalettes.size, 8, 'Expected coherent story groups for the introduction, five diseases, recap and close.');
 assert.equal(deck.slides.filter(slide => slide.classroomPrompt).length, 5, 'Keep one case question for each of the five diseases.');
 for (const slide of deck.slides.filter(item => item.classroomPrompt)) {
   const prompt = slide.classroomPrompt;
@@ -90,7 +100,12 @@ assert.equal((css.match(/\{/g) || []).length, (css.match(/\}/g) || []).length, '
 assert.match(app, /function safeHttpUrl\(/, 'Imported resource URLs must be protocol-checked.');
 assert.match(app, /function optimizeImageUrl\(/, 'Remote image sizes must be adapted to viewport and performance profile.');
 assert.match(app, /function renderSlideVisualBoard\(/, 'Every lesson page should have an editorial visual board renderer.');
+assert.ok(app.includes('const keyIdeaHtml =') && app.includes('class="slide-key-idea"') && app.includes('class="slide-support-ideas"'), 'The slide must distinguish the core idea from supporting details.');
+assert.ok(app.includes('const motionBridge =') && app.includes('data-story-group=') && app.includes('data-motion-bridge='), 'Slides must carry chapter identity so motion transitions can connect related pages.');
 assert.ok(css.includes('.editorial-diagram') && css.includes('.editorial-diagram-node'), 'The lesson diagrams must have dedicated responsive styling.');
+assert.ok(css.includes('BioSphere v12 — story palette'), 'The chapter palette and idea-hierarchy design system must be present.');
+assert.ok(css.includes('.slide-key-idea') && css.includes('.slide-point--support'), 'Core and supporting idea cards must have distinct styles.');
+assert.ok(css.includes('story-continuity-in') && css.includes('story-chapter-in'), 'Transitions must distinguish continuity within a chapter from motion between chapters.');
 assert.ok(css.includes('BioSphere v10 — editorial slide system'), 'The consolidated responsive slide system must be active.');
 assert.ok(!css.includes('The actual webview in the supplied screenshot is ~720 CSS px wide.'), 'The obsolete mobile rule that turns the photo into a full-slide background must stay removed.');
 assert.ok(!/\.viewer \.slide-side-content\s*\{\s*position:absolute!important;z-index:0/.test(css), 'Mobile media must remain a separate layout column instead of a background layer.');
