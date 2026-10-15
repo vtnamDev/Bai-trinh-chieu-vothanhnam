@@ -96,12 +96,25 @@ try {
     'The photo frame must be a panel, not an absolutely positioned full-slide background.');
   assert.equal(await page.evaluate(() => Boolean(document.querySelector('script[data-biosphere-three]'))), false,
     'The 3D library must not load before a user selects a 3D scene.');
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .slide-key-idea').count(), 1,
+    'Each content slide must visibly separate its main idea from secondary details.');
+  assert.equal((await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .slide-key-idea-top span').textContent()).trim(), 'Ý CHÍNH');
+  assert.ok(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .slide-point--support').count() >= 3,
+    'Supporting ideas should be shown as distinct cards.');
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost)').getAttribute('data-story-group'), 'foundation');
   const stage = page.locator('#slideStage');
   const stageBounds = await stage.boundingBox();
   assert.ok(stageBounds && stageBounds.width > 0 && stageBounds.height > 0, 'The mobile slide stage must have a measurable tap surface.');
   // Side arrows are hidden on phones by design; use the tap-on-either-half interaction instead.
   await stage.click({ position: { x: Math.round(stageBounds.width * 0.84), y: Math.round(stageBounds.height * 0.5) } });
   await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '02 / 25');
+  const continuityState = await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost)').evaluate(el => ({
+    storyGroup:el.dataset.storyGroup,
+    bridge:el.dataset.motionBridge,
+    accent:getComputedStyle(el).getPropertyValue('--stage-accent').trim(),
+  }));
+  assert.deepEqual(continuityState, { storyGroup:'foundation', bridge:'continuity', accent:'rgb(112, 223, 208)' },
+    `Adjacent slides in one chapter should keep the same palette and continuous motion: ${JSON.stringify(continuityState)}`);
   await stage.click({ position: { x: Math.round(stageBounds.width * 0.16), y: Math.round(stageBounds.height * 0.5) } });
   await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 25');
   const presentationWidth = await page.evaluate(() => ({
@@ -117,6 +130,16 @@ try {
   for (let index = 0; index < 25 && await caseAnswer.count() === 0; index += 1) {
     await page.keyboard.press('ArrowRight');
     await page.waitForTimeout(90);
+    const currentCaption = (await page.locator('#viewerSlideCaption').textContent()).trim();
+    if (currentCaption === '06 / 25') {
+      const chapterState = await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost)').evaluate(el => ({
+        storyGroup:el.dataset.storyGroup,
+        bridge:el.dataset.motionBridge,
+        palette:el.dataset.palette,
+      }));
+      assert.deepEqual(chapterState, { storyGroup:'tooth', bridge:'chapter', palette:'coral' },
+        `Entering a new disease should use its own accent and chapter transition: ${JSON.stringify(chapterState)}`);
+    }
     caseAnswer = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .case-quiz-answer:visible');
   }
   assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .classroom-prompt[data-case-correct-index]').count(), 1,
