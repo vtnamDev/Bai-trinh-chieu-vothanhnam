@@ -124,6 +124,7 @@ assert.ok(app.includes('function toggleProjectorMode()') && app.includes("if (ta
 assert.ok(app.includes('function syncFullscreenControls()') && app.includes("document.addEventListener('fullscreenchange'"), 'Fullscreen button state must track the browser fullscreen state.');
 assert.ok(app.includes('upgradeProjectorImages()') && app.includes('profile.projectorMode && performanceMode === \'cinema\' ? 2880 : 1920'), 'Projector mode should upgrade the visible photo to a higher-resolution source.');
 assert.ok(app.includes('const frameInterval = performanceMode === \'cinema\' && window.innerWidth >= 1000 ? 1000 / 60 : 1000 / 30'), 'Desktop cinema mode should render ambient canvas effects at up to 60 FPS.');
+assert.ok(app.includes('const canvasPixelRatioLimit = profile.projectorMode && atmosphereWidth >= 3000 ? 1 : profile.maxPixelRatio'), 'A 4K/8K projector viewport must not allocate an oversized high-DPI ambient canvas.');
 assert.ok(app.includes('const dprLimit = profile.slowConnection ? 1.5 : 2.25'), 'Image target size must account for physical pixel density.');
 assert.ok(app.includes('}, 80);'), 'Image prewarming should start early enough for the next slide.');
 assert.ok(app.includes("target.matches('[data-case-answer]')"), 'Each disease case must support immediate interactive answer feedback.');
