@@ -154,6 +154,25 @@
     }
   }
 
+  function optimizeImageUrl(value) {
+    const safe = safeHttpUrl(value, '');
+    if (!safe) return '';
+    try {
+      const url = new URL(safe, window.location.href);
+      if (!['images.unsplash.com', 'images.pexels.com'].includes(url.hostname.toLowerCase())) return safe;
+      const profile = getPerformanceProfile();
+      const dpr = Math.min(Math.max(Number(window.devicePixelRatio) || 1, 1), profile.maxPixelRatio || 1);
+      const width = Math.round(Math.min(1920, Math.max(640, (Number(window.innerWidth) || 960) * dpr * 1.35)));
+      const quality = profile.lite ? 74 : performanceMode === 'cinema' ? 88 : 80;
+      url.searchParams.set('w', String(width));
+      url.searchParams.set('q', String(quality));
+      if (!url.searchParams.has('auto')) url.searchParams.set('auto', 'format');
+      return url.href;
+    } catch {
+      return safe;
+    }
+  }
+
   function safeDecodeURIComponent(value) {
     try { return decodeURIComponent(value); } catch { return ''; }
   }
@@ -965,8 +984,8 @@
   }
 
   function renderPhoto(slide) {
-    const fallback = safeHttpUrl(slide.imageFallback, 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85');
-    const url = safeHttpUrl(slide.image || '');
+    const fallback = optimizeImageUrl(safeHttpUrl(slide.imageFallback, 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85'));
+    const url = optimizeImageUrl(safeHttpUrl(slide.image || ''));
     if (!url) return renderVisual(slide.visual);
     const videoUrl = safeHttpUrl(slide.video || '');
     const video4kUrl = safeHttpUrl(slide.video4k || '');
@@ -998,7 +1017,7 @@
       : '';
     const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
       '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(safeHttpUrl(item.sourceUrl || item.url || imageSource, imageSource)) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
-        '<img class="photo-support-image" src="' + escapeHTML(safeHttpUrl(item.url || '')) + '" alt="' + escapeHTML(item.alt || '') + '" loading="eager" decoding="async" data-fallback="' + escapeHTML(fallback) + '">' +
+        '<img class="photo-support-image" src="' + escapeHTML(optimizeImageUrl(safeHttpUrl(item.url || ''))) + '" alt="' + escapeHTML(item.alt || '') + '" loading="lazy" decoding="async" fetchpriority="low" data-fallback="' + escapeHTML(fallback) + '">' +
       '</a>'
     ).join('') + '</div>' : '';
     const mediaAlt = selectedVideo ? (slide.videoAlt || slide.imageAlt || 'Video minh họa liên quan') : (slide.imageAlt || 'Ảnh minh họa thực tế');
@@ -1133,7 +1152,7 @@
       if (!currentDeck || currentDeck.slides !== slides) return;
       const indexes = performanceMode === 'cinema' ? [slideIndex + 1, slideIndex - 1] : [slideIndex + 1];
       indexes.forEach(index => {
-        const url = safeHttpUrl(slides[index]?.image || '');
+        const url = optimizeImageUrl(safeHttpUrl(slides[index]?.image || ''));
         if (!url || index < 0 || index >= slides.length) return;
         const preload = new Image();
         preload.decoding = 'async';
