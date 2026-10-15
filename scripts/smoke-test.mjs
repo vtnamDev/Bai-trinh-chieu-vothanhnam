@@ -10,6 +10,24 @@ const [html, app, deckSource, css, serviceWorker] = await Promise.all([
   readFile(new URL('../service-worker.js', import.meta.url), 'utf8'),
 ]);
 
+// Guard against accidental bundle growth. These are source-size budgets, not gzip estimates.
+const sourceBudgets = [
+  ['app.js', app, 160 * 1024],
+  ['styles.css', css, 220 * 1024],
+  ['bai32-deck.js', deckSource, 75 * 1024],
+  ['service-worker.js', serviceWorker, 8 * 1024],
+];
+for (const [name, source, limit] of sourceBudgets) {
+  const bytes = Buffer.byteLength(source, 'utf8');
+  assert.ok(bytes <= limit, `${name} exceeds its source budget: ${bytes} bytes > ${limit} bytes`);
+}
+const totalSourceBytes = sourceBudgets.reduce((sum, [, source]) => sum + Buffer.byteLength(source, 'utf8'), 0);
+assert.ok(totalSourceBytes <= 470 * 1024, `Combined JS/CSS source exceeds 470 KiB: ${totalSourceBytes} bytes`);
+assert.match(html, /<meta name="viewport"[^>]*viewport-fit=cover/, 'Mobile safe-area layout must remain enabled.');
+assert.match(html, /<script[^>]+defer/, 'Application scripts should be deferred to avoid blocking HTML parsing.');
+assert.ok(!/<link[^>]+rel=["']preload["'][^>]+href=["'][^"']+\\.(?:mp4|webm|glb)(?:[?"']|$)/i.test(html), 'Large video/model assets must not be eagerly preloaded.');
+
+
 // Parse the bundled deck without executing application code in a browser.
 const context = { window: {} };
 vm.runInNewContext(deckSource, context, { filename: 'bai32-deck.js', timeout: 1000 });
@@ -94,4 +112,4 @@ const toastEnd = app.indexOf('function renderDecks()', toastStart);
 const toastSource = app.slice(toastStart, toastEnd);
 assert.ok(app.includes('let toastTimer = 0;') && toastSource.includes("region.querySelector('.toast')") && toastSource.includes('clearTimeout(toastTimer)'), 'Rapid notifications must reuse one toast and clear its previous timer.');
 
-console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, ${quizSlides.length} quiz slides.`);
+console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, ${quizSlides.length} quiz slides, ${Math.round(totalSourceBytes / 1024)} KiB combined JS/CSS/SW/deck source.`);
