@@ -1614,7 +1614,11 @@
 
     const stage = $('#slideStage');
     const previousPage = stage.querySelector(':scope > .slide-page:not(.slide-transition-ghost)');
-    const motionPreset = slide.interactiveQuiz ? 'focus' : (slide.motionPreset || ['wipe', 'depth', 'focus', 'rise'][slideIndex % 4]);
+    const storyGroup = String(slide.storyGroup || slide.palette || 'foundation');
+    const previousStoryGroup = previousPage?.dataset.storyGroup || previousPage?.dataset.palette || '';
+    const motionBridge = !previousPage ? 'opening' : (previousStoryGroup === storyGroup ? 'continuity' : 'chapter');
+    // Reuse a restrained depth transition within a chapter; reserve the stronger 3D hinge for chapter changes.
+    const motionPreset = slide.motionPreset || (slide.interactiveQuiz ? 'focus' : (motionBridge === 'continuity' ? 'depth' : 'rise'));
     let ghost = null;
 
     if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
@@ -1628,12 +1632,28 @@
       ghost.classList.add('slide-transition-ghost');
       ghost.dataset.direction = direction;
       ghost.dataset.preset = motionPreset;
+      ghost.dataset.motionBridge = motionBridge;
       ghost.setAttribute('aria-hidden', 'true');
       ghost.inert = true;
     }
 
-    const pointHtml = !slide.interactiveQuiz && slide.points?.length
-      ? '<div class="slide-points">' + slide.points.map((point, i) => '<div class="slide-point"><b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span></div>').join('') + '</div>'
+    const points = Array.isArray(slide.points) ? slide.points.filter(point => typeof point === 'string' && point.trim()) : [];
+    const keyIdea = typeof slide.keyIdea === 'string' && slide.keyIdea.trim()
+      ? slide.keyIdea.trim()
+      : (points[0] || slide.title || currentDeck.title);
+    const pointHtml = !slide.interactiveQuiz && points.length
+      ? '<section class="slide-idea-stack" aria-label="Ý chính và các ý phụ">' +
+        '<div class="slide-key-idea">' +
+          '<div class="slide-key-idea-top"><span>Ý CHÍNH</span><b>TRỌNG TÂM</b></div>' +
+          '<p>' + escapeHTML(keyIdea) + '</p>' +
+        '</div>' +
+        '<div class="slide-support-heading"><strong>Ý PHỤ</strong><span>Thông tin giải thích và dẫn chứng</span></div>' +
+        '<div class="slide-points" aria-label="Các ý phụ">' + points.map((point, i) =>
+          '<div class="slide-point slide-point--support" data-idea-index="' + i + '">' +
+            '<b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span>' +
+          '</div>'
+        ).join('') + '</div>' +
+      '</section>'
       : '';
     const quizHtml = slide.interactiveQuiz ? renderQuiz(slide) : '';
     const endingHtml = slideIndex === slides.length - 1
@@ -1667,6 +1687,8 @@
       : '';
     const palette = slide.palette || 'spectrum';
     stage.dataset.palette = palette;
+    stage.dataset.storyGroup = storyGroup;
+    stage.dataset.motionBridge = motionBridge;
     stage.dataset.direction = direction;
     stage.dataset.preset = motionPreset;
     stage.dataset.slideIndex = String(slideIndex + 1);
@@ -1679,7 +1701,7 @@
       try { video.load(); } catch { /* ignore media cleanup errors */ }
     });
     stage.innerHTML =
-      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-visual="' + escapeHTML(slide.visual || 'editorial') + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
+      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-story-group="' + escapeHTML(storyGroup) + '" data-motion-bridge="' + escapeHTML(motionBridge) + '" data-visual="' + escapeHTML(slide.visual || 'editorial') + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
         '<div class="slide-layout">' +
           '<section class="slide-content">' +
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
