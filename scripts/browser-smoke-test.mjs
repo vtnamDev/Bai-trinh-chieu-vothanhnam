@@ -249,6 +249,50 @@ try {
   assert.ok(landscapeEditorialLayout.image?.width >= 350,
     `Landscape image column should be visually substantial: ${JSON.stringify(landscapeEditorialLayout)}`);
   await page.screenshot({ path: `${outputDir}/landscape-editorial-layout.png` });
+
+  // Desktop/HDMI projector mode: full-screen request, cinema profile, 16:9-wide layout, and restoration.
+  const projectorButton = page.locator('#viewerProjector');
+  assert.equal(await projectorButton.isVisible(), true, 'Desktop landscape should expose the HDMI/TV projector control.');
+  await projectorButton.click();
+  await page.waitForFunction(() => document.querySelector('#presentationViewer')?.classList.contains('projector-mode'));
+  const projectorState = await page.evaluate(() => {
+    const viewer = document.querySelector('#presentationViewer');
+    const stage = document.querySelector('#slideStage');
+    const page = stage?.querySelector(':scope > .slide-page:not(.slide-transition-ghost)');
+    const layout = page?.querySelector('.slide-layout');
+    const topbar = viewer?.querySelector('.viewer-topbar');
+    return {
+      enabled:viewer?.classList.contains('projector-mode'),
+      dataset:document.documentElement.dataset.projectorMode,
+      mode:document.documentElement.dataset.performanceMode,
+      fullscreen:document.fullscreenElement === viewer,
+      fullscreenPressed:viewer?.querySelector('#viewerFullscreen')?.getAttribute('aria-pressed'),
+      projectorPressed:viewer?.querySelector('#viewerProjector')?.getAttribute('aria-pressed'),
+      stagePosition:stage ? getComputedStyle(stage).position : null,
+      toolbarPosition:topbar ? getComputedStyle(topbar).position : null,
+      layoutDisplay:layout ? getComputedStyle(layout).display : null,
+      pageCount:stage?.querySelectorAll(':scope > .slide-page').length ?? 0,
+      ghostCount:stage?.querySelectorAll(':scope > .slide-transition-ghost').length ?? 0,
+    };
+  });
+  assert.equal(projectorState.enabled, true);
+  assert.equal(projectorState.dataset, 'true');
+  assert.equal(projectorState.mode, 'cinema', 'Projector mode should request the cinematic performance profile.');
+  assert.equal(projectorState.projectorPressed, 'true');
+  assert.equal(projectorState.fullscreenPressed, String(projectorState.fullscreen),
+    'The fullscreen control must mirror the browser fullscreen state.');
+  assert.equal(projectorState.stagePosition, 'absolute');
+  assert.equal(projectorState.toolbarPosition, 'absolute');
+  assert.equal(projectorState.layoutDisplay, 'grid');
+  assert.deepEqual({ pages:projectorState.pageCount, ghosts:projectorState.ghostCount }, { pages:1, ghosts:0 },
+    `Projector transitions still must never retain a second full-frame slide: ${JSON.stringify(projectorState)}`);
+  await page.screenshot({ path: `${outputDir}/desktop-hdmi-projector-mode.png` });
+
+  await projectorButton.click();
+  await page.waitForFunction(() => !document.querySelector('#presentationViewer')?.classList.contains('projector-mode'));
+  assert.equal(await page.locator('html').getAttribute('data-projector-mode'), null);
+  assert.equal(await page.locator('html').getAttribute('data-performance-mode'), 'smooth',
+    'Leaving projector mode should restore the previously selected performance preset.');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForTimeout(120);
 
