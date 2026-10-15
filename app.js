@@ -983,6 +983,20 @@
     }
   }
 
+  function renderPhotoProcessFlow(flow) {
+    if (!flow || typeof flow !== 'object' || !Array.isArray(flow.steps) || flow.steps.length < 2) return '';
+    const steps = flow.steps.slice(0, 3);
+    return '<div class="photo-process-flow" aria-label="' + escapeHTML(flow.label || 'Sơ đồ quá trình') + '">' +
+      '<span class="photo-process-label">' + escapeHTML(flow.label || 'SƠ ĐỒ QUÁ TRÌNH') + '</span>' +
+      '<div class="photo-process-track">' + steps.map((step, index) =>
+        '<div class="photo-process-node" style="--flow-index:' + index + '">' +
+          '<span class="photo-process-index">' + String(index + 1).padStart(2, '0') + '</span>' +
+          '<strong>' + escapeHTML(step) + '</strong>' +
+        '</div>'
+      ).join('') + '</div>' +
+    '</div>';
+  }
+
   function renderPhoto(slide) {
     const fallback = optimizeImageUrl(safeHttpUrl(slide.imageFallback, 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85'));
     const url = optimizeImageUrl(safeHttpUrl(slide.image || ''));
@@ -1010,6 +1024,7 @@
     const supports = Array.isArray(slide.supportImages)
       ? slide.supportImages.filter(item => item && typeof item === 'object' && !Array.isArray(item)).slice(0, 2)
       : [];
+    const flowMarkup = renderPhotoProcessFlow(slide.flowVisual);
     const videoMarkup = selectedVideo
       ? '<video class="live-video" muted playsinline autoplay loop preload="none" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
           '<source data-src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
@@ -1030,6 +1045,7 @@
         '<div class="photo-topline"><span><i></i> ' + (selectedVideo ? 'VIDEO THỰC / ' + escapeHTML(provider.toUpperCase()) + (use4k ? ' · 4K' : '') : 'ẢNH THỰC / LIVE SOURCE') + '</span><b>' + photoNo + '</b></div>' +
         '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'LIVE FOOTAGE · ' + escapeHTML(provider.toUpperCase()) : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(mediaAlt) + '</strong></div>' +
         '<a class="photo-source-link" href="' + escapeHTML(source) + '" target="_blank" rel="noopener noreferrer" aria-label="Mở nguồn ' + (selectedVideo ? 'video' : 'ảnh') + ': ' + escapeHTML(credit) + '">' + (selectedVideo ? 'Nguồn video' : 'Nguồn ảnh') + ' <span>↗</span></a></div>' +
+        flowMarkup +
         '<div class="photo-focus-ring"></div>' +
       '</div>' + supportMarkup +
       '<div class="photo-credit-line"><span><i></i> ' + (selectedVideo ? 'VIDEO SOURCE / LICENSE' : 'SOURCE / ATTRIBUTION') + '</span><strong>' + escapeHTML(credit) + '</strong></div>' +
