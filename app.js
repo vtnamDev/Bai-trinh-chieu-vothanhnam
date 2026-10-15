@@ -4,6 +4,7 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const STORAGE_KEY = 'biosphere-slides-workspace-v1';
+  const PERFORMANCE_STORAGE_KEY = 'biosphere-performance-mode-v1';
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const seedDeck = window.BIOSPHERE_BAI32_SEED;
@@ -14,6 +15,12 @@
   let currentDeck = null;
   let slideIndex = 0;
   let motionEnabled = !reducedMotion.matches;
+  let performanceMode = readPerformanceMode();
+  let photoWarmTimer = 0;
+  let warmedPhotoAssets = new Map();
+  let projectorPreviousPerformanceMode = null;
+  let projectorWasFullscreen = false;
+  let toastTimer = 0;
   let soundEnabled = true;
   let previousFocus = null;
   let transitionCleanupTimer = 0;
@@ -29,13 +36,16 @@
   let atmosphereParticles = [];
   let atmospherePointer = { x: 0.5, y: 0.5 };
   let atmosphereCanvasContext = null;
+  let activeAnatomy3D = null;
+  let threeLoadPromise = null;
+  let modelViewerLoadPromise = null;
 
   function loadDecks() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
       if (Array.isArray(saved)) {
         // Replace the older bundled draft with the current, researched 20-slide deck.
-        const personalDecks = saved.filter(deck => deck && deck.id !== seedDeck.id && !deck.isSeed);
+        const personalDecks = saved.filter(deck => isValidDeckShape(deck) && deck.id !== seedDeck.id && !deck.isSeed);
         return [seedDeck, ...personalDecks];
       }
       return [seedDeck];
@@ -54,10 +64,161 @@
     }
   }
 
+  function readPerformanceMode() {
+    try {
+      const saved = localStorage.getItem(PERFORMANCE_STORAGE_KEY);
+      return ['auto', 'smooth', 'cinema'].includes(saved) ? saved : 'auto';
+    } catch {
+      return 'auto';
+    }
+  }
+
+  function getPerformanceProfile() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+    const effectiveType = String(connection.effectiveType || '').toLowerCase();
+    const online = navigator.onLine !== false;
+    const saveData = Boolean(connection.saveData);
+    const slowConnection = !online || saveData || ['slow-2g', '2g', '3g'].includes(effectiveType);
+    const memory = Number(navigator.deviceMemory) || 0;
+    const cores = Number(navigator.hardwareConcurrency) || 0;
+    const lowPower = (memory > 0 && memory <= 4) || (cores > 0 && cores <= 4);
+    const lite = performanceMode === 'smooth' ||
+      (performanceMode === 'auto' && (slowConnection || lowPower));
+    const highCapability = memory >= 8 && cores >= 6;
+    const projectorMode = document.documentElement.dataset.projectorMode === 'true';
+    const allowVideo = performanceMode !== 'smooth' && online && !saveData &&
+      !['slow-2g', '2g', '3g'].includes(effectiveType) &&
+      motionEnabled && !reducedMotion.matches &&
+      (performanceMode === 'cinema' || (highCapability && !lowPower));
+    const maxPixelRatio = lite ? 1 : (performanceMode === 'cinema' ? (highCapability || projectorMode ? 2 : 1.5) : 1.25);
+    return { connection, effectiveType, online, saveData, slowConnection, memory, cores, highCapability, lowPower, lite, allowVideo, maxPixelRatio, projectorMode };
+  }
+
+  function updatePerformanceUI() {
+    const profile = getPerformanceProfile();
+    document.documentElement.dataset.performanceMode = performanceMode;
+    document.documentElement.dataset.performanceLite = String(profile.lite);
+    $$('button[data-performance-mode]').forEach(button => {
+      const active = button.dataset.performanceMode === performanceMode;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    const status = $('#performanceStatus');
+    if (!status) return;
+    const labels = { auto: 'Tự động thông minh', smooth: 'Mượt nhẹ', cinema: 'Điện ảnh' };
+    const signals = [];
+    if (!profile.online) signals.push('đang ngoại tuyến');
+    else if (profile.saveData) signals.push('tiết kiệm dữ liệu đang bật');
+    else if (profile.effectiveType) signals.push('mạng ' + profile.effectiveType.toUpperCase());
+    if (profile.memory) signals.push('RAM thiết bị khoảng ' + profile.memory + ' GB');
+    if (profile.cores) signals.push(profile.cores + ' luồng CPU');
+    const environment = signals.length ? signals.join(' · ') : 'chưa có đủ tín hiệu thiết bị/mạng';
+    const behavior = profile.lite
+      ? 'Ưu tiên độ mượt: giảm hiệu ứng nền, giới hạn tải trước và tắt video nền.'
+      : profile.allowVideo
+        ? 'Cho phép video nền khi phù hợp; mô hình 3D chỉ tải khi bạn mở.'
+        : 'Giữ ảnh tĩnh; tôn trọng cài đặt chuyển động hoặc giới hạn kết nối.';
+    status.textContent = labels[performanceMode] + ' · ' + environment + '. ' + behavior;
+  }
+
+  function setPerformanceMode(mode, announce = true) {
+    if (!['auto', 'smooth', 'cinema'].includes(mode)) return;
+    performanceMode = mode;
+    try { localStorage.setItem(PERFORMANCE_STORAGE_KEY, mode); } catch { /* use this session only */ }
+    updatePerformanceUI();
+    if (atmosphereCanvasContext) resizeStageAtmosphere();
+    const profile = getPerformanceProfile();
+    if (profile.lite || !motionEnabled || reducedMotion.matches) stopStageAtmosphere();
+    else if (!$('#presentationViewer').hidden) startStageAtmosphere();
+    if (!profile.allowVideo) {
+      $$('.live-video', $('#slideStage')).forEach(video => video.pause());
+      $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
+    } else if (!$('#presentationViewer').hidden) {
+      attachVideoBackgrounds($('#slideStage'));
+    }
+    if (announce) toast(mode === 'auto' ? 'Đã bật tối ưu tự động.' : mode === 'smooth' ? 'Đã ưu tiên độ mượt và tiết kiệm dữ liệu.' : 'Đã bật chế độ điện ảnh.');
+  }
+
   function escapeHTML(value) {
     return String(value ?? '').replace(/[&<>"']/g, character => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     })[character]);
+  }
+
+  // User-imported decks are data, not trusted markup. Only allow web URLs for resources.
+  function safeHttpUrl(value, fallback = '') {
+    const raw = String(value ?? '').trim();
+    if (!raw || /[\u0000-\u001f\u007f]/.test(raw)) return fallback;
+    try {
+      const parsed = new URL(raw, window.location.href);
+      if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) return fallback;
+      return raw.startsWith('//') ? parsed.href : raw;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function optimizeImageUrl(value) {
+    const safe = safeHttpUrl(value, '');
+    if (!safe) return '';
+    try {
+      const url = new URL(safe, window.location.href);
+      if (!['images.unsplash.com', 'images.pexels.com'].includes(url.hostname.toLowerCase())) return safe;
+      const profile = getPerformanceProfile();
+      // Image detail follows the physical screen, not the lower pixel-ratio budget for canvas effects.
+      const dprLimit = profile.slowConnection ? 1.5 : 2.25;
+      const dpr = Math.min(Math.max(Number(window.devicePixelRatio) || 1, 1), dprLimit);
+      const viewportWidth = Math.max(320, Number(window.innerWidth) || 960);
+      const widthLimit = profile.slowConnection ? 1100 : (profile.projectorMode && performanceMode === 'cinema' ? 2880 : 1920);
+      const width = Math.round(Math.min(widthLimit, Math.max(768, viewportWidth * dpr * 1.12)));
+      const quality = profile.saveData ? 78 : profile.slowConnection ? 80 : profile.lite ? 82 : performanceMode === 'cinema' ? 92 : 86;
+      url.searchParams.set('w', String(width));
+      url.searchParams.set('q', String(quality));
+      if (!url.searchParams.has('auto')) url.searchParams.set('auto', 'format');
+      return url.href;
+    } catch {
+      return safe;
+    }
+  }
+
+  function safeDecodeURIComponent(value) {
+    try { return decodeURIComponent(value); } catch { return ''; }
+  }
+
+  function isValidDeckShape(deck) {
+    if (!deck || typeof deck !== 'object' || Array.isArray(deck) ||
+        typeof deck.title !== 'string' || !deck.title.trim() ||
+        !Array.isArray(deck.slides) || deck.slides.length < 1 || deck.slides.length > 200) return false;
+    return deck.slides.every(slide => {
+      if (!slide || typeof slide !== 'object' || Array.isArray(slide)) return false;
+      for (const key of ['points', 'links', 'supportImages', 'quizQuestions']) {
+        if (slide[key] != null && !Array.isArray(slide[key])) return false;
+      }
+      if (Array.isArray(slide.links) && !slide.links.every(link => link && typeof link === 'object' && !Array.isArray(link))) return false;
+      if (Array.isArray(slide.supportImages) && !slide.supportImages.every(item => item && typeof item === 'object' && !Array.isArray(item))) return false;
+      if (slide.interactiveQuiz) {
+        const questions = slide.quizQuestions;
+        if (!Array.isArray(questions) || !questions.length || !questions.every(question =>
+          question && typeof question === 'object' && !Array.isArray(question) &&
+          typeof question.question === 'string' &&
+          Array.isArray(question.options) && question.options.length >= 2 && question.options.length <= 8 &&
+          question.options.every(option => typeof option === 'string') &&
+          Number.isInteger(question.correctIndex) && question.correctIndex >= 0 && question.correctIndex < question.options.length &&
+          typeof question.explanation === 'string'
+        )) return false;
+      }
+      if (slide.classroomPrompt != null) {
+        const prompt = slide.classroomPrompt;
+        if (!prompt || typeof prompt !== 'object' || Array.isArray(prompt) ||
+            !['scenario', 'question', 'answer', 'explanation'].every(key => typeof prompt[key] === 'string')) return false;
+        if (prompt.options != null && (
+          !Array.isArray(prompt.options) || prompt.options.length < 2 || prompt.options.length > 4 ||
+          !prompt.options.every(option => typeof option === 'string') ||
+          !Number.isInteger(prompt.correctIndex) || prompt.correctIndex < 0 || prompt.correctIndex >= prompt.options.length
+        )) return false;
+      }
+      return true;
+    });
   }
 
   function formatSubject(subject) {
@@ -111,11 +272,20 @@
 
   function toast(message) {
     const region = $('#toastRegion');
-    const item = document.createElement('div');
-    item.className = 'toast';
+    if (!region) return;
+    // Reuse one live announcement so rapid setting changes never stack or overlap toasts.
+    let item = region.querySelector('.toast');
+    if (!item) {
+      item = document.createElement('div');
+      item.className = 'toast';
+      region.append(item);
+    }
     item.textContent = message;
-    region.append(item);
-    window.setTimeout(() => item.remove(), 2800);
+    if (toastTimer) window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      item.remove();
+      toastTimer = 0;
+    }, 2800);
   }
 
   function renderDecks() {
@@ -135,7 +305,7 @@
       return `
         <article class="deck-card">
           <div class="deck-cover">
-            ${deck.slides?.[0]?.image ? '<img class="deck-cover-photo" src="' + escapeHTML(deck.slides[0].image) + '" alt="" loading="lazy" decoding="async" data-fallback="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1000&q=70">' : ''}
+    ${deck.slides?.[0]?.image ? '<img class="deck-cover-photo" src="' + escapeHTML(safeHttpUrl(deck.slides[0].image)) + '" alt="" loading="lazy" decoding="async" data-fallback="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1000&q=70">' : ''}
             <div class="deck-cover-shade"></div>
             <div class="cover-top"><span>${formatSubject(deck.subject)}</span><span>${String(position + 1).padStart(2, '0')} / ${escapeHTML(deck.date || 'LOCAL')}</span></div>
             <div class="cover-title">${escapeHTML(deck.title)}</div>
@@ -231,6 +401,8 @@
     slideIndex = 0;
     $('#slideStage').innerHTML = '';
     $('#presentationViewer').hidden = false;
+    setViewerUIHidden(false);
+    closeContents(false);
     document.body.style.overflow = 'hidden';
     startStageAtmosphere();
     $('#viewerDeckTitle').textContent = currentDeck.title;
@@ -240,38 +412,763 @@
     }
   }
 
+
+  function renderInteractive3D(slide) {
+    const type = String(slide.model3D || 'intestine');
+    const image = safeHttpUrl(slide.modelFallback || slide.image || '');
+    const alt = String(slide.modelFallbackAlt || slide.imageAlt || 'Hình minh họa mô hình giải phẫu');
+    const title = String(slide.modelTitle || 'Mô hình tương tác');
+    const description = String(slide.modelDescription || 'Mô hình sơ đồ tương tác.');
+    const modelSrc = safeHttpUrl(slide.modelSrc || '');
+    const sourceUrl = safeHttpUrl(slide.modelSourceUrl || '');
+    const credit = String(slide.modelCredit || 'Mô hình sơ đồ minh họa BioSphere');
+    const license = safeHttpUrl(slide.modelLicense || '');
+    return '<aside class="anatomy3d-panel" data-anatomy3d="' + escapeHTML(type) + '"' +
+      (modelSrc ? ' data-model-src="' + escapeHTML(modelSrc) + '"' : '') +
+      ' data-model-title="' + escapeHTML(title) + '" aria-label="' + escapeHTML(title) + '">' +
+      '<div class="anatomy3d-topline"><span>BIOSPHERE / 3D</span><span class="anatomy3d-status" role="status" aria-live="polite">Sẵn sàng mở mô hình</span></div>' +
+      (image ? '<img class="anatomy3d-fallback" data-fallback-src="' + escapeHTML(image) + '" alt="' + escapeHTML(alt) + '" decoding="async" loading="lazy">' : '') +
+      '<div class="anatomy3d-native-slot"></div>' +
+      '<div class="anatomy3d-canvas" aria-hidden="true"></div>' +
+      '<div class="anatomy3d-title"><strong>' + escapeHTML(title) + '</strong><span>' + escapeHTML(description) + '</span></div>' +
+      '<div class="anatomy3d-controls" role="group" aria-label="Điều khiển mô hình 3D">' +
+        '<button type="button" data-model-action="rotate" aria-pressed="false">Tự xoay</button>' +
+        '<button type="button" data-model-action="zoom-out" aria-label="Thu nhỏ mô hình">−</button>' +
+        '<button type="button" data-model-action="zoom-in" aria-label="Phóng to mô hình">＋</button>' +
+        '<button type="button" data-model-action="reset">Đặt lại</button>' +
+      '</div>' +
+      '<div class="anatomy3d-attribution">' +
+        (sourceUrl ? '<a href="' + escapeHTML(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(credit) + ' ↗</a>' : '<span>' + escapeHTML(credit) + '</span>') +
+        (license ? '<a href="' + escapeHTML(license) + '" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>' : '') +
+      '</div>' +
+      '<div class="anatomy3d-footnote">' + (modelSrc ? 'Xoay bằng chuột · cuộn để phóng to · mô hình tham chiếu giải phẫu' : 'Kéo chuột để xoay · lăn chuột để phóng to · mô hình sơ đồ minh họa') + '</div>' +
+    '</aside>';
+  }
+
+  function renderMediaModeBar(className = '') {
+    return '<div class="media-mode-bar ' + className + '">' +
+      '<span class="media-mode-label">KHÁM PHÁ HÌNH ẢNH</span>' +
+      '<div class="media-mode-switch" role="group" aria-label="Chọn cách xem hình ảnh">' +
+        '<button type="button" class="media-mode-button is-active" data-media-mode="image" aria-pressed="true"><span aria-hidden="true">▧</span> Ảnh gốc</button>' +
+        '<button type="button" class="media-mode-button" data-media-mode="model" aria-pressed="false"><span aria-hidden="true">◈</span> Mô hình 3D</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderMediaWithModel(slide) {
+    const image = slide.image ? renderPhoto(slide) : renderVisual(slide.visual);
+    return '<div class="media-experience" data-media-type="' + escapeHTML(String(slide.model3D || 'anatomy')) + '">' +
+      renderMediaModeBar('media-mode-bar--desktop') +
+      '<div class="media-image-view is-active">' + image + '</div>' +
+      '<div class="media-3d-view" hidden>' + renderInteractive3D(slide) + '</div>' +
+    '</div>';
+  }
+
+  function ensureThreeLibrary() {
+    if (window.THREE && window.THREE.WebGLRenderer) return Promise.resolve(window.THREE);
+    if (threeLoadPromise) return threeLoadPromise;
+    const pending = new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-biosphere-three]');
+      if (existing) {
+        existing.addEventListener('load', () => window.THREE ? resolve(window.THREE) : reject(new Error('3D library did not initialize')), { once: true });
+        existing.addEventListener('error', () => reject(new Error('3D library failed to load')), { once: true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js';
+      script.async = true;
+      script.dataset.biosphereThree = 'true';
+      script.onload = () => window.THREE ? resolve(window.THREE) : reject(new Error('3D library did not initialize'));
+      script.onerror = () => reject(new Error('3D library failed to load'));
+      document.head.appendChild(script);
+    });
+    threeLoadPromise = pending.catch(error => {
+      threeLoadPromise = null;
+      document.querySelector('script[data-biosphere-three]')?.remove();
+      throw error;
+    });
+    return threeLoadPromise;
+  }
+
+  function disposeInteractiveModel() {
+    const model = activeAnatomy3D;
+    if (!model) return;
+    activeAnatomy3D = null;
+    delete model.panel.dataset.modelInitializing;
+    if (model.kind === 'native') {
+      if (model.visibilityHandler) document.removeEventListener('visibilitychange', model.visibilityHandler);
+      model.viewer.removeEventListener('load', model.onLoad);
+      model.viewer.removeEventListener('error', model.onError);
+      model.viewer.removeEventListener('progress', model.onProgress);
+      model.viewer.removeAttribute('src');
+      model.viewer.remove();
+      model.panel.classList.remove('is-native-loading', 'is-native-ready');
+      return;
+    }
+    if (model.frame) cancelAnimationFrame(model.frame);
+    if (model.visibilityHandler) document.removeEventListener('visibilitychange', model.visibilityHandler);
+    model.resizeObserver?.disconnect();
+    window.removeEventListener('resize', model.onResize);
+    model.panel.removeEventListener('pointerdown', model.onPointerDown);
+    model.panel.removeEventListener('pointermove', model.onPointerMove);
+    model.panel.removeEventListener('pointerup', model.onPointerUp);
+    model.panel.removeEventListener('pointercancel', model.onPointerUp);
+    model.panel.removeEventListener('wheel', model.onWheel);
+    model.group.traverse(object => {
+      if (object.geometry?.dispose) object.geometry.dispose();
+      if (object.material) {
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.forEach(material => material.dispose?.());
+      }
+    });
+    model.renderer.dispose();
+    model.renderer.domElement.remove();
+    model.panel.classList.remove('is-3d-ready');
+  }
+
+  function makeTube(THREE, group, points, color, radius = 0.07, tubularSegments = 56) {
+    const curve = new THREE.CatmullRomCurve3(points.map(point => new THREE.Vector3(point[0], point[1], point[2] || 0)));
+    const geometry = new THREE.TubeGeometry(curve, tubularSegments, radius, 10, false);
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.48, metalness: 0.02 });
+    const mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+    return mesh;
+  }
+
+  function makeEllipsoid(THREE, group, position, scale, color) {
+    const geometry = new THREE.SphereGeometry(1, 24, 18);
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.38, metalness: 0.02 });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(position[0], position[1], position[2] || 0);
+    mesh.scale.set(scale[0], scale[1], scale[2]);
+    group.add(mesh);
+    return mesh;
+  }
+
+  function makeExtrudedShape(THREE, group, shape, color, depth = 0.34, z = 0, bevel = 0.045, materialOptions = {}) {
+    const geometry = new THREE.ExtrudeGeometry(shape, {
+      depth, bevelEnabled: true, bevelSegments: 4, steps: 1,
+      bevelSize: bevel, bevelThickness: bevel, curveSegments: 32
+    });
+    geometry.translate(0, 0, -depth / 2);
+    const base = { color, roughness: 0.42, metalness: 0.01 };
+    const material = new THREE.MeshPhysicalMaterial({ ...base, ...materialOptions });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.z = z;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    group.add(mesh);
+    return mesh;
+  }
+
+  function makeToothShape(THREE, scale = 1) {
+    const shape = new THREE.Shape();
+    const p = (x, y) => [x * scale, y * scale];
+    let a = p(-0.58, 0.84); shape.moveTo(a[0], a[1]);
+    a = p(-0.28, 1.02); const b = p(0.12, 0.98); const c = p(0.51, 0.82);
+    shape.bezierCurveTo(a[0], a[1], b[0], b[1], c[0], c[1]);
+    a = p(0.90, 0.63); const d = p(0.76, 0.28); const e = p(0.49, 0.06);
+    shape.bezierCurveTo(a[0], a[1], d[0], d[1], e[0], e[1]);
+    a = p(0.33, -0.10); const f = p(0.38, -0.53); const g = p(0.20, -0.92);
+    shape.bezierCurveTo(a[0], a[1], f[0], f[1], g[0], g[1]);
+    a = p(0.13, -1.06); const h = p(-0.02, -1.06); const i = p(-0.12, -0.91);
+    shape.bezierCurveTo(a[0], a[1], h[0], h[1], i[0], i[1]);
+    a = p(-0.30, -0.55); const j = p(-0.27, -0.18); const k = p(-0.43, 0.04);
+    shape.bezierCurveTo(a[0], a[1], j[0], j[1], k[0], k[1]);
+    a = p(-0.72, 0.25); const l = p(-0.88, 0.60); const m = p(-0.58, 0.84);
+    shape.bezierCurveTo(a[0], a[1], l[0], l[1], m[0], m[1]);
+    shape.closePath();
+    return shape;
+  }
+
+  function makeStomachShape(THREE) {
+    const shape = new THREE.Shape();
+    shape.moveTo(-0.16, 0.82);
+    shape.bezierCurveTo(-0.36, 0.66, -0.34, 0.43, -0.23, 0.25);
+    shape.bezierCurveTo(-0.43, 0.08, -0.63, -0.24, -0.43, -0.48);
+    shape.bezierCurveTo(-0.21, -0.76, 0.18, -0.78, 0.43, -0.54);
+    shape.bezierCurveTo(0.63, -0.35, 0.54, -0.12, 0.37, 0.02);
+    shape.bezierCurveTo(0.19, 0.18, 0.19, 0.34, 0.37, 0.43);
+    shape.bezierCurveTo(0.54, 0.52, 0.61, 0.68, 0.47, 0.82);
+    shape.bezierCurveTo(0.29, 0.99, 0.03, 0.95, -0.16, 0.82);
+    shape.closePath();
+    return shape;
+  }
+
+  function buildModelGeometry(THREE, type, group) {
+    if (type === 'tooth') {
+      // Explanatory cutaway schematic: enamel, dentin, pulp and a visible caries spot.
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 1), '#f0e4cb', 0.46, 0, 0.075, { roughness: 0.23, clearcoat: 0.92, clearcoatRoughness: 0.18 });
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.72), '#d9a36c', 0.22, 0.25, 0.03, { roughness: 0.42 });
+      makeExtrudedShape(THREE, group, makeToothShape(THREE, 0.32), '#cd6d88', 0.12, 0.39, 0.018, { roughness: 0.35 });
+      makeTube(THREE, group, [[-0.08, 0.02, 0.47], [-0.15, -0.31, 0.45], [-0.18, -0.62, 0.43], [-0.10, -0.86, 0.42]], '#be5d77', 0.025, 42);
+      makeTube(THREE, group, [[0.04, 0.01, 0.47], [0.10, -0.31, 0.45], [0.14, -0.62, 0.43], [0.12, -0.84, 0.42]], '#be5d77', 0.022, 42);
+      makeEllipsoid(THREE, group, [0.46, 0.58, 0.40], [0.16, 0.135, 0.045], '#986344');
+      makeEllipsoid(THREE, group, [0.47, 0.59, 0.445], [0.082, 0.068, 0.026], '#4d3331');
+      makeTube(THREE, group, [[-0.61, 0.20, 0.28], [-0.39, 0.07, 0.31], [-0.12, 0.02, 0.32], [0.18, 0.02, 0.31]], '#d9a4aa', 0.036, 40);
+      return;
+    }
+    if (type === 'stomach') {
+      // Stomach cutaway schematic with mucosal folds; the ulcer marker is illustrative, not clinical imagery.
+      makeExtrudedShape(THREE, group, makeStomachShape(THREE), '#c96e86', 0.42, 0.03, 0.075, { roughness: 0.34, clearcoat: 0.38, clearcoatRoughness: 0.35 });
+      makeTube(THREE, group, [[-0.16, 1.22, 0.04], [-0.18, 0.94, 0.12], [-0.16, 0.71, 0.15], [-0.17, 0.49, 0.20]], '#efb3ba', 0.095);
+      makeTube(THREE, group, [[0.37, -0.42, 0.20], [0.57, -0.42, 0.16], [0.69, -0.24, 0.08], [0.55, -0.04, 0.08]], '#e8a2ac', 0.075);
+      [
+        [[-0.30, 0.30, 0.26], [-0.14, 0.36, 0.29], [0.02, 0.28, 0.29], [0.16, 0.20, 0.26]],
+        [[-0.32, 0.12, 0.28], [-0.12, 0.18, 0.31], [0.08, 0.10, 0.30], [0.18, 0.02, 0.26]],
+        [[-0.29, -0.06, 0.28], [-0.11, -0.01, 0.31], [0.08, -0.08, 0.29], [0.17, -0.17, 0.25]],
+        [[-0.20, -0.25, 0.24], [-0.03, -0.20, 0.28], [0.13, -0.27, 0.25]]
+      ].forEach((fold, i) => makeTube(THREE, group, fold, i % 2 ? '#f2b2be' : '#e58fa3', 0.018, 38));
+      makeEllipsoid(THREE, group, [0.20, 0.19, 0.30], [0.13, 0.10, 0.035], '#f0c28f');
+      makeEllipsoid(THREE, group, [0.20, 0.19, 0.34], [0.065, 0.048, 0.022], '#8b405b');
+      makeEllipsoid(THREE, group, [0.20, 0.19, 0.36], [0.028, 0.020, 0.012], '#4d2336');
+      return;
+    }
+    if (type === 'intestine') {
+      makeTube(THREE, group, [[-0.62, 0.62, 0], [-0.69, 0.20, 0.02], [-0.68, -0.37, 0], [-0.48, -0.62, 0], [0.02, -0.67, 0], [0.49, -0.60, 0], [0.67, -0.32, 0.02], [0.65, 0.28, 0], [0.47, 0.65, 0], [0.21, 0.67, 0]], '#9e4e67', 0.145, 110);
+      // Small intestine is shown as soft, nested loops rather than a random coil.
+      makeTube(THREE, group, [[-0.44, 0.34, 0.14], [-0.22, 0.43, 0.22], [0.05, 0.34, 0.20], [0.32, 0.28, 0.17], [0.39, 0.10, 0.20], [0.12, 0.04, 0.24], [-0.23, 0.11, 0.21], [-0.40, -0.04, 0.18], [-0.29, -0.22, 0.21], [0.03, -0.18, 0.25], [0.34, -0.24, 0.18], [0.30, -0.42, 0.14], [-0.05, -0.44, 0.20], [-0.32, -0.39, 0.13]], '#eab0b8', 0.062, 150);
+      for (let i = 0; i < 9; i++) {
+        const x = -0.28 + i * 0.07;
+        const y = 0.26 + Math.sin(i * 0.72) * 0.07;
+        makeTube(THREE, group, [[x, y, 0.255], [x + 0.03, y - 0.04, 0.275], [x + 0.06, y - 0.08, 0.255]], '#f5c5c9', 0.009, 14);
+      }
+      return;
+    }
+    if (type === 'worm') {
+      const first = [[-0.62, 0.66, -0.05], [-0.26, 0.40, 0.10], [0.33, 0.51, 0.0], [0.54, 0.21, 0.13], [0.08, -0.05, 0.05], [-0.45, -0.38, 0.12], [-0.05, -0.68, 0.0]];
+      const second = [[0.48, 0.66, -0.16], [0.13, 0.39, -0.02], [-0.36, 0.29, -0.14], [-0.45, -0.03, 0.02], [0.05, -0.28, -0.10], [0.42, -0.57, 0.0]];
+      makeTube(THREE, group, first, '#d9a879', 0.071, 140);
+      makeTube(THREE, group, second, '#f0d2ae', 0.053, 140);
+      first.forEach((point, i) => {
+        if (i > 0 && i < first.length - 1) {
+          makeEllipsoid(THREE, group, [point[0], point[1], (point[2] || 0) + 0.055], [0.055, 0.035, 0.022], '#bf8a65');
+        }
+      });
+      for (let i = 0; i < 7; i++) {
+        const angle = i * 0.85;
+        makeEllipsoid(THREE, group, [Math.cos(angle) * 0.22, -0.84 + Math.sin(angle) * 0.07, 0.04], [0.05, 0.07, 0.05], '#e9d6a0');
+      }
+      return;
+    }
+    if (type === 'liver') {
+      const shape = new THREE.Shape();
+      shape.moveTo(-0.84, 0.30);
+      shape.bezierCurveTo(-0.72, 0.72, -0.22, 0.74, 0.10, 0.55);
+      shape.bezierCurveTo(0.44, 0.37, 0.61, 0.52, 0.78, 0.30);
+      shape.bezierCurveTo(0.83, 0.12, 0.61, -0.28, 0.32, -0.42);
+      shape.bezierCurveTo(0.08, -0.54, -0.05, -0.39, -0.22, -0.35);
+      shape.bezierCurveTo(-0.49, -0.32, -0.68, -0.20, -0.84, 0.30);
+      shape.closePath();
+      makeExtrudedShape(THREE, group, shape, '#965064', 0.43, 0, 0.085, { roughness: 0.32, clearcoat: 0.42 });
+      makeEllipsoid(THREE, group, [0.24, -0.46, 0.24], [0.12, 0.22, 0.10], '#75a77c');
+      makeTube(THREE, group, [[0.18, -0.24, 0.30], [0.13, -0.04, 0.28], [-0.01, 0.10, 0.21]], '#e4bd81', 0.035, 32);
+    }
+  }
+
+  function ensureModelViewerLibrary() {
+    if (window.customElements?.get('model-viewer')) return Promise.resolve();
+    if (modelViewerLoadPromise) return modelViewerLoadPromise;
+    const pending = new Promise((resolve, reject) => {
+      const done = () => window.customElements?.whenDefined('model-viewer').then(resolve, reject);
+      const existing = document.querySelector('script[data-biosphere-model-viewer]');
+      if (existing) {
+        existing.addEventListener('load', done, { once: true });
+        existing.addEventListener('error', () => reject(new Error('Model viewer failed to load')), { once: true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.4.0/model-viewer.min.js';
+      script.dataset.biosphereModelViewer = 'true';
+      script.onload = done;
+      script.onerror = () => reject(new Error('Model viewer CDN unavailable'));
+      document.head.appendChild(script);
+    });
+    modelViewerLoadPromise = pending.catch(error => {
+      modelViewerLoadPromise = null;
+      document.querySelector('script[data-biosphere-model-viewer]')?.remove();
+      throw error;
+    });
+    return modelViewerLoadPromise;
+  }
+
+  function initInteractiveModels(root) {
+    const panel = root.matches?.('.anatomy3d-panel') ? root : root.querySelector('.anatomy3d-panel');
+    if (!panel) return;
+    const view = panel.closest('.media-3d-view');
+    if (view?.hidden || panel.dataset.modelInitializing === '1' || activeAnatomy3D?.panel === panel) return;
+    disposeInteractiveModel();
+    panel.dataset.modelInitializing = '1';
+    const requestId = String((Number(panel.dataset.modelRequest) || 0) + 1);
+    panel.dataset.modelRequest = requestId;
+    const fallback = panel.querySelector('.anatomy3d-fallback');
+    if (fallback && !fallback.getAttribute('src') && fallback.dataset.fallbackSrc) {
+      fallback.src = fallback.dataset.fallbackSrc;
+      fallback.addEventListener('error', () => fallback.classList.add('photo-load-failed'), { once: true });
+    }
+    if (panel.dataset.modelSrc) {
+      initReferenceModelViewer(panel, requestId).catch(() => {
+        if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.dataset.modelRequest !== requestId) return;
+        delete panel.dataset.modelInitializing;
+        const status = panel.querySelector('.anatomy3d-status');
+        if (status) status.textContent = 'Mô hình tham chiếu không tải được · dùng mô hình dự phòng';
+        initCustomThreeModel(panel, requestId);
+      });
+    } else {
+      initCustomThreeModel(panel, requestId);
+    }
+  }
+
+  async function initReferenceModelViewer(panel, requestId) {
+    const source = String(panel.dataset.modelSrc || '').trim();
+    if (!source) throw new Error('No reference model source');
+    await ensureModelViewerLibrary();
+    if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden || panel.dataset.modelRequest !== requestId) {
+      if (panel.dataset.modelRequest === requestId) delete panel.dataset.modelInitializing;
+      return;
+    }
+    const slot = panel.querySelector('.anatomy3d-native-slot');
+    if (!slot) throw new Error('3D viewer slot missing');
+    slot.innerHTML = '';
+    const viewer = document.createElement('model-viewer');
+    viewer.className = 'anatomy3d-native-viewer';
+    viewer.setAttribute('src', source);
+    viewer.setAttribute('alt', panel.dataset.modelTitle || 'Mô hình tham chiếu giải phẫu 3D');
+    viewer.setAttribute('camera-controls', '');
+    viewer.setAttribute('touch-action', 'pan-y');
+    viewer.setAttribute('interaction-prompt', 'none');
+    viewer.setAttribute('shadow-intensity', '0.65');
+    viewer.setAttribute('exposure', '1.08');
+    viewer.setAttribute('loading', 'eager');
+    viewer.setAttribute('reveal', 'auto');
+    viewer.setAttribute('camera-orbit', 'auto auto auto');
+    viewer.setAttribute('camera-target', 'auto auto auto');
+    viewer.setAttribute('field-of-view', '30deg');
+    viewer.setAttribute('disable-tap', '');
+    viewer.setAttribute('tone-mapping', 'neutral');
+    const fallback = panel.querySelector('.anatomy3d-fallback');
+    if (fallback?.dataset.fallbackSrc) viewer.setAttribute('poster', fallback.dataset.fallbackSrc);
+    if (motionEnabled && !reducedMotion.matches) {
+      viewer.setAttribute('auto-rotate', '');
+      viewer.setAttribute('rotation-per-second', '12deg');
+    }
+    slot.appendChild(viewer);
+    const model = { kind: 'native', panel, viewer, autoRotate: viewer.hasAttribute('auto-rotate'), onLoad: null, onError: null, onProgress: null, visibilityHandler: null };
+    activeAnatomy3D = model;
+    panel.classList.add('is-native-loading');
+    const status = panel.querySelector('.anatomy3d-status');
+    if (status) status.textContent = 'Đang tải mô hình giải phẫu…';
+    const rotate = panel.querySelector('[data-model-action="rotate"]');
+    if (rotate) {
+      rotate.setAttribute('aria-pressed', String(model.autoRotate));
+      rotate.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+    }
+    model.onLoad = () => {
+      if (activeAnatomy3D !== model) return;
+      panel.classList.remove('is-native-loading');
+      panel.classList.add('is-native-ready');
+      if (status) status.textContent = 'Mô hình tham chiếu đã sẵn sàng';
+    };
+    model.onProgress = event => {
+      if (activeAnatomy3D !== model || !status) return;
+      const progress = Math.round((event.detail?.totalProgress || 0) * 100);
+      status.textContent = progress > 0 && progress < 100 ? 'Đang tải mô hình · ' + progress + '%' : 'Đang dựng mô hình 3D…';
+    };
+    model.onError = () => {
+      if (activeAnatomy3D !== model) return;
+      disposeInteractiveModel();
+      panel.classList.remove('is-native-loading', 'is-native-ready');
+      if (status) status.textContent = 'Không tải được mô hình tham chiếu · chuyển sang mô hình dự phòng';
+      delete panel.dataset.modelInitializing;
+      initCustomThreeModel(panel, requestId);
+    };
+    model.visibilityHandler = () => {
+      if (activeAnatomy3D !== model) return;
+      const tabHidden = document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden;
+      if (tabHidden || !motionEnabled || reducedMotion.matches || !model.autoRotate) viewer.removeAttribute('auto-rotate');
+      else viewer.setAttribute('auto-rotate', '');
+    };
+    document.addEventListener('visibilitychange', model.visibilityHandler);
+    viewer.addEventListener('load', model.onLoad);
+    viewer.addEventListener('progress', model.onProgress);
+    viewer.addEventListener('error', model.onError);
+  }
+
+  function initCustomThreeModel(panel, requestId = panel.dataset.modelRequest) {
+    if (panel.dataset.modelRequest === requestId) panel.dataset.modelInitializing = '1';
+    ensureThreeLibrary().then(THREE => {
+      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.closest('.media-3d-view')?.hidden || panel.dataset.modelRequest !== requestId) {
+        if (panel.dataset.modelRequest === requestId) delete panel.dataset.modelInitializing;
+        return;
+      }
+      try {
+        const surface = panel.querySelector('.anatomy3d-canvas');
+        const width = Math.max(220, surface.clientWidth || panel.clientWidth || 420);
+        const height = Math.max(240, surface.clientHeight || panel.clientHeight || 420);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, getPerformanceProfile().maxPixelRatio));
+        renderer.setSize(width, height, false);
+        renderer.domElement.setAttribute('aria-hidden', 'true');
+        surface.appendChild(renderer.domElement);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
+        camera.position.set(0, 0, 5.4);
+        scene.add(new THREE.AmbientLight(0xffffff, 1.65));
+        const keyLight = new THREE.DirectionalLight(0xffffff, 2.1);
+        keyLight.position.set(-3, 4, 6);
+        scene.add(keyLight);
+        const rimLight = new THREE.DirectionalLight(0x80e8de, 1.25);
+        rimLight.position.set(3, 1.2, -4);
+        scene.add(rimLight);
+        const group = new THREE.Group();
+        scene.add(group);
+        buildModelGeometry(THREE, panel.dataset.anatomy3d, group);
+        group.scale.setScalar(1.0);
+
+        const model = {
+          kind: 'custom', panel, renderer, scene, camera, group, frame: 0, render: null, visibilityHandler: null,
+          autoRotate: motionEnabled && !reducedMotion.matches,
+          dragging: false, lastX: 0, lastY: 0, resizeObserver: null, onResize: null,
+          onPointerDown: null, onPointerMove: null, onPointerUp: null, onWheel: null
+        };
+        model.onResize = () => {
+          if (!panel.isConnected) return;
+          const w = Math.max(1, surface.clientWidth);
+          const h = Math.max(1, surface.clientHeight);
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          model.render?.();
+        };
+        model.onPointerDown = event => {
+          if (event.target.closest('button')) return;
+          model.dragging = true;
+          model.lastX = event.clientX;
+          model.lastY = event.clientY;
+          panel.classList.add('is-dragging');
+          panel.setPointerCapture?.(event.pointerId);
+        };
+        model.onPointerMove = event => {
+          if (!model.dragging) return;
+          const dx = event.clientX - model.lastX;
+          const dy = event.clientY - model.lastY;
+          model.lastX = event.clientX;
+          model.lastY = event.clientY;
+          group.rotation.y += dx * 0.010;
+          group.rotation.x = Math.max(-1.0, Math.min(1.0, group.rotation.x + dy * 0.008));
+          model.render?.();
+        };
+        model.onPointerUp = event => {
+          model.dragging = false;
+          panel.classList.remove('is-dragging');
+          try { panel.releasePointerCapture?.(event.pointerId); } catch { /* pointer capture may already be released */ }
+          model.render?.();
+        };
+        model.onWheel = event => {
+          event.preventDefault();
+          const scale = group.scale.x * (event.deltaY < 0 ? 1.08 : 0.92);
+          group.scale.setScalar(Math.max(0.68, Math.min(1.7, scale)));
+          model.render?.();
+        };
+        panel.addEventListener('pointerdown', model.onPointerDown);
+        panel.addEventListener('pointermove', model.onPointerMove);
+        panel.addEventListener('pointerup', model.onPointerUp);
+        panel.addEventListener('pointercancel', model.onPointerUp);
+        panel.addEventListener('wheel', model.onWheel, { passive: false });
+        if (window.ResizeObserver) {
+          model.resizeObserver = new ResizeObserver(model.onResize);
+          model.resizeObserver.observe(surface);
+        } else {
+          window.addEventListener('resize', model.onResize);
+        }
+        activeAnatomy3D = model;
+        panel.classList.add('is-3d-ready');
+        const status = panel.querySelector('.anatomy3d-status');
+        if (status) status.textContent = 'Mô hình 3D sẵn sàng';
+        const rotate = panel.querySelector('[data-model-action="rotate"]');
+        if (rotate) rotate.setAttribute('aria-pressed', String(model.autoRotate));
+        model.onResize();
+
+        const tick = () => {
+          model.frame = 0;
+          if (activeAnatomy3D !== model || !panel.isConnected) return;
+          if (document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden) return;
+          if (model.autoRotate && motionEnabled && !reducedMotion.matches && !model.dragging) {
+            group.rotation.y += 0.0032;
+          }
+          renderer.render(scene, camera);
+          if (model.dragging || (model.autoRotate && motionEnabled && !reducedMotion.matches)) {
+            model.frame = requestAnimationFrame(tick);
+          }
+        };
+        model.render = () => {
+          if (activeAnatomy3D !== model || model.frame) return;
+          if (document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden) return;
+          model.frame = requestAnimationFrame(tick);
+        };
+        model.visibilityHandler = () => {
+          if (document.hidden || $('#presentationViewer').hidden || panel.closest('.media-3d-view')?.hidden) {
+            if (model.frame) cancelAnimationFrame(model.frame);
+            model.frame = 0;
+          } else {
+            model.render?.();
+          }
+        };
+        document.addEventListener('visibilitychange', model.visibilityHandler);
+        model.render();
+      } catch (error) {
+        if (panel.dataset.modelRequest !== requestId || !panel.isConnected) return;
+        panel.classList.remove('is-3d-ready');
+        delete panel.dataset.modelInitializing;
+        const status = panel.querySelector('.anatomy3d-status');
+        if (status) status.textContent = 'Đang dùng hình minh họa dự phòng';
+        const footnote = panel.querySelector('.anatomy3d-footnote');
+        if (footnote) footnote.textContent = 'Ảnh tĩnh dự phòng · mô hình 3D không khả dụng';
+      }
+    }).catch(() => {
+      if (!panel.isConnected || $('#slideStage').querySelector('.anatomy3d-panel') !== panel || panel.dataset.modelRequest !== requestId) return;
+      delete panel.dataset.modelInitializing;
+      const status = panel.querySelector('.anatomy3d-status');
+      if (status) status.textContent = 'Không tải được 3D · đang dùng hình minh họa';
+      const footnote = panel.querySelector('.anatomy3d-footnote');
+      if (footnote) footnote.textContent = 'Ảnh tĩnh dự phòng · mô hình 3D không khả dụng';
+    });
+  }
+
+  function controlInteractiveModel(button) {
+    const panel = button.closest('.anatomy3d-panel');
+    const model = activeAnatomy3D;
+    if (!panel || !model || model.panel !== panel) return;
+    const action = button.dataset.modelAction;
+    if (model.kind === 'native') {
+      const viewer = model.viewer;
+      if (action === 'rotate') {
+        model.autoRotate = !model.autoRotate;
+        if (model.autoRotate && motionEnabled && !reducedMotion.matches) {
+          viewer.setAttribute('auto-rotate', '');
+          viewer.setAttribute('rotation-per-second', '12deg');
+        } else viewer.removeAttribute('auto-rotate');
+        button.setAttribute('aria-pressed', String(model.autoRotate));
+        button.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      } else if (action === 'zoom-in' || action === 'zoom-out') {
+        const orbit = viewer.getCameraOrbit();
+        const factor = action === 'zoom-in' ? 0.88 : 1.14;
+        const radius = Math.min(1000, Math.max(0.02, orbit.radius * factor));
+        viewer.cameraOrbit = orbit.theta + 'rad ' + orbit.phi + 'rad ' + radius + 'm';
+      } else if (action === 'reset') {
+        viewer.cameraOrbit = 'auto auto auto';
+        viewer.cameraTarget = 'auto auto auto';
+        model.autoRotate = motionEnabled && !reducedMotion.matches;
+        if (model.autoRotate) viewer.setAttribute('auto-rotate', '');
+        else viewer.removeAttribute('auto-rotate');
+        button.setAttribute('aria-pressed', String(model.autoRotate));
+        button.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      }
+      return;
+    }
+    if (action === 'rotate') {
+      model.autoRotate = !model.autoRotate;
+      button.setAttribute('aria-pressed', String(model.autoRotate));
+      button.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      model.render?.();
+    } else if (action === 'zoom-in') {
+      model.group.scale.setScalar(Math.min(1.7, model.group.scale.x * 1.12));
+      model.render?.();
+    } else if (action === 'zoom-out') {
+      model.group.scale.setScalar(Math.max(0.68, model.group.scale.x * 0.89));
+      model.render?.();
+    } else if (action === 'reset') {
+      model.group.rotation.set(0, 0, 0);
+      model.group.scale.setScalar(1);
+      model.autoRotate = motionEnabled && !reducedMotion.matches;
+      const rotate = panel.querySelector('[data-model-action="rotate"]');
+      if (rotate) {
+        rotate.setAttribute('aria-pressed', String(model.autoRotate));
+        rotate.textContent = model.autoRotate ? 'Dừng xoay' : 'Tự xoay';
+      }
+      model.render?.();
+    }
+  }
+
+  function renderSlideVisualBoard(slide) {
+    const visual = String(slide.visual || 'editorial');
+    const title = String(slide.title || '');
+    let label = 'BẢN ĐỒ KIẾN THỨC';
+    let heading = 'Nhìn nhanh — hiểu sâu';
+    let subline = 'Các ý chính được nối thành một hình để dễ ghi nhớ.';
+    let nodes = [];
+    let mode = 'cards';
+
+    if (slide.flowVisual && Array.isArray(slide.flowVisual.steps)) {
+      label = slide.flowVisual.label || 'QUY TRÌNH KHOA HỌC';
+      heading = title;
+      subline = 'Theo dõi từng bước theo thứ tự, rồi liên hệ với phần giải thích.';
+      nodes = slide.flowVisual.steps.map((text, i) => ({ label: text, detail: ['Điểm khởi đầu', 'Quá trình trung gian', 'Kết quả hoặc việc cần làm'][i] || '' }));
+      mode = 'process';
+    } else if (visual === 'digestive' || /5 bệnh liên quan đến hệ tiêu hóa/i.test(title)) {
+      label = 'LỘ TRÌNH BÀI HỌC'; heading = 'Năm bệnh · năm cơ chế khác nhau'; subline = 'Chọn góc nhìn đúng: nguyên nhân, dấu hiệu, phòng ngừa và thời điểm cần trợ giúp.';
+      nodes = [
+        {label:'Sâu răng',detail:'Mảng bám · axit'},
+        {label:'Loét dạ dày',detail:'H. pylori · một số thuốc'},
+        {label:'Tiêu chảy',detail:'Mất nước'},
+        {label:'Nhiễm giun',detail:'Đường lây qua môi trường'},
+        {label:'Viêm gan A',detail:'Virus HAV'}
+      ];
+      mode = 'disease-map';
+    } else if (visual === 'pathway' || /hành trình của thức ăn/i.test(title)) {
+      label = 'SƠ ĐỒ HỆ TIÊU HÓA'; heading = 'Đường đi của thức ăn'; subline = 'Mỗi cơ quan làm một việc; gan, túi mật và tuyến tụy hỗ trợ bằng dịch tiêu hóa.';
+      nodes = [
+        {label:'Miệng',detail:'Nhai · nước bọt'},
+        {label:'Thực quản',detail:'Đưa thức ăn xuống'},
+        {label:'Dạ dày',detail:'Nhào trộn'},
+        {label:'Ruột non',detail:'Tiêu hóa · hấp thụ'},
+        {label:'Ruột già',detail:'Hấp thụ thêm nước'}
+      ];
+      mode = 'route';
+    } else if (visual === 'balance') {
+      label = 'DINH DƯỠNG CÂN BẰNG'; heading = 'Bốn vai trò cần nhớ'; subline = 'Ăn đa dạng để cơ thể có năng lượng, nguyên liệu xây dựng và chất cần thiết để điều hòa hoạt động.';
+      nodes = [
+        {label:'Năng lượng',detail:'Carbohydrate · chất béo'},
+        {label:'Xây dựng',detail:'Protein · tăng trưởng'},
+        {label:'Điều hòa',detail:'Vitamin · chất khoáng'},
+        {label:'Hỗ trợ',detail:'Nước · chất xơ'}
+      ];
+      mode = 'cards';
+    } else if (visual === 'overview' || /năm bệnh — năm góc nhìn/i.test(title)) {
+      label = 'BẢN ĐỒ TỔNG QUAN'; heading = 'Một mục tiêu chung: phòng bệnh'; subline = 'Nguyên nhân khác nhau, nhưng vệ sinh và quyết định đúng lúc đều quan trọng.';
+      nodes = [
+        {label:'Răng miệng',detail:'Giảm mảng bám'},
+        {label:'Dạ dày',detail:'Không tự điều trị'},
+        {label:'Tiêu chảy',detail:'Chú ý mất nước'},
+        {label:'Giun đường ruột',detail:'Cắt đường lây'},
+        {label:'Viêm gan A',detail:'Nước sạch · vệ sinh'}
+      ];
+      mode = 'mind-map';
+    } else if (visual === 'comparison') {
+      label = 'SO SÁNH DẤU HIỆU'; heading = 'Dấu hiệu là manh mối, không phải chẩn đoán'; subline = 'Nếu biểu hiện nặng hoặc kéo dài, báo người lớn và tìm đánh giá y tế.';
+      nodes = [
+        {label:'Sâu răng',detail:'Ê buốt · đau răng'},
+        {label:'Loét dạ dày',detail:'Đau bụng trên · dấu hiệu chảy máu rất nguy hiểm'},
+        {label:'Tiêu chảy',detail:'Phân lỏng · theo dõi mất nước'},
+        {label:'Nhiễm giun',detail:'Có thể ít dấu hiệu rõ'},
+        {label:'Viêm gan A',detail:'Vàng da · nước tiểu sẫm cần đánh giá'}
+      ];
+      mode = 'comparison';
+    } else if (visual === 'habits') {
+      label = 'BẢN ĐỒ THÓI QUEN'; heading = 'Sáu hành động nhỏ, lợi ích lâu dài'; subline = 'Chọn các hành động có thể duy trì hằng ngày; khi có dấu hiệu cảnh báo thì tìm trợ giúp.';
+      nodes = [
+        {label:'Rửa tay',detail:'Trước khi ăn · sau đi vệ sinh'},
+        {label:'Nước an toàn',detail:'Dùng nước sạch'},
+        {label:'Thực phẩm sạch',detail:'Rửa · nấu chín · bảo quản'},
+        {label:'Chăm sóc răng',detail:'Chải răng với fluoride'},
+        {label:'Ăn đa dạng',detail:'Rau quả · chất xơ · nước'},
+        {label:'Tìm trợ giúp',detail:'Báo người lớn khi đáng lo'}
+      ];
+      mode = 'cards';
+    } else if (visual === 'greeting' || visual === 'team') {
+      label = visual === 'team' ? 'HOẠT ĐỘNG NHÓM' : 'MỤC TIÊU HỌC TẬP';
+      heading = visual === 'team' ? 'Cùng suy luận, không chỉ đoán đáp án' : 'Ba việc sẽ làm trong bài học';
+      subline = 'Quan sát bằng chứng, chọn cách xử trí an toàn và giải thích lý do bằng kiến thức khoa học.';
+      nodes = visual === 'team'
+        ? [{label:'Đọc tình huống',detail:'Tìm chi tiết quan trọng'},{label:'Chọn đáp án',detail:'Cân nhắc mức độ an toàn'},{label:'Giải thích',detail:'Nêu bằng chứng'}]
+        : [{label:'Hiểu cơ chế',detail:'Nguyên nhân và đường lây'},{label:'Nhận biết',detail:'Dấu hiệu cần chú ý'},{label:'Phòng ngừa',detail:'Hành động hằng ngày'}];
+      mode = 'cards';
+    } else if (visual === 'sources' || /ba điều cần ghi nhớ/i.test(title)) {
+      label = 'SƠ ĐỒ GHI NHỚ'; heading = 'Hiểu đúng · phòng ngừa · tìm trợ giúp'; subline = 'Không tự chẩn đoán và không tự dùng kháng sinh; hãy dựa vào hướng dẫn y tế đáng tin cậy.';
+      nodes = [{label:'Hiểu đúng',detail:'Nguyên nhân khác nhau'},{label:'Phòng ngừa',detail:'Vệ sinh và thực phẩm an toàn'},{label:'Tìm trợ giúp',detail:'Báo người lớn khi đáng lo'}];
+      mode = 'cards';
+    } else if (visual === 'closing') {
+      label = 'MANG KIẾN THỨC VÀO ĐỜI SỐNG'; heading = 'Bắt đầu từ một việc hôm nay'; subline = 'Thói quen đều đặn, kiến thức đúng và việc tìm trợ giúp đúng lúc đi cùng nhau.';
+      nodes = [{label:'Làm sạch răng',detail:'Giảm nguy cơ sâu răng'},{label:'Rửa tay',detail:'Cắt một phần đường lây'},{label:'Dùng nước an toàn',detail:'Bảo vệ cả gia đình'}];
+      mode = 'cards';
+    } else if (visual === 'tooth' || visual === 'toothcare') {
+      label = 'CƠ CHẾ VÀ PHÒNG NGỪA'; heading = 'Bảo vệ men răng'; subline = 'Đồ có đường, mảng bám và axit liên quan đến quá trình mất khoáng.';
+      nodes = [{label:'Làm sạch mảng bám',detail:'Chải răng đúng cách'},{label:'Giảm tần suất đường',detail:'Ưu tiên nước lọc'},{label:'Dùng fluoride',detail:'Theo hướng dẫn phù hợp'},{label:'Khám nha khoa',detail:'Khi đau hoặc ê buốt lặp lại'}];
+      mode = 'cards';
+    } else if (visual === 'stomach' || visual === 'stomachcare') {
+      label = 'NGUYÊN NHÂN VÀ XỬ TRÍ'; heading = 'Không tự kết luận từ cơn đau'; subline = 'Cần đánh giá nguyên nhân, nhất là khi có dấu hiệu cảnh báo.';
+      nodes = [{label:'H. pylori',detail:'Một nguyên nhân thường gặp'},{label:'Một số NSAID',detail:'Có thể làm tăng nguy cơ loét'},{label:'Đánh giá y tế',detail:'Báo triệu chứng và thuốc đang dùng'}];
+      mode = 'cards';
+    } else if (/viêm gan A/i.test(title + ' ' + String(slide.kicker || ''))) {
+      label = 'ĐƯỜNG LÂY VÀ DẤU HIỆU'; heading = 'Từ nguồn nhiễm đến gan'; subline = 'Đây là sơ đồ giải thích đường lây, không phải công cụ tự chẩn đoán.';
+      nodes = [{label:'Nước / thực phẩm bẩn',detail:'Có thể mang virus HAV'},{label:'Virus vào cơ thể',detail:'Đường phân–miệng'},{label:'Gan bị viêm',detail:'Vàng da cần được đánh giá'}];
+      mode = 'process';
+    } else if (/nước sạch|bàn tay sạch|thực phẩm an toàn/i.test(title)) {
+      label = 'BA LỚP PHÒNG NGỪA'; heading = 'Chặn mầm bệnh trước khi ăn uống'; subline = 'Tạo nhiều lớp bảo vệ: vệ sinh tay, nước an toàn và thực phẩm được làm sạch/chế biến đúng cách.';
+      nodes = [{label:'Tay sạch',detail:'Rửa với xà phòng đúng lúc'},{label:'Nước an toàn',detail:'Dùng nguồn nước phù hợp'},{label:'Thực phẩm sạch',detail:'Rửa · nấu chín · bảo quản'}];
+      mode = 'cards';
+    } else if (/nhiễm giun/i.test(title + ' ' + String(slide.kicker || '')) || visual === 'food' || visual === 'foodsafety' || visual === 'fiber') {
+      label = 'CẮT ĐƯỜNG LÂY'; heading = 'Tay sạch · nước sạch · thực phẩm an toàn'; subline = 'Không thể nhận biết mọi trường hợp bằng mắt; phòng ngừa cần được duy trì đều đặn.';
+      nodes = [{label:'Môi trường bẩn',detail:'Đất · nước · thực phẩm'},{label:'Mầm bệnh vào miệng',detail:'Qua tay hoặc thức ăn'},{label:'Giảm nguy cơ',detail:'Rửa tay · làm sạch thực phẩm'}];
+      mode = 'process';
+    } else if (visual === 'water' || visual === 'watercare') {
+      label = 'ƯU TIÊN AN TOÀN'; heading = 'Ngăn nhiễm trùng, chú ý mất nước'; subline = 'Pha dung dịch ORS đúng lượng nước hướng dẫn trên gói và tìm giúp đỡ khi có dấu hiệu nặng.';
+      nodes = [{label:'Nước an toàn',detail:'Rửa tay · thực phẩm sạch'},{label:'Theo dõi',detail:'Khát nhiều · tiểu ít · mệt'},{label:'Bù nước',detail:'ORS đúng hướng dẫn'}];
+      mode = 'process';
+    } else {
+      const points = Array.isArray(slide.points) ? slide.points.slice(0, 4) : [];
+      if (!points.length) return '';
+      label = 'Ý CHÍNH CẦN NHỚ'; heading = title; subline = 'Các ý chính được chia thành từng mảnh thông tin dễ quan sát.';
+      nodes = points.map((point, index) => ({label:'Ý '+String(index+1).padStart(2,'0'),detail:String(point)}));
+      mode = 'cards';
+    }
+
+    if (!nodes.length) return '';
+    const nodeHtml = nodes.map((node, index) =>
+      '<div class="editorial-diagram-node" style="--node-index:' + index + '">' +
+        '<span class="editorial-diagram-index">' + String(index + 1).padStart(2, '0') + '</span>' +
+        '<div><strong>' + escapeHTML(node.label) + '</strong>' +
+        (node.detail ? '<p>' + escapeHTML(node.detail) + '</p>' : '') + '</div>' +
+      '</div>'
+    ).join('');
+    const mindMapCore = mode === 'mind-map'
+      ? '<div class="editorial-map-core"><span>TRUNG TÂM CHỦ ĐỀ</span><strong>HỆ TIÊU HÓA</strong></div>'
+      : '';
+    return '<section class="editorial-diagram editorial-diagram--' + mode + '" aria-label="' + escapeHTML(label) + '" data-diagram="' + mode + '">' +
+      '<div class="editorial-diagram-heading"><span>' + escapeHTML(label) + '</span><h2>' + escapeHTML(heading) + '</h2>' +
+      (subline ? '<p>' + escapeHTML(subline) + '</p>' : '') + '</div>' +
+      mindMapCore +
+      '<div class="editorial-diagram-nodes">' + nodeHtml + '</div>' +
+    '</section>';
+  }
+
   function renderPhoto(slide) {
-    const fallback = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85';
-    const url = String(slide.image || '').trim();
+    const fallback = optimizeImageUrl(safeHttpUrl(slide.imageFallback, 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85'));
+    const url = optimizeImageUrl(safeHttpUrl(slide.image || ''));
     if (!url) return renderVisual(slide.visual);
-    const videoUrl = String(slide.video || '').trim();
-    const video4kUrl = String(slide.video4k || '').trim();
-    const saveData = Boolean(navigator.connection?.saveData);
-    const connectionType = String(navigator.connection?.effectiveType || '');
+    const videoUrl = safeHttpUrl(slide.video || '');
+    const video4kUrl = safeHttpUrl(slide.video4k || '');
+    const profile = getPerformanceProfile();
+    const saveData = profile.saveData;
+    const connectionType = profile.effectiveType;
     const coarsePortrait = window.matchMedia('(pointer: coarse) and (orientation: portrait)').matches;
-    const use4k = Boolean(video4kUrl && window.matchMedia('(min-width: 1800px) and (orientation: landscape)').matches &&
-      !coarsePortrait && !navigator.connection?.saveData &&
-      !saveData && !['slow-2g', '2g', '3g'].includes(connectionType) &&
+    const use4k = Boolean(performanceMode === 'cinema' && profile.allowVideo && !profile.lite && video4kUrl &&
+      window.matchMedia('(min-width: 1800px) and (orientation: landscape)').matches &&
+      !coarsePortrait && !saveData && !['slow-2g', '2g', '3g'].includes(connectionType) &&
       motionEnabled && !reducedMotion.matches);
-    const selectedVideo = use4k ? video4kUrl : videoUrl;
+    const selectedVideo = profile.allowVideo ? (use4k ? video4kUrl : videoUrl) : '';
     const provider = String(slide.videoProvider || '').trim();
     const credit = selectedVideo
       ? (use4k ? (slide.videoCredit || provider + ' · 4K master') : (slide.videoCredit || provider + ' · video'))
       : (slide.imageCredit || 'Nguồn ảnh được ghi kèm');
-    const imageSource = slide.imageSourceUrl || url;
-    const source = selectedVideo ? (slide.videoSourceUrl || imageSource) : imageSource;
+    const imageSource = safeHttpUrl(slide.imageSourceUrl || url, url);
+    const source = safeHttpUrl(selectedVideo ? (slide.videoSourceUrl || imageSource) : imageSource, imageSource);
     const palette = slide.palette || 'ocean';
     const photoTotal = currentDeck?.slides?.length || 32;
     const photoNo = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(photoTotal).padStart(2, '0');
-    const supports = Array.isArray(slide.supportImages) ? slide.supportImages.slice(0, 2) : [];
+    const supports = Array.isArray(slide.supportImages)
+      ? slide.supportImages.filter(item => item && typeof item === 'object' && !Array.isArray(item)).slice(0, 2)
+      : [];
     const videoMarkup = selectedVideo
-      ? '<video class="live-video" muted playsinline autoplay loop preload="metadata" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
-          '<source src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
+      ? '<video class="live-video" muted playsinline autoplay loop preload="none" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
+          '<source data-src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
         '</video>'
       : '';
     const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
-      '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(item.sourceUrl || item.url || imageSource) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
-        '<img class="photo-support-image" src="' + escapeHTML(item.url || '') + '" alt="' + escapeHTML(item.alt || '') + '" loading="eager" decoding="async" data-fallback="' + fallback + '">' +
+      '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(safeHttpUrl(item.sourceUrl || item.url || imageSource, imageSource)) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
+        '<img class="photo-support-image" src="' + escapeHTML(optimizeImageUrl(safeHttpUrl(item.url || ''))) + '" alt="' + escapeHTML(item.alt || '') + '" loading="lazy" decoding="async" fetchpriority="low" data-fallback="' + escapeHTML(fallback) + '">' +
+        '<span class="photo-support-label">' + escapeHTML(item.alt || 'Ảnh bổ sung') + '</span>' +
       '</a>'
     ).join('') + '</div>' : '';
     const mediaAlt = selectedVideo ? (slide.videoAlt || slide.imageAlt || 'Video minh họa liên quan') : (slide.imageAlt || 'Ảnh minh họa thực tế');
@@ -279,7 +1176,7 @@
       '<div class="photo-halo photo-halo--one"></div><div class="photo-halo photo-halo--two"></div>' +
       '<div class="photo-frame">' +
         videoMarkup +
-        '<img class="live-photo' + (slide.imageFit === 'contain' ? ' is-contained-diagram' : '') + '" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + fallback + '">' +
+        '<img class="live-photo' + (slide.imageFit === 'contain' ? ' is-contained-diagram' : '') + '" src="' + escapeHTML(url) + '" alt="' + escapeHTML(slide.imageAlt || 'Ảnh thực tế liên quan đến nội dung') + '" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-fallback="' + escapeHTML(fallback) + '">' +
         '<div class="photo-color-wash"></div><div class="photo-vignette"></div>' +
         '<div class="photo-topline"><span><i></i> ' + (selectedVideo ? 'VIDEO THỰC / ' + escapeHTML(provider.toUpperCase()) + (use4k ? ' · 4K' : '') : 'ẢNH THỰC / LIVE SOURCE') + '</span><b>' + photoNo + '</b></div>' +
         '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'LIVE FOOTAGE · ' + escapeHTML(provider.toUpperCase()) : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(mediaAlt) + '</strong></div>' +
@@ -294,7 +1191,7 @@
   function attachVideoBackgrounds(root = document) {
     $$('.live-video', root).forEach(video => {
       const frame = video.closest('.photo-frame');
-      const canShowVideo = () => motionEnabled && !reducedMotion.matches &&
+      const canShowVideo = () => getPerformanceProfile().allowVideo && motionEnabled && !reducedMotion.matches &&
         !document.hidden && !$('#presentationViewer').hidden;
 
       const markIfPlaying = () => {
@@ -343,6 +1240,14 @@
         }
       };
       video.addEventListener('loadeddata', startVideo, { once: true });
+      // The poster image paints first. Attach the MP4 only after the active slide is eligible for motion.
+      if (canShowVideo()) {
+        const deferredSource = video.querySelector('source[data-src]');
+        if (deferredSource && !deferredSource.getAttribute('src')) {
+          deferredSource.setAttribute('src', deferredSource.dataset.src || '');
+          video.load();
+        }
+      }
       startVideo();
     });
   }
@@ -388,16 +1293,42 @@
   }
 
   function warmAdjacentPhotos() {
+    if (photoWarmTimer) window.clearTimeout(photoWarmTimer);
     if (!currentDeck || typeof Image === 'undefined') return;
+    const profile = getPerformanceProfile();
+    if (!profile.online || profile.saveData || profile.slowConnection) return;
     const slides = Array.isArray(currentDeck.slides) ? currentDeck.slides : [];
-    [slideIndex - 1, slideIndex + 1].forEach(index => {
-      const url = slides[index]?.image;
-      if (url && index >= 0 && index < slides.length) {
+    // Warm the next image early; retain at most one decoded image on phones and two on desktop cinema.
+    const capacity = profile.lite ? 1 : (performanceMode === 'cinema' && window.innerWidth >= 900 ? 2 : 1);
+    photoWarmTimer = window.setTimeout(() => {
+      photoWarmTimer = 0;
+      if (!currentDeck || currentDeck.slides !== slides) return;
+      const indexes = [slideIndex + 1];
+      if (capacity > 1) indexes.push(slideIndex + 2);
+      indexes.forEach(index => {
+        if (index < 0 || index >= slides.length) return;
+        const url = optimizeImageUrl(safeHttpUrl(slides[index]?.image || ''));
+        if (!url) return;
+        if (warmedPhotoAssets.has(url)) {
+          const cached = warmedPhotoAssets.get(url);
+          warmedPhotoAssets.delete(url);
+          warmedPhotoAssets.set(url, cached);
+          return;
+        }
         const preload = new Image();
         preload.decoding = 'async';
+        preload.loading = 'eager';
+        try { preload.fetchPriority = 'low'; } catch { /* older browsers */ }
+        warmedPhotoAssets.set(url, preload);
+        while (warmedPhotoAssets.size > capacity) {
+          const oldestUrl = warmedPhotoAssets.keys().next().value;
+          if (!oldestUrl) break;
+          warmedPhotoAssets.delete(oldestUrl);
+        }
         preload.src = url;
-      }
-    });
+        if (typeof preload.decode === 'function') preload.decode().catch(() => {});
+      });
+    }, 80);
   }
 
   function renderQuiz(slide) {
@@ -570,12 +1501,17 @@
     const viewer = $('#presentationViewer');
     atmosphereWidth = Math.max(1, viewer.clientWidth);
     atmosphereHeight = Math.max(1, viewer.clientHeight);
-    atmosphereDpr = Math.min(window.devicePixelRatio || 1, 1.25);
+    const profile = getPerformanceProfile();
+    const canvasPixelRatioLimit = profile.projectorMode && atmosphereWidth >= 3000 ? 1 : profile.maxPixelRatio;
+    atmosphereDpr = Math.min(window.devicePixelRatio || 1, canvasPixelRatioLimit);
     canvas.width = Math.round(atmosphereWidth * atmosphereDpr);
     canvas.height = Math.round(atmosphereHeight * atmosphereDpr);
     atmosphereCanvasContext.setTransform(atmosphereDpr, 0, 0, atmosphereDpr, 0, 0);
     const mobile = window.matchMedia('(max-width: 650px)').matches;
-    const count = mobile ? 24 : 54;
+    const desktopCinema = performanceMode === 'cinema' && !mobile;
+    const count = profile.lite ? 0 : desktopCinema
+      ? (profile.projectorMode && atmosphereWidth >= 2500 ? 144 : profile.projectorMode ? 112 : profile.highCapability ? 88 : 58)
+      : (mobile ? 18 : 28);
     atmosphereParticles = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * atmosphereWidth,
       y: Math.random() * atmosphereHeight,
@@ -589,11 +1525,13 @@
 
   function drawStageAtmosphere(timestamp) {
     if (!atmosphereRunning || !atmosphereCanvasContext) return;
-    if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden) {
-      atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
+    const profile = getPerformanceProfile();
+    if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden || profile.lite) {
+      atmosphereFrame = 0;
       return;
     }
-    if (timestamp - atmosphereLastPaint < 33) {
+    const frameInterval = performanceMode === 'cinema' && window.innerWidth >= 1000 ? 1000 / 60 : 1000 / 30;
+    if (timestamp - atmosphereLastPaint < frameInterval) {
       atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
       return;
     }
@@ -616,39 +1554,76 @@
     context.clearRect(0, 0, atmosphereWidth, atmosphereHeight);
     const time = timestamp * 0.00025;
     const mobile = atmosphereWidth < 700;
-    const linkDistance = mobile ? 74 : 116;
-    for (let i = 0; i < atmosphereParticles.length; i++) {
-      const particle = atmosphereParticles[i];
+    const linkDistance = mobile ? 74 : 108;
+    const linkDistanceSquared = linkDistance * linkDistance;
+    const lineBuckets = Array.from({ length: 6 }, () => []);
+    const dotBuckets = [[], []];
+
+    // Update all particles before measuring edges; keep motion smooth with fewer, batched canvas calls.
+    for (const particle of atmosphereParticles) {
       particle.x += particle.vx + (atmospherePointer.x * atmosphereWidth - particle.x) * 0.000008;
       particle.y += particle.vy + Math.sin(time + particle.phase) * 0.12;
       if (particle.x < -8) particle.x = atmosphereWidth + 8;
       if (particle.x > atmosphereWidth + 8) particle.x = -8;
       if (particle.y < -8) particle.y = atmosphereHeight + 8;
       if (particle.y > atmosphereHeight + 8) particle.y = -8;
+    }
+
+    for (let i = 0; i < atmosphereParticles.length; i++) {
+      const particle = atmosphereParticles[i];
       for (let j = i + 1; j < atmosphereParticles.length; j++) {
         const other = atmosphereParticles[j];
         const dx = particle.x - other.x;
         const dy = particle.y - other.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < linkDistance) {
-          context.strokeStyle = 'rgba(' + pair[(i + j) % 2] + ',' + ((1 - distance / linkDistance) * 0.14).toFixed(3) + ')';
-          context.lineWidth = 0.6;
-          context.beginPath();
-          context.moveTo(particle.x, particle.y);
-          context.lineTo(other.x, other.y);
-          context.stroke();
-        }
+        const distanceSquared = dx * dx + dy * dy;
+        if (distanceSquared >= linkDistanceSquared) continue;
+        const distance = Math.sqrt(distanceSquared);
+        const alpha = 1 - distance / linkDistance;
+        const band = alpha > 0.66 ? 2 : alpha > 0.33 ? 1 : 0;
+        const bucket = lineBuckets[((i + j) % 2) * 3 + band];
+        bucket.push(particle.x, particle.y, other.x, other.y);
       }
+      dotBuckets[particle.index % 2].push(particle);
+    }
+
+    const alphaValues = [0.035, 0.075, 0.12];
+    context.lineWidth = 0.6;
+    for (let hue = 0; hue < 2; hue++) {
+      for (let band = 0; band < 3; band++) {
+        const coords = lineBuckets[hue * 3 + band];
+        if (!coords.length) continue;
+        context.beginPath();
+        for (let i = 0; i < coords.length; i += 4) {
+          context.moveTo(coords[i], coords[i + 1]);
+          context.lineTo(coords[i + 2], coords[i + 3]);
+        }
+        context.strokeStyle = 'rgba(' + pair[hue] + ',' + alphaValues[band] + ')';
+        context.stroke();
+      }
+    }
+
+    // Batch particles by tone to avoid a fill operation per dot.
+    for (let hue = 0; hue < 2; hue++) {
+      const dots = dotBuckets[hue];
+      if (!dots.length) continue;
       context.beginPath();
-      context.fillStyle = 'rgba(' + pair[particle.index % 2] + ',' + (0.38 + Math.sin(time * 3 + particle.phase) * 0.12).toFixed(3) + ')';
-      context.arc(particle.x + (atmospherePointer.x - 0.5) * 5, particle.y + (atmospherePointer.y - 0.5) * 5, particle.r, 0, Math.PI * 2);
+      for (const particle of dots) {
+        const pulse = 0.9 + Math.sin(time * 3 + particle.phase) * 0.1;
+        const radius = particle.r * pulse;
+        const x = particle.x + (atmospherePointer.x - 0.5) * 5;
+        const y = particle.y + (atmospherePointer.y - 0.5) * 5;
+        context.moveTo(x + radius, y);
+        context.arc(x, y, radius, 0, Math.PI * 2);
+      }
+      context.fillStyle = 'rgba(' + pair[hue] + ',0.42)';
       context.fill();
     }
+
     atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
   }
 
   function startStageAtmosphere() {
-    if (!atmosphereCanvasContext || atmosphereRunning || !motionEnabled || reducedMotion.matches) return;
+    if (!atmosphereCanvasContext || atmosphereRunning || !motionEnabled || reducedMotion.matches || getPerformanceProfile().lite) return;
     atmosphereRunning = true;
     atmosphereLastPaint = 0;
     atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
@@ -662,6 +1637,7 @@
   }
 
   function renderSlide({ direction = 'forward', animate = true } = {}) {
+    disposeInteractiveModel();
     if (!currentDeck) return;
     const slides = Array.isArray(currentDeck.slides) && currentDeck.slides.length ? currentDeck.slides : seedDeck.slides;
     slideIndex = Math.max(0, Math.min(slideIndex, slides.length - 1));
@@ -670,64 +1646,105 @@
 
     const stage = $('#slideStage');
     const previousPage = stage.querySelector(':scope > .slide-page:not(.slide-transition-ghost)');
-    const motionPreset = slide.interactiveQuiz ? 'focus' : (slide.motionPreset || ['wipe', 'depth', 'focus', 'rise'][slideIndex % 4]);
-    let ghost = null;
+    const storyGroup = String(slide.storyGroup || slide.palette || 'foundation');
+    const previousStoryGroup = previousPage?.dataset.storyGroup || previousPage?.dataset.palette || '';
+    const motionBridge = !animate || direction === 'reveal'
+      ? 'instant'
+      : (!previousPage ? 'opening' : (previousStoryGroup === storyGroup ? 'continuity' : 'chapter'));
+    const motionPreset = slide.motionPreset || (motionBridge === 'continuity' ? 'depth' : 'rise');
 
+    // The previous page will be removed immediately by the stage replacement below.
+    // Never clone a full slide or leave a second image/media decoder alive during transitions.
     if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
+    transitionCleanupTimer = 0;
     if (activeTransitionGhost?.isConnected) activeTransitionGhost.remove();
     activeTransitionGhost = null;
 
-    if (animate && motionEnabled && previousPage && direction !== 'reveal') {
-      ghost = previousPage.cloneNode(true);
-      ghost.classList.add('slide-transition-ghost');
-      ghost.dataset.direction = direction;
-      ghost.dataset.preset = motionPreset;
-      ghost.setAttribute('aria-hidden', 'true');
-      ghost.inert = true;
-    }
-
-    const pointHtml = !slide.interactiveQuiz && slide.points?.length
-      ? '<div class="slide-points">' + slide.points.map((point, i) => '<div class="slide-point"><b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span></div>').join('') + '</div>'
+    const points = Array.isArray(slide.points) ? slide.points.filter(point => typeof point === 'string' && point.trim()) : [];
+    const keyIdea = typeof slide.keyIdea === 'string' && slide.keyIdea.trim()
+      ? slide.keyIdea.trim()
+      : (points[0] || slide.title || currentDeck.title);
+    const keyIdeaHtml = !slide.interactiveQuiz && points.length
+      ? '<section class="slide-key-idea" aria-label="Ý chính">' +
+          '<div class="slide-key-idea-top"><span>Ý CHÍNH</span><b>TRỌNG TÂM</b></div>' +
+          '<p>' + escapeHTML(keyIdea) + '</p>' +
+        '</section>'
+      : '';
+    const pointHtml = !slide.interactiveQuiz && points.length
+      ? '<section class="slide-support-ideas" aria-label="Các ý phụ">' +
+          '<div class="slide-support-heading"><strong>Ý PHỤ</strong><span>Chi tiết, dẫn chứng và cách áp dụng</span></div>' +
+          '<div class="slide-points">' + points.map((point, i) =>
+            '<div class="slide-point slide-point--support" data-idea-index="' + i + '">' +
+              '<b>' + String(i + 1).padStart(2, '0') + '</b><span>' + escapeHTML(point) + '</span>' +
+            '</div>'
+          ).join('') + '</div>' +
+        '</section>'
       : '';
     const quizHtml = slide.interactiveQuiz ? renderQuiz(slide) : '';
+    const endingHtml = slideIndex === slides.length - 1
+      ? '<div class="ending-actions" aria-label="Thao tác sau khi kết thúc">' +
+        '<button type="button" class="ending-action ending-action-primary" id="viewerReplay">Xem lại từ đầu <span aria-hidden="true">↺</span></button>' +
+        '<button type="button" class="ending-action" id="viewerFinalContents">Về mục lục <span aria-hidden="true">▦</span></button>' +
+      '</div>'
+      : '';
+    const prompt = slide.classroomPrompt;
+    const hasCaseQuiz = Array.isArray(prompt?.options) && prompt.options.length >= 2;
+    const caseOptionsHtml = hasCaseQuiz
+      ? '<div class="case-quiz-options" role="group" aria-label="Chọn đáp án cho tình huống">' + prompt.options.map((option, i) =>
+          '<button type="button" class="case-quiz-answer" data-case-answer="' + i + '" aria-pressed="false"><span class="case-quiz-letter">' + String.fromCharCode(65 + i) + '</span><span>' + escapeHTML(option) + '</span></button>'
+        ).join('') + '</div>'
+      : '<button type="button" class="reveal-answer-btn" data-reveal-answer aria-expanded="false">Hiện đáp án gợi ý <span aria-hidden="true">＋</span></button>';
+    const promptHtml = prompt
+      ? '<section class="classroom-prompt" aria-label="Tình huống thảo luận"' + (hasCaseQuiz ? ' data-case-correct-index="' + prompt.correctIndex + '"' : '') + '>' +
+        '<div class="classroom-prompt-kicker"><span>' + (hasCaseQuiz ? 'CÂU HỎI TƯƠNG TÁC' : 'THẢO LUẬN CÙNG LỚP') + '</span><b>SUY LUẬN · KHÔNG TỰ CHẨN ĐOÁN</b></div>' +
+        '<p class="classroom-scenario">' + escapeHTML(prompt.scenario) + '</p>' +
+        '<h2 class="classroom-question">' + escapeHTML(prompt.question) + '</h2>' +
+        caseOptionsHtml +
+        '<div class="classroom-answer"' + (hasCaseQuiz ? ' hidden' : '') + '><strong class="case-quiz-result">Gợi ý trả lời</strong><p>' + escapeHTML(prompt.answer) + '</p><small>' + escapeHTML(prompt.explanation) + '</small></div>' +
+      '</section>'
+      : '';
     const sourceHtml = slide.note && !slide.interactiveQuiz ? '<div class="slide-source">' + escapeHTML(slide.note) + '</div>' : '';
-    const linksHtml = slide.links?.length
-      ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + slide.links.map(link => '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
+    const linkItems = Array.isArray(slide.links)
+      ? slide.links.filter(link => link && typeof link === 'object' && safeHttpUrl(link.url))
+      : [];
+    const linksHtml = linkItems.length
+      ? '<div class="slide-links"><div class="slide-links-title">TÀI LIỆU TRỰC TUYẾN</div>' + linkItems.map(link => '<a href="' + escapeHTML(safeHttpUrl(link.url)) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(link.label) + ' <span aria-hidden="true">↗</span></a>').join('') + '</div>'
       : '';
     const palette = slide.palette || 'spectrum';
     stage.dataset.palette = palette;
+    stage.dataset.storyGroup = storyGroup;
+    stage.dataset.motionBridge = motionBridge;
     stage.dataset.direction = direction;
     stage.dataset.preset = motionPreset;
     stage.dataset.slideIndex = String(slideIndex + 1);
     stage.dataset.slideCount = String(slides.length);
+    // Stop outgoing video before replacing the slide; otherwise decoders may overlap during transitions.
+    $$('.live-video', stage).forEach(video => {
+      video.pause();
+      video.querySelectorAll('source').forEach(source => source.removeAttribute('src'));
+      video.removeAttribute('src');
+      try { video.load(); } catch { /* ignore media cleanup errors */ }
+    });
     stage.innerHTML =
-      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
+      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-story-group="' + escapeHTML(storyGroup) + '" data-motion-bridge="' + escapeHTML(motionBridge) + '" data-visual="' + escapeHTML(slide.visual || 'editorial') + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
         '<div class="slide-layout">' +
           '<section class="slide-content">' +
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
-            pointHtml + quizHtml + sourceHtml + linksHtml +
+            keyIdeaHtml +
+            renderSlideVisualBoard(slide) +
+            (slide.model3D ? renderMediaModeBar('media-mode-bar--mobile') : '') +
+            pointHtml + promptHtml + quizHtml + endingHtml + sourceHtml + linksHtml +
           '</section>' +
-          '<div class="slide-side-content">' + (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : '')) + '</div>' +
+          '<div class="slide-side-content">' + (slide.model3D ? renderMediaWithModel(slide) : (slide.image ? renderPhoto(slide) : (slide.visual ? renderVisual(slide.visual) : ''))) + '</div>' +
         '</div>' +
       '</article>';
 
-    if (ghost) {
-      stage.appendChild(ghost);
-      activeTransitionGhost = ghost;
-      requestAnimationFrame(() => {
-        if (ghost.isConnected) ghost.classList.add('is-leaving');
-      });
-      transitionCleanupTimer = window.setTimeout(() => {
-        if (ghost.isConnected) ghost.remove();
-        if (activeTransitionGhost === ghost) activeTransitionGhost = null;
-        transitionCleanupTimer = 0;
-      }, 760);
-    }
-
+    // There is no outgoing ghost to clean up: the old page was removed immediately above.
     attachLiveImageFallbacks(stage);
     attachVideoBackgrounds(stage);
+    initInteractiveModels(stage);
     warmAdjacentPhotos();
     const label = String(slideIndex + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
     $('#viewerSlideCaption').textContent = label;
@@ -750,6 +1767,44 @@
       $$('.live-video', $('#slideStage')).forEach(video => video.pause());
       $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
     }
+  }
+
+  function setViewerUIHidden(hidden) {
+    const viewer = $('#presentationViewer');
+    const toggle = $('#viewerControlsToggle');
+    viewer.classList.toggle('ui-hidden', Boolean(hidden));
+    if (toggle) {
+      toggle.setAttribute('aria-pressed', String(Boolean(hidden)));
+      toggle.textContent = hidden ? 'Hiện điều khiển' : 'Ẩn điều khiển';
+      toggle.title = 'Ẩn/hiện giao diện điều khiển (phím H)';
+    }
+  }
+
+  function openContents() {
+    if (!currentDeck) return;
+    const overlay = $('#presentationContents');
+    const list = $('#contentsList');
+    const slides = currentDeck.slides || [];
+    $('#contentsDeckTitle').textContent = currentDeck.title || 'Mục lục bài trình chiếu';
+    $('#contentsPosition').textContent = 'Đang ở trang ' + (slideIndex + 1) + ' / ' + slides.length;
+    $('#contentsProgress').style.width = ((slideIndex + 1) / Math.max(1, slides.length) * 100) + '%';
+    list.innerHTML = slides.map((slide, index) =>
+      '<button type="button" class="contents-item' + (index === slideIndex ? ' is-current' : '') + '" data-jump-slide="' + index + '"' + (index === slideIndex ? ' aria-current="page"' : '') + '>' +
+        '<span class="contents-item-number">' + String(index + 1).padStart(2, '0') + '</span>' +
+        '<span class="contents-item-copy"><small>' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</small><strong>' + escapeHTML(slide.title || 'Trang chiếu') + '</strong></span>' +
+        '<span class="contents-item-arrow" aria-hidden="true">↗</span>' +
+      '</button>'
+    ).join('');
+    overlay.hidden = false;
+    setViewerUIHidden(false);
+    $('#contentsClose').focus();
+  }
+
+  function closeContents(returnFocus = true) {
+    const overlay = $('#presentationContents');
+    if (!overlay) return;
+    overlay.hidden = true;
+    if (returnFocus && !$('#presentationViewer').classList.contains('ui-hidden')) $('#viewerContents')?.focus();
   }
 
   function advanceFromStage() {
@@ -791,6 +1846,7 @@
     viewer.hidden = true;
     document.body.style.overflow = '';
     stopStageAtmosphere();
+    disposeInteractiveModel();
     if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
     transitionCleanupTimer = 0;
     activeTransitionGhost?.remove();
@@ -802,18 +1858,125 @@
     }
   }
 
+  function syncFullscreenControls() {
+    const viewer = $('#presentationViewer');
+    const fullscreenButton = $('#viewerFullscreen');
+    const projectorButton = $('#viewerProjector');
+    const isFullscreen = document.fullscreenElement === viewer;
+    const isProjector = viewer.classList.contains('projector-mode');
+    if (fullscreenButton) {
+      fullscreenButton.setAttribute('aria-pressed', String(isFullscreen));
+      fullscreenButton.setAttribute('aria-label', isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình');
+      fullscreenButton.title = isFullscreen ? 'Thoát toàn màn hình (F)' : 'Toàn màn hình (F)';
+      const label = fullscreenButton.querySelector('.fullscreen-label');
+      if (label) label.textContent = isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+    }
+    if (projectorButton) {
+      projectorButton.setAttribute('aria-pressed', String(isProjector));
+      projectorButton.setAttribute('aria-label', isProjector ? 'Thoát chế độ chiếu TV' : 'Bật chế độ chiếu TV');
+      projectorButton.title = isProjector ? 'Trở lại giao diện thường (P)' : 'Tối ưu HDMI/TV, 16:9, chế độ điện ảnh (P). Chuyển cửa sổ trình duyệt sang TV trước khi bật.';
+      const label = projectorButton.querySelector('.projector-label');
+      if (label) label.textContent = isProjector ? 'Thoát chiếu' : 'Chiếu TV';
+    }
+  }
+
+  function leaveProjectorMode({ restorePerformance = true } = {}) {
+    const viewer = $('#presentationViewer');
+    viewer.classList.remove('projector-mode');
+    delete document.documentElement.dataset.projectorMode;
+    $('#viewerProjector')?.setAttribute('aria-pressed', 'false');
+    setViewerUIHidden(false);
+    projectorWasFullscreen = false;
+    const restoreMode = projectorPreviousPerformanceMode;
+    projectorPreviousPerformanceMode = null;
+    if (restorePerformance && restoreMode) setPerformanceMode(restoreMode, false);
+    syncFullscreenControls();
+    if (!viewer.hidden) requestAnimationFrame(resizeStageAtmosphere);
+  }
+
+  function upgradeProjectorImages() {
+    if (document.documentElement.dataset.projectorMode !== 'true') return;
+    $$('.live-photo', $('#slideStage')).forEach(image => {
+      const url = optimizeImageUrl(safeHttpUrl(image.currentSrc || image.src, ''));
+      if (!url || url === image.src || image.dataset.projectorSource === url) return;
+      image.dataset.projectorSource = url;
+      const candidate = new Image();
+      candidate.decoding = 'async';
+      try { candidate.fetchPriority = 'high'; } catch { /* older browsers */ }
+      candidate.src = url;
+      const apply = () => {
+        if (!image.isConnected || document.documentElement.dataset.projectorMode !== 'true' || image.dataset.projectorSource !== url) return;
+        image.src = url;
+        image.dataset.projectorSourceApplied = url;
+      };
+      if (typeof candidate.decode === 'function') candidate.decode().then(apply).catch(() => {});
+      else candidate.onload = apply;
+    });
+  }
+
+  async function toggleProjectorMode() {
+    const viewer = $('#presentationViewer');
+    if (viewer.classList.contains('projector-mode')) {
+      leaveProjectorMode();
+      if (document.fullscreenElement === viewer) {
+        try { await document.exitFullscreen(); } catch { /* the browser may have exited already */ }
+      }
+      toast('Đã thoát chế độ chiếu TV.');
+      return;
+    }
+
+    projectorPreviousPerformanceMode = performanceMode;
+    viewer.classList.add('projector-mode');
+    document.documentElement.dataset.projectorMode = 'true';
+    $('#viewerProjector')?.setAttribute('aria-pressed', 'true');
+    setViewerUIHidden(false);
+    setPerformanceMode('cinema', false);
+    if (!motionEnabled && !reducedMotion.matches) setMotion(true);
+    upgradeProjectorImages();
+    syncFullscreenControls();
+
+    let enteredFullscreen = document.fullscreenElement === viewer;
+    if (!enteredFullscreen && typeof viewer.requestFullscreen === 'function') {
+      try {
+        await viewer.requestFullscreen({ navigationUI: 'hide' });
+        enteredFullscreen = document.fullscreenElement === viewer;
+      } catch {
+        try {
+          await viewer.requestFullscreen();
+          enteredFullscreen = document.fullscreenElement === viewer;
+        } catch { /* keep the projector layout available even if fullscreen is blocked */ }
+      }
+    }
+    projectorWasFullscreen = enteredFullscreen;
+    syncFullscreenControls();
+    requestAnimationFrame(resizeStageAtmosphere);
+    toast(enteredFullscreen
+      ? 'Chế độ chiếu TV đã bật: toàn màn hình, hiệu ứng điện ảnh và hình ảnh độ phân giải cao.'
+      : 'Đã bật bố cục chiếu TV. Bấm F hoặc nút toàn màn hình nếu trình duyệt chưa phủ kín màn hình.');
+  }
+
   async function toggleFullscreen() {
     const viewer = $('#presentationViewer');
     try {
-      if (!document.fullscreenElement) {
-        if (viewer.requestFullscreen) await viewer.requestFullscreen();
-        else toast('Trình duyệt này chưa hỗ trợ toàn màn hình.');
-      } else {
+      if (document.fullscreenElement === viewer) {
         await document.exitFullscreen();
+      } else if (viewer.requestFullscreen) {
+        await viewer.requestFullscreen({ navigationUI: 'hide' });
+      } else {
+        toast('Trình duyệt này chưa hỗ trợ toàn màn hình.');
       }
     } catch {
-      toast('Không thể bật toàn màn hình. Hãy thử qua menu của trình duyệt.');
+      try {
+        if (!document.fullscreenElement && viewer.requestFullscreen) {
+          await viewer.requestFullscreen();
+        } else {
+          toast('Không thể bật toàn màn hình. Hãy dùng menu của trình duyệt.');
+        }
+      } catch {
+        toast('Không thể bật toàn màn hình. Hãy thử qua menu của trình duyệt.');
+      }
     }
+    syncFullscreenControls();
   }
 
   function shareDeck(id) {
@@ -857,10 +2020,8 @@
     reader.onload = () => {
       try {
         const payload = JSON.parse(String(reader.result));
-        const deck = payload.presentation || payload;
-        if (typeof deck.title !== 'string' || !Array.isArray(deck.slides) || deck.slides.length < 1) {
-          throw new Error('invalid presentation');
-        }
+        const deck = payload && typeof payload === 'object' ? (payload.presentation || payload) : null;
+        if (!isValidDeckShape(deck)) throw new Error('invalid presentation');
         deck.id = 'import-' + Date.now().toString(36);
         deck.isSeed = false;
         deck.status = 'draft';
@@ -906,6 +2067,16 @@
       $$('.live-video', $('#slideStage')).forEach(video => video.pause());
       $$('.photo-frame.video-playing', $('#slideStage')).forEach(frame => frame.classList.remove('video-playing'));
     }
+    if (activeAnatomy3D) {
+      if (activeAnatomy3D.kind === 'native') {
+        if (motionEnabled && !reducedMotion.matches && activeAnatomy3D.autoRotate) activeAnatomy3D.viewer.setAttribute('auto-rotate', '');
+        else activeAnatomy3D.viewer.removeAttribute('auto-rotate');
+      } else {
+        if (!motionEnabled || reducedMotion.matches) activeAnatomy3D.autoRotate = false;
+        activeAnatomy3D.render?.();
+      }
+    }
+    updatePerformanceUI();
   }
 
   // Shared event delegation avoids accumulating listeners when the library rerenders.
@@ -913,6 +2084,10 @@
     const target = event.target.closest('button');
     if (!target) return;
 
+    if (target.matches('[data-performance-mode]')) {
+      setPerformanceMode(target.dataset.performanceMode);
+      return;
+    }
     if (target.matches('[data-present]')) present(target.dataset.present);
     if (target.matches('[data-share]')) shareDeck(target.dataset.share);
     if (target.matches('[data-export]')) exportDeck(target.dataset.export);
@@ -940,13 +2115,97 @@
       setMotion(!motionEnabled);
       toast(motionEnabled ? 'Đã bật chuyển động' : 'Đã giảm chuyển động');
     }
+    if (target.id === 'viewerReplay') {
+      slideIndex = 0;
+      quizSession = { deckId: null, slideIndex: -1, questionIndex: 0, answers: {}, score: 0 };
+      renderSlide({ animate: false });
+      return;
+    }
+    if (target.id === 'viewerFinalContents') { openContents(); return; }
+    if (target.matches('[data-case-answer]')) {
+      const panel = target.closest('.classroom-prompt');
+      if (!panel || panel.dataset.caseAnswered === 'true') return;
+      const selected = Number(target.dataset.caseAnswer);
+      const correct = Number(panel.dataset.caseCorrectIndex);
+      if (!Number.isInteger(selected) || !Number.isInteger(correct)) return;
+      panel.dataset.caseAnswered = 'true';
+      panel.querySelectorAll('[data-case-answer]').forEach((button, index) => {
+        button.disabled = true;
+        button.setAttribute('aria-pressed', String(index === selected));
+        if (index === correct) button.classList.add('is-correct');
+        if (index === selected && selected !== correct) button.classList.add('is-wrong');
+      });
+      const feedback = panel.querySelector('.classroom-answer');
+      const label = feedback?.querySelector('.case-quiz-result');
+      if (label) label.textContent = selected === correct ? 'Chính xác — em đã chọn đúng!' : 'Chưa đúng — cùng ghi nhớ đáp án';
+      if (feedback) feedback.hidden = false;
+      return;
+    }
+    if (target.matches('[data-reveal-answer]')) {
+      const panel = target.closest('.classroom-prompt');
+      const answer = panel?.querySelector('.classroom-answer');
+      if (answer) {
+        answer.hidden = !answer.hidden;
+        target.setAttribute('aria-expanded', String(!answer.hidden));
+        target.innerHTML = answer.hidden ? 'Hiện đáp án gợi ý <span aria-hidden="true">＋</span>' : 'Ẩn đáp án gợi ý <span aria-hidden="true">−</span>';
+      }
+      return;
+    }
+    if (target.id === 'viewerControlsToggle') {
+      setViewerUIHidden(!$('#presentationViewer').classList.contains('ui-hidden'));
+      return;
+    }
+    if (target.id === 'viewerContents') { openContents(); return; }
+    if (target.id === 'contentsClose') { closeContents(); return; }
+    if (target.matches('[data-jump-slide]')) {
+      const nextIndex = Number(target.dataset.jumpSlide);
+      if (Number.isInteger(nextIndex) && currentDeck?.slides?.[nextIndex]) {
+        slideIndex = nextIndex;
+        closeContents(false);
+        renderSlide({ animate: false });
+      }
+      return;
+    }
+    if (target.matches('[data-media-mode]')) {
+      const slidePage = target.closest('.slide-page');
+      const experience = target.closest('.media-experience') || slidePage?.querySelector('.media-experience');
+      if (!experience) return;
+      const mode = target.dataset.mediaMode;
+      const imageView = experience.querySelector('.media-image-view');
+      const modelView = experience.querySelector('.media-3d-view');
+      if (!imageView || !modelView) return;
+      // The mobile toolbar lives with the slide copy; keep both bars in sync.
+      $$('[data-media-mode]', slidePage || experience).forEach(button => {
+        const active = button.dataset.mediaMode === mode;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      const showModel = mode === 'model';
+      slidePage?.classList.toggle('is-model-active', showModel);
+      if (showModel) $$('.live-video', imageView).forEach(video => video.pause());
+      else if (motionEnabled && !reducedMotion.matches) attachVideoBackgrounds(imageView);
+      imageView.hidden = showModel;
+      modelView.hidden = !showModel;
+      imageView.classList.toggle('is-active', !showModel);
+      modelView.classList.toggle('is-active', showModel);
+      if (showModel) initInteractiveModels(experience);
+      else {
+        const modelPanel = modelView.querySelector('.anatomy3d-panel');
+        if (activeAnatomy3D?.panel === modelPanel) disposeInteractiveModel();
+        else if (modelPanel) delete modelPanel.dataset.modelInitializing;
+        if (modelPanel) modelPanel.dataset.modelRequest = String((Number(modelPanel.dataset.modelRequest) || 0) + 1);
+      }
+      return;
+    }
+    if (target.matches('[data-model-action]')) { controlInteractiveModel(target); return; }
     if (target.matches('[data-quiz-answer]')) answerQuiz(Number(target.dataset.quizAnswer));
     if (target.matches('[data-quiz-restart]')) restartQuiz();
     if (target.id === 'viewerSound') toggleQuizSound();
     if (target.id === 'slidePrev') goPrevious();
     if (target.id === 'slideNext') goNext();
     if (target.id === 'viewerClose' || target.id === 'viewerExit') exitPresentation();
-    if (target.id === 'viewerFullscreen') toggleFullscreen();
+    if (target.id === 'viewerFullscreen') { toggleFullscreen(); return; }
+    if (target.id === 'viewerProjector') { toggleProjectorMode(); return; }
     if (target.id === 'resetLocal') {
       decks = [seedDeck];
       persist();
@@ -964,6 +2223,10 @@
   $('.brand').addEventListener('click', event => {
     event.preventDefault();
     showView('library');
+  });
+
+  $('#presentationContents').addEventListener('click', event => {
+    if (event.target.id === 'presentationContents') closeContents();
   });
 
   $('#slideStage').addEventListener('click', event => {
@@ -1013,6 +2276,29 @@
   document.addEventListener('keydown', event => {
     const viewerOpen = !$('#presentationViewer').hidden;
     if (viewerOpen) {
+      if (!event.ctrlKey && !event.altKey && !event.metaKey &&
+          !event.target.closest?.('input, textarea, select, [contenteditable="true"]')) {
+        if (event.key.toLowerCase() === 'p') {
+          event.preventDefault();
+          toggleProjectorMode();
+          return;
+        }
+        if (event.key.toLowerCase() === 'f') {
+          event.preventDefault();
+          toggleFullscreen();
+          return;
+        }
+      }
+      if (event.key.toLowerCase() === 'h') {
+        event.preventDefault();
+        setViewerUIHidden(!$('#presentationViewer').classList.contains('ui-hidden'));
+        return;
+      }
+      if (event.key === 'Escape' && !$('#presentationContents').hidden) {
+        event.preventDefault();
+        closeContents();
+        return;
+      }
       const quizSlide = currentDeck?.slides?.[slideIndex];
       const quizActive = Boolean(quizSlide?.interactiveQuiz);
       const quizIndex = quizSession.questionIndex;
@@ -1062,15 +2348,34 @@
       $('#presentationViewer').hidden = true;
       document.body.style.overflow = '';
       stopStageAtmosphere();
+      disposeInteractiveModel();
+      closeContents(false);
+      if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
+      transitionCleanupTimer = 0;
+      activeTransitionGhost?.remove();
+      activeTransitionGhost = null;
+      $('#slideStage').innerHTML = '';
       currentDeck = null;
     }
     if (hash.startsWith('present/')) {
-      const id = decodeURIComponent(hash.slice('present/'.length));
+      const id = safeDecodeURIComponent(hash.slice('present/'.length));
       if (decks.some(deck => deck.id === id)) present(id);
       else showView('library', false);
     } else {
       showView(hash, false);
     }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    const viewer = $('#presentationViewer');
+    if (document.fullscreenElement === viewer) {
+      projectorWasFullscreen = viewer.classList.contains('projector-mode');
+    } else if (viewer.classList.contains('projector-mode') && projectorWasFullscreen) {
+      // Escape or the browser's native exit action ends projector mode as well.
+      leaveProjectorMode();
+    }
+    syncFullscreenControls();
+    if (!viewer.hidden) requestAnimationFrame(resizeStageAtmosphere);
   });
 
   document.addEventListener('visibilitychange', () => {
@@ -1087,6 +2392,11 @@
     if (event.matches) setMotion(false);
   });
 
+  const networkInfo = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  networkInfo?.addEventListener?.('change', () => setPerformanceMode(performanceMode, false));
+  window.addEventListener('online', () => setPerformanceMode(performanceMode, false));
+  window.addEventListener('offline', () => setPerformanceMode(performanceMode, false));
+
   try {
     const savedTheme = localStorage.getItem('biosphere-theme');
     if (savedTheme === 'light' || savedTheme === 'dark') setTheme(savedTheme);
@@ -1102,10 +2412,17 @@
     $('#viewerSound').setAttribute('aria-label', soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh');
   }
   initStageAtmosphere();
+  updatePerformanceUI();
+
+  if ('serviceWorker' in navigator && window.isSecureContext) {
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' }).catch(() => {
+      // The app remains fully usable if service workers are blocked by browser or hosting policy.
+    });
+  }
 
   const initialHash = location.hash.slice(1);
   if (initialHash.startsWith('present/')) {
-    const id = decodeURIComponent(initialHash.slice('present/'.length));
+    const id = safeDecodeURIComponent(initialHash.slice('present/'.length));
     if (decks.some(deck => deck.id === id)) present(id);
     else showView('library', false);
   } else {
