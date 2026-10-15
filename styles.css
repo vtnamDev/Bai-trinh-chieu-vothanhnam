@@ -3036,3 +3036,78 @@ html[data-performance-lite="true"] #presentationViewer .slide-page:not(.slide-tr
 }
 @media(max-width:420px){#presentationViewer #slideStage .slide-support-heading span{display:none}#presentationViewer #slideStage .slide-key-idea{padding:13px 12px 13px 15px}}
 @media(prefers-reduced-motion:reduce){#presentationViewer #slideStage .slide-key-idea,#presentationViewer #slideStage .slide-point--support,.viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge],.viewer .slide-transition-ghost.is-leaving[data-motion-bridge]{animation:none!important;transition:none!important;transform:none!important;filter:none!important}}
+
+
+/* BioSphere v13 — one live slide, short arrival motion, crisp source imagery. */
+#presentationViewer #slideStage>.slide-page:not(.slide-transition-ghost){
+  filter:none!important;
+  will-change:transform,opacity!important;
+  backface-visibility:hidden;
+}
+.viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="opening"]{
+  animation:slide-open-crisp .18s cubic-bezier(.2,.8,.2,1) both!important;
+}
+.viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="continuity"]{
+  animation:story-continuity-single .24s cubic-bezier(.2,.82,.16,1) both!important;
+}
+.viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="chapter"]{
+  animation:story-chapter-single .34s cubic-bezier(.18,.78,.2,1) both!important;
+}
+@keyframes slide-open-crisp{
+  from{opacity:0;transform:translate3d(0,5px,0) scale(.997)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes story-continuity-single{
+  from{opacity:0;transform:perspective(1200px) translate3d(8px,0,-20px) rotateY(-1deg) scale(.995)}
+  to{opacity:1;transform:perspective(1200px) translate3d(0,0,0) rotateY(0) scale(1)}
+}
+@keyframes story-chapter-single{
+  from{opacity:0;transform:perspective(1200px) translate3d(12px,2px,-34px) rotateY(-2.2deg) scale(.988)}
+  75%{opacity:1;transform:perspective(1200px) translate3d(-.5px,0,0) rotateY(.15deg) scale(1.001)}
+  to{opacity:1;transform:perspective(1200px) translate3d(0,0,0) rotateY(0) scale(1)}
+}
+
+/* Keep the photograph itself pixel-sharp. Motion belongs to the slide and frame, not a zooming image. */
+#presentationViewer #slideStage .photo-frame{
+  transform:none!important;
+  transform-style:flat!important;
+  animation:none!important;
+  backface-visibility:hidden;
+}
+#presentationViewer #slideStage .live-photo{
+  filter:none!important;
+  transform:none!important;
+  animation:none!important;
+  object-fit:cover;
+  object-position:center;
+  image-rendering:auto;
+}
+#presentationViewer #slideStage .photo-color-wash{
+  opacity:.105!important;
+  mix-blend-mode:soft-light;
+}
+#presentationViewer #slideStage .photo-vignette{
+  background:linear-gradient(180deg,#04121b20 0%,transparent 35%,#04121b5e 100%),linear-gradient(90deg,#04121b0d,transparent 52%,#04121b0d)!important;
+}
+/* A quiet edge glint provides polish without recoloring the source photo. */
+#presentationViewer #slideStage .photo-frame:after{
+  content:"";
+  position:absolute;z-index:3;inset:1px;
+  border-radius:inherit;pointer-events:none;opacity:.18;
+  background:linear-gradient(112deg,transparent 0%,transparent 44%,#ffffff08 48%,#ffffff30 50%,#ffffff08 52%,transparent 57%,transparent 100%);
+  transform:translateX(-18%);
+  animation:photo-edge-glint 8.5s ease-in-out infinite;
+}
+@keyframes photo-edge-glint{
+  0%,55%{transform:translateX(-38%);opacity:0}
+  68%{opacity:.18}
+  92%,100%{transform:translateX(38%);opacity:0}
+}
+html[data-performance-lite="true"] #presentationViewer #slideStage .photo-frame:after{display:none!important;animation:none!important}
+html[data-performance-lite="true"] .viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="opening"]{animation-duration:.14s!important}
+html[data-performance-lite="true"] .viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="continuity"]{animation-duration:.20s!important}
+html[data-performance-lite="true"] .viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="chapter"]{animation-duration:.27s!important}
+@media(prefers-reduced-motion:reduce){
+  .viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge]{animation:none!important;transform:none!important}
+  #presentationViewer #slideStage .photo-frame:after{display:none!important;animation:none!important}
+}
