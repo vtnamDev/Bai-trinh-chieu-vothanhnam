@@ -90,3 +90,11 @@ GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính
 - Năm phần bệnh có sơ đồ riêng đặt ngay trong vùng nội dung, không phủ trên ảnh. Sơ đồ được dựng bằng HTML/CSS, không tải thêm thư viện đồ họa.
 - Thẻ ảnh phụ có nhãn đọc được, tải ưu tiên thấp; hình giải phẫu hoặc sơ đồ vòng đời dùng chế độ giữ toàn khung để tránh cắt mất nhãn.
 - Kiểm thử Chromium xác nhận vùng chữ và ảnh tách nhau trên điện thoại, kiểm tra hai cột trên màn hình ngang, đồng thời tiếp tục kiểm tra quiz, 3D và shell ngoại tuyến.
+
+
+## Thiết kế v12 — mạch kể chuyện giữa các trang
+- Mỗi trang có một khối **Ý chính** nổi bật; bên dưới là **Ý phụ** thành các thẻ thông tin dễ quét. Sơ đồ/infographic đứng ở vai trò giải thích bằng hình, không thay thế nội dung chữ.
+- Màu sắc được khóa theo nhóm bài: nền tảng hệ tiêu hóa, sâu răng, loét dạ dày, tiêu chảy/mất nước, nhiễm giun, viêm gan A, tổng kết và trang kết. Ảnh giữ màu gốc, còn viền, ánh sáng, nhãn và sơ đồ dùng cùng một sắc nhấn để nội dung không bị phủ màu quá mạnh.
+- Ảnh hệ tiêu hóa được thay bằng sơ đồ giải phẫu đúng chủ đề từ Wikimedia Commons (Mariana Ruiz / Jmarchn, public domain); một số trang bỏ ảnh trùng lặp để dùng minh họa sơ đồ riêng.
+- Chuyển động được phân loại theo `storyGroup`: trong cùng chương dùng nhịp chuyển sâu nhẹ; khi đổi chương dùng hiệu ứng xoay 3D nông để tạo ranh giới. Không thêm thư viện animation nặng; mức Mượt nhẹ rút ngắn hiệu ứng, còn Reduced Motion tắt chuyển động.
+- Hướng thiết kế tham khảo các mẫu frontend về shared transitions/layout motion trên GitHub nhưng triển khai bằng CSS/JavaScript hiện có để giữ ứng dụng gọn.
