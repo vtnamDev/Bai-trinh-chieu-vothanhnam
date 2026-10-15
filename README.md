@@ -98,3 +98,11 @@ GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính
 - Ảnh hệ tiêu hóa được thay bằng sơ đồ giải phẫu đúng chủ đề từ Wikimedia Commons (Mariana Ruiz / Jmarchn, public domain); một số trang bỏ ảnh trùng lặp để dùng minh họa sơ đồ riêng.
 - Chuyển động được phân loại theo `storyGroup`: trong cùng chương dùng nhịp chuyển sâu nhẹ; khi đổi chương dùng hiệu ứng xoay 3D nông để tạo ranh giới. Không thêm thư viện animation nặng; mức Mượt nhẹ rút ngắn hiệu ứng, còn Reduced Motion tắt chuyển động.
 - Hướng thiết kế tham khảo các mẫu frontend về shared transitions/layout motion trên GitHub nhưng triển khai bằng CSS/JavaScript hiện có để giữ ứng dụng gọn.
+
+
+## v13 — chuyển trang một bề mặt, ảnh nét hơn
+- Đã bỏ hoàn toàn việc clone trang cũ vào `.slide-transition-ghost` và thời gian giữ lớp cũ 760 ms. Mỗi lần chuyển trang thay nội dung stage ngay lập tức; chỉ trang mới chạy chuyển động vào, vì vậy DOM không giữ đồng thời hai ảnh toàn khung.
+- Nhịp vào được rút xuống khoảng 0,24 giây trong cùng chương và 0,34 giây khi đổi chương; chế độ ưu tiên mượt rút ngắn thêm. Chuyển động dùng opacity/transform, không dùng blur/clip-path toàn khung trong lượt chuyển trang.
+- Ảnh không còn bị tăng tương phản, bão hòa và phóng to liên tục; độ rộng ảnh được tính theo pixel density màn hình, chất lượng ảnh cao hơn trên mạng bình thường, tự giảm dung lượng khi máy báo kết nối chậm.
+- Ảnh trang kế tiếp được bắt đầu tải trước sau 80 ms, ưu tiên thấp và giải mã trước khi cần; giữ cache ảnh ở mức 1 ảnh trên máy yếu và 2 ảnh trên desktop chế độ Cinema.
+- Browser smoke test xác nhận có đúng một trang hoạt động trong stage, không có outgoing ghost, thời lượng chuyển cảnh bị giới hạn và URL ảnh yêu cầu đủ độ phân giải.
