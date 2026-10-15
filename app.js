@@ -1114,9 +1114,13 @@
         (node.detail ? '<p>' + escapeHTML(node.detail) + '</p>' : '') + '</div>' +
       '</div>'
     ).join('');
+    const mindMapCore = mode === 'mind-map'
+      ? '<div class="editorial-map-core"><span>TRUNG TÂM CHỦ ĐỀ</span><strong>HỆ TIÊU HÓA</strong></div>'
+      : '';
     return '<section class="editorial-diagram editorial-diagram--' + mode + '" aria-label="' + escapeHTML(label) + '" data-diagram="' + mode + '">' +
       '<div class="editorial-diagram-heading"><span>' + escapeHTML(label) + '</span><h2>' + escapeHTML(heading) + '</h2>' +
       (subline ? '<p>' + escapeHTML(subline) + '</p>' : '') + '</div>' +
+      mindMapCore +
       '<div class="editorial-diagram-nodes">' + nodeHtml + '</div>' +
     '</section>';
   }
