@@ -105,6 +105,8 @@ try {
     modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) button[data-media-mode="model"]:visible');
   }
   assert.ok(await modelToggle.count() > 0, 'At least one curated 3D scene must expose the model switch.');
+  assert.equal(await page.locator('#slideStage .photo-process-flow').count(), 1,
+    'The five core disease scenes should show the matching three-step process diagram.');
   await modelToggle.click();
   await page.locator('#slideStage .media-3d-view:not([hidden])').waitFor({ state: 'visible', timeout: 5000 });
   await page.screenshot({ path: `${outputDir}/mobile-model-view.png` });
