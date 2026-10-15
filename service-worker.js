@@ -1,6 +1,6 @@
 'use strict';
 
-const SHELL_VERSION = '20261015-editorial-v11';
+const SHELL_VERSION = '20261015-story-motion-v12';
 const CACHE_NAME = 'biosphere-shell-' + SHELL_VERSION;
 const SCOPE_URL = new URL(self.registration.scope);
 const SHELL_URLS = [
