@@ -37,7 +37,7 @@ Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có c
 - Mở bài Bài 32 trong thư viện rồi chọn **Trình chiếu**.
 - Trong trình chiếu, mở **Mục lục** để nhảy tới trang cụ thể; dùng nút điều khiển hoặc phím **H** để ẩn/hiện giao diện.
 - Bấm nửa phải để đi tiếp, nửa trái để quay lại; có thể dùng phím mũi tên trên bàn phím.
-- Trang 19 có bài kiểm tra tương tác 5 câu; chọn đáp án để xem phản hồi đúng/sai, lời giải thích và điểm tổng kết. Nút `♫` bật/tắt âm thanh phản hồi; hiệu ứng âm thanh được tạo trong trình duyệt.
+- Trang 22 có vòng suy luận tình huống, trang 23 có bài kiểm tra tổng hợp 5 câu; chọn đáp án để xem phản hồi đúng/sai, lời giải thích và điểm tổng kết. Mỗi bệnh cũng có một câu hỏi chọn đáp án ngay trên trang tình huống. Nút `♫` bật/tắt âm thanh phản hồi; hiệu ứng âm thanh được tạo trong trình duyệt.
 - Bật **Toàn màn hình** khi thuyết trình trên máy tính hoặc trình duyệt hỗ trợ.
 - Chỉnh các dòng `[Điền họ tên]` và phân công thành viên trong `bai32-deck.js` trước khi thuyết trình.
 
@@ -58,7 +58,7 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 - NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes).
 
 ## Kiểm tra tự động
-Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript và bộ smoke test cho 25 slide, 5 câu hỏi tình huống có trắc nghiệm, 5 cảnh 3D, các câu hỏi tương tác, 156 URL tài nguyên hiện tại và cache key thống nhất. Các kiểm tra này bắt lỗi dữ liệu/cấu trúc cơ bản; chúng không thay thế kiểm thử trực quan trên trình duyệt hoặc kiểm tra khả dụng theo thời gian thực của máy chủ ảnh/video.
+Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript và bộ smoke test cho 25 slide, 5 câu hỏi tình huống có trắc nghiệm, 5 cảnh 3D, các câu hỏi tương tác, 130 URL tài nguyên hiện tại và cache key thống nhất. Các kiểm tra này bắt lỗi dữ liệu/cấu trúc cơ bản; chúng không thay thế kiểm thử trực quan trên trình duyệt hoặc kiểm tra khả dụng theo thời gian thực của máy chủ ảnh/video.
 
 ## Deploy
 GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính sẽ tạo deployment mới.
@@ -83,3 +83,9 @@ GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính
 - Ảnh từ Unsplash/Pexels được yêu cầu ở kích thước phù hợp hơn với viewport và cấu hình hiệu năng; ảnh phụ được tải ưu tiên thấp. Ảnh chính vẫn là lớp hiển thị trước, video nền chỉ được gắn nguồn khi chế độ chuyển động/thiết bị/mạng cho phép.
 - Hiệu ứng hạt canvas giữ chuyển động và màu sắc nhưng gom thao tác vẽ vào ít lần gọi hơn; chuyển cảnh không nhân bản video, canvas hoặc mô hình 3D đang hoạt động.
 - Bộ kiểm tra tự động kiểm tra 25 trang, năm câu hỏi tình huống, tài nguyên 3D và các quy tắc tối ưu hóa. Browser smoke test kiểm tra câu hỏi chọn đáp án trên Chromium di động cùng điều hướng, 3D và offline shell.
+
+
+## Sơ đồ trực quan tại mỗi phần bệnh
+- Năm cảnh chính có thêm dải sơ đồ quy trình ba bước đặt trên ảnh: cơ chế sâu răng, yếu tố liên quan đến loét dạ dày, mất nước khi tiêu chảy, đường lây nhiễm giun và đường lây viêm gan A.
+- Các sơ đồ được dựng bằng HTML/CSS nhẹ, không tải thư viện đồ họa bổ sung. Chuyển động theo từng nút tôn trọng cài đặt giảm chuyển động và dùng một số lớp màu trong suốt thay cho ảnh động/video riêng.
+- URL ảnh Unsplash/Pexels được điều chỉnh theo bề rộng màn hình và giới hạn pixel ratio; ảnh phụ tải ưu tiên thấp, ảnh chính được hiển thị trước. Chất lượng cuối cùng vẫn phụ thuộc CDN nguồn và kết nối.
