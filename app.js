@@ -18,6 +18,8 @@
   let performanceMode = readPerformanceMode();
   let photoWarmTimer = 0;
   let warmedPhotoAssets = new Map();
+  let projectorPreviousPerformanceMode = null;
+  let projectorWasFullscreen = false;
   let toastTimer = 0;
   let soundEnabled = true;
   let previousFocus = null;
@@ -83,12 +85,13 @@
     const lite = performanceMode === 'smooth' ||
       (performanceMode === 'auto' && (slowConnection || lowPower));
     const highCapability = memory >= 8 && cores >= 6;
+    const projectorMode = document.documentElement.dataset.projectorMode === 'true';
     const allowVideo = performanceMode !== 'smooth' && online && !saveData &&
       !['slow-2g', '2g', '3g'].includes(effectiveType) &&
       motionEnabled && !reducedMotion.matches &&
       (performanceMode === 'cinema' || (highCapability && !lowPower));
-    const maxPixelRatio = lite ? 1 : (performanceMode === 'cinema' ? 1.5 : 1.25);
-    return { connection, effectiveType, online, saveData, slowConnection, memory, cores, highCapability, lowPower, lite, allowVideo, maxPixelRatio };
+    const maxPixelRatio = lite ? 1 : (performanceMode === 'cinema' ? (highCapability || projectorMode ? 2 : 1.5) : 1.25);
+    return { connection, effectiveType, online, saveData, slowConnection, memory, cores, highCapability, lowPower, lite, allowVideo, maxPixelRatio, projectorMode };
   }
 
   function updatePerformanceUI() {
@@ -166,9 +169,9 @@
       const dprLimit = profile.slowConnection ? 1.5 : 2.25;
       const dpr = Math.min(Math.max(Number(window.devicePixelRatio) || 1, 1), dprLimit);
       const viewportWidth = Math.max(320, Number(window.innerWidth) || 960);
-      const widthLimit = profile.slowConnection ? 1100 : 1920;
+      const widthLimit = profile.slowConnection ? 1100 : (profile.projectorMode && performanceMode === 'cinema' ? 2880 : 1920);
       const width = Math.round(Math.min(widthLimit, Math.max(768, viewportWidth * dpr * 1.12)));
-      const quality = profile.saveData ? 78 : profile.slowConnection ? 80 : profile.lite ? 82 : performanceMode === 'cinema' ? 90 : 86;
+      const quality = profile.saveData ? 78 : profile.slowConnection ? 80 : profile.lite ? 82 : performanceMode === 'cinema' ? 92 : 86;
       url.searchParams.set('w', String(width));
       url.searchParams.set('q', String(quality));
       if (!url.searchParams.has('auto')) url.searchParams.set('auto', 'format');
@@ -1504,7 +1507,10 @@
     canvas.height = Math.round(atmosphereHeight * atmosphereDpr);
     atmosphereCanvasContext.setTransform(atmosphereDpr, 0, 0, atmosphereDpr, 0, 0);
     const mobile = window.matchMedia('(max-width: 650px)').matches;
-    const count = profile.lite ? 0 : performanceMode === 'cinema' ? (mobile ? 22 : 38) : (mobile ? 12 : 24);
+    const desktopCinema = performanceMode === 'cinema' && !mobile;
+    const count = profile.lite ? 0 : desktopCinema
+      ? (profile.projectorMode && atmosphereWidth >= 2500 ? 144 : profile.projectorMode ? 112 : profile.highCapability ? 88 : 58)
+      : (mobile ? 18 : 28);
     atmosphereParticles = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * atmosphereWidth,
       y: Math.random() * atmosphereHeight,
@@ -1518,11 +1524,13 @@
 
   function drawStageAtmosphere(timestamp) {
     if (!atmosphereRunning || !atmosphereCanvasContext) return;
-    if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden || getPerformanceProfile().lite) {
+    const profile = getPerformanceProfile();
+    if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden || profile.lite) {
       atmosphereFrame = 0;
       return;
     }
-    if (timestamp - atmosphereLastPaint < 33) {
+    const frameInterval = performanceMode === 'cinema' && window.innerWidth >= 1000 ? 1000 / 60 : 1000 / 30;
+    if (timestamp - atmosphereLastPaint < frameInterval) {
       atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
       return;
     }
@@ -1849,18 +1857,102 @@
     }
   }
 
+  function syncFullscreenControls() {
+    const viewer = $('#presentationViewer');
+    const fullscreenButton = $('#viewerFullscreen');
+    const projectorButton = $('#viewerProjector');
+    const isFullscreen = document.fullscreenElement === viewer;
+    const isProjector = viewer.classList.contains('projector-mode');
+    if (fullscreenButton) {
+      fullscreenButton.setAttribute('aria-pressed', String(isFullscreen));
+      fullscreenButton.setAttribute('aria-label', isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình');
+      fullscreenButton.title = isFullscreen ? 'Thoát toàn màn hình (F)' : 'Toàn màn hình (F)';
+      const label = fullscreenButton.querySelector('.fullscreen-label');
+      if (label) label.textContent = isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+    }
+    if (projectorButton) {
+      projectorButton.setAttribute('aria-pressed', String(isProjector));
+      projectorButton.setAttribute('aria-label', isProjector ? 'Thoát chế độ chiếu TV' : 'Bật chế độ chiếu TV');
+      projectorButton.title = isProjector ? 'Trở lại giao diện thường (P)' : 'Tối ưu HDMI/TV, 16:9, chế độ điện ảnh (P)';
+      const label = projectorButton.querySelector('.projector-label');
+      if (label) label.textContent = isProjector ? 'Thoát chiếu' : 'Chiếu TV';
+    }
+  }
+
+  function leaveProjectorMode({ restorePerformance = true } = {}) {
+    const viewer = $('#presentationViewer');
+    viewer.classList.remove('projector-mode');
+    delete document.documentElement.dataset.projectorMode;
+    setViewerUIHidden(false);
+    projectorWasFullscreen = false;
+    const restoreMode = projectorPreviousPerformanceMode;
+    projectorPreviousPerformanceMode = null;
+    if (restorePerformance && restoreMode) setPerformanceMode(restoreMode, false);
+    syncFullscreenControls();
+    if (!viewer.hidden) requestAnimationFrame(resizeStageAtmosphere);
+  }
+
+  async function toggleProjectorMode() {
+    const viewer = $('#presentationViewer');
+    if (viewer.classList.contains('projector-mode')) {
+      leaveProjectorMode();
+      if (document.fullscreenElement === viewer) {
+        try { await document.exitFullscreen(); } catch { /* the browser may have exited already */ }
+      }
+      toast('Đã thoát chế độ chiếu TV.');
+      return;
+    }
+
+    projectorPreviousPerformanceMode = performanceMode;
+    viewer.classList.add('projector-mode');
+    document.documentElement.dataset.projectorMode = 'true';
+    setViewerUIHidden(false);
+    setPerformanceMode('cinema', false);
+    if (!motionEnabled && !reducedMotion.matches) setMotion(true);
+    syncFullscreenControls();
+
+    let enteredFullscreen = document.fullscreenElement === viewer;
+    if (!enteredFullscreen && typeof viewer.requestFullscreen === 'function') {
+      try {
+        await viewer.requestFullscreen({ navigationUI: 'hide' });
+        enteredFullscreen = document.fullscreenElement === viewer;
+      } catch {
+        try {
+          await viewer.requestFullscreen();
+          enteredFullscreen = document.fullscreenElement === viewer;
+        } catch { /* keep the projector layout available even if fullscreen is blocked */ }
+      }
+    }
+    projectorWasFullscreen = enteredFullscreen;
+    syncFullscreenControls();
+    requestAnimationFrame(resizeStageAtmosphere);
+    toast(enteredFullscreen
+      ? 'Chế độ chiếu TV đã bật: toàn màn hình, hiệu ứng điện ảnh và hình ảnh độ phân giải cao.'
+      : 'Đã bật bố cục chiếu TV. Bấm F hoặc nút toàn màn hình nếu trình duyệt chưa phủ kín màn hình.');
+  }
+
   async function toggleFullscreen() {
     const viewer = $('#presentationViewer');
     try {
-      if (!document.fullscreenElement) {
-        if (viewer.requestFullscreen) await viewer.requestFullscreen();
-        else toast('Trình duyệt này chưa hỗ trợ toàn màn hình.');
-      } else {
+      if (document.fullscreenElement === viewer) {
         await document.exitFullscreen();
+      } else if (viewer.requestFullscreen) {
+        await viewer.requestFullscreen({ navigationUI: 'hide' });
+      } else {
+        toast('Trình duyệt này chưa hỗ trợ toàn màn hình.');
       }
     } catch {
-      toast('Không thể bật toàn màn hình. Hãy thử qua menu của trình duyệt.');
+      try {
+        if (!document.fullscreenElement && viewer.requestFullscreen) {
+          await viewer.requestFullscreen();
+        } else {
+          toast('Không thể bật toàn màn hình. Hãy dùng menu của trình duyệt.');
+        }
+      } catch {
+        toast('Không thể bật toàn màn hình. Hãy thử qua menu của trình duyệt.');
+      }
     }
+    syncFullscreenControls();
   }
 
   function shareDeck(id) {
@@ -2088,7 +2180,8 @@
     if (target.id === 'slidePrev') goPrevious();
     if (target.id === 'slideNext') goNext();
     if (target.id === 'viewerClose' || target.id === 'viewerExit') exitPresentation();
-    if (target.id === 'viewerFullscreen') toggleFullscreen();
+    if (target.id === 'viewerFullscreen') { toggleFullscreen(); return; }
+    if (target.id === 'viewerProjector') { toggleProjectorMode(); return; }
     if (target.id === 'resetLocal') {
       decks = [seedDeck];
       persist();
@@ -2159,6 +2252,19 @@
   document.addEventListener('keydown', event => {
     const viewerOpen = !$('#presentationViewer').hidden;
     if (viewerOpen) {
+      if (!event.ctrlKey && !event.altKey && !event.metaKey &&
+          !event.target.closest?.('input, textarea, select, [contenteditable="true"]')) {
+        if (event.key.toLowerCase() === 'p') {
+          event.preventDefault();
+          toggleProjectorMode();
+          return;
+        }
+        if (event.key.toLowerCase() === 'f') {
+          event.preventDefault();
+          toggleFullscreen();
+          return;
+        }
+      }
       if (event.key.toLowerCase() === 'h') {
         event.preventDefault();
         setViewerUIHidden(!$('#presentationViewer').classList.contains('ui-hidden'));
@@ -2234,6 +2340,18 @@
     } else {
       showView(hash, false);
     }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    const viewer = $('#presentationViewer');
+    if (document.fullscreenElement === viewer) {
+      projectorWasFullscreen = viewer.classList.contains('projector-mode');
+    } else if (viewer.classList.contains('projector-mode') && projectorWasFullscreen) {
+      // Escape or the browser's native exit action ends projector mode as well.
+      leaveProjectorMode();
+    }
+    syncFullscreenControls();
+    if (!viewer.hidden) requestAnimationFrame(resizeStageAtmosphere);
   });
 
   document.addEventListener('visibilitychange', () => {
