@@ -106,6 +106,9 @@ assert.ok(css.includes('.editorial-diagram') && css.includes('.editorial-diagram
 assert.ok(css.includes('BioSphere v12 — story palette'), 'The chapter palette and idea-hierarchy design system must be present.');
 assert.ok(css.includes('.slide-key-idea') && css.includes('.slide-point--support'), 'Core and supporting idea cards must have distinct styles.');
 assert.ok(css.includes('story-continuity-in') && css.includes('story-chapter-in'), 'Transitions must distinguish continuity within a chapter from motion between chapters.');
+assert.ok(css.includes('BioSphere v13 — one live slide'), 'The low-latency single-surface motion pass must be present.');
+assert.ok(css.includes('story-continuity-single') && css.includes('story-chapter-single'), 'Incoming-only motion must use fast continuity and chapter transitions.');
+assert.ok(css.includes('.live-photo{') && css.includes('data-motion-bridge="instant"]'), 'Photos must remain crisp and reveal-only navigation must avoid entrance animation.');
 assert.ok(css.includes('BioSphere v10 — editorial slide system'), 'The consolidated responsive slide system must be active.');
 assert.ok(!css.includes('The actual webview in the supplied screenshot is ~720 CSS px wide.'), 'The obsolete mobile rule that turns the photo into a full-slide background must stay removed.');
 assert.ok(!/\.viewer \.slide-side-content\s*\{\s*position:absolute!important;z-index:0/.test(css), 'Mobile media must remain a separate layout column instead of a background layer.');
@@ -113,7 +116,10 @@ assert.ok(app.includes('photo-support-label'), 'Related images need visible labe
 assert.ok(app.includes('editorial-map-core'), 'The overview slide needs a real central-node mind map.');
 assert.ok(app.includes('source[data-src]') && app.includes('video.load()'), 'MP4 source URLs must be attached only when motion is eligible.');
 assert.ok(app.includes('lineBuckets') && app.includes('dotBuckets'), 'Canvas particles must batch draw calls instead of stroking each edge and dot independently.');
-assert.ok(app.includes("ghost.querySelectorAll('video, canvas, model-viewer"), 'Outgoing transitions must not clone live video or GPU-heavy models.');
+assert.ok(!app.includes('previousPage.cloneNode(true)') && !app.includes('stage.appendChild(ghost)'), 'Slide transitions must replace the old page immediately and never render two full-size slides.');
+assert.ok(app.includes('let warmedPhotoAssets = new Map();') && app.includes('preload.decode().catch(() => {})'), 'Adjacent photos should be prewarmed and decoded before a fast tap.');
+assert.ok(app.includes('const dprLimit = profile.slowConnection ? 1.5 : 2.25'), 'Image target size must account for physical pixel density.');
+assert.ok(app.includes('}, 80);'), 'Image prewarming should start early enough for the next slide.');
 assert.ok(app.includes("target.matches('[data-case-answer]')"), 'Each disease case must support immediate interactive answer feedback.');
 assert.match(app, /function isValidDeckShape\(/, 'Imported deck structure must be validated.');
 assert.match(app, /threeLoadPromise = null;/, 'The Three.js loader should be retryable after a CDN failure.');
