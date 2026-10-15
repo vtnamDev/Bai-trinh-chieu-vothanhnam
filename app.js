@@ -983,20 +983,6 @@
     }
   }
 
-  function renderPhotoProcessFlow(flow) {
-    if (!flow || typeof flow !== 'object' || !Array.isArray(flow.steps) || flow.steps.length < 2) return '';
-    const steps = flow.steps.slice(0, 3);
-    return '<div class="photo-process-flow" aria-label="' + escapeHTML(flow.label || 'Sơ đồ quá trình') + '">' +
-      '<span class="photo-process-label">' + escapeHTML(flow.label || 'SƠ ĐỒ QUÁ TRÌNH') + '</span>' +
-      '<div class="photo-process-track">' + steps.map((step, index) =>
-        '<div class="photo-process-node" style="--flow-index:' + index + '">' +
-          '<span class="photo-process-index">' + String(index + 1).padStart(2, '0') + '</span>' +
-          '<strong>' + escapeHTML(step) + '</strong>' +
-        '</div>'
-      ).join('') + '</div>' +
-    '</div>';
-  }
-
   function renderSlideVisualBoard(slide) {
     const visual = String(slide.visual || 'editorial');
     const title = String(slide.title || '');
@@ -1158,7 +1144,6 @@
     const supports = Array.isArray(slide.supportImages)
       ? slide.supportImages.filter(item => item && typeof item === 'object' && !Array.isArray(item)).slice(0, 2)
       : [];
-    const flowMarkup = '';
     const videoMarkup = selectedVideo
       ? '<video class="live-video" muted playsinline autoplay loop preload="none" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
           '<source data-src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
@@ -1167,6 +1152,7 @@
     const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
       '<a class="photo-support-card photo-support-card--' + (i + 1) + '" href="' + escapeHTML(safeHttpUrl(item.sourceUrl || item.url || imageSource, imageSource)) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.alt || 'Mở nguồn ảnh bổ sung') + '">' +
         '<img class="photo-support-image" src="' + escapeHTML(optimizeImageUrl(safeHttpUrl(item.url || ''))) + '" alt="' + escapeHTML(item.alt || '') + '" loading="lazy" decoding="async" fetchpriority="low" data-fallback="' + escapeHTML(fallback) + '">' +
+        '<span class="photo-support-label">' + escapeHTML(item.alt || 'Ảnh bổ sung') + '</span>' +
       '</a>'
     ).join('') + '</div>' : '';
     const mediaAlt = selectedVideo ? (slide.videoAlt || slide.imageAlt || 'Video minh họa liên quan') : (slide.imageAlt || 'Ảnh minh họa thực tế');
