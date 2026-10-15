@@ -255,6 +255,13 @@ try {
   assert.equal(await projectorButton.isVisible(), true, 'Desktop landscape should expose the HDMI/TV projector control.');
   await projectorButton.click();
   await page.waitForFunction(() => document.querySelector('#presentationViewer')?.classList.contains('projector-mode'));
+  await page.waitForFunction(() => {
+    const viewer = document.querySelector('#presentationViewer');
+    const projector = viewer?.querySelector('#viewerProjector');
+    const fullscreen = viewer?.querySelector('#viewerFullscreen');
+    return projector?.getAttribute('aria-pressed') === 'true' &&
+      fullscreen?.getAttribute('aria-pressed') === String(document.fullscreenElement === viewer);
+  }, null, { timeout: 5000 });
   const projectorState = await page.evaluate(() => {
     const viewer = document.querySelector('#presentationViewer');
     const stage = document.querySelector('#slideStage');
