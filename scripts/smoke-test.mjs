@@ -34,9 +34,15 @@ vm.runInNewContext(deckSource, context, { filename: 'bai32-deck.js', timeout: 10
 const deck = context.window.BIOSPHERE_BAI32_SEED;
 
 assert.ok(deck && typeof deck === 'object', 'The bundled seed deck must exist.');
-assert.equal(deck.slides.length, 32, 'The lesson deck should contain 32 slides.');
+assert.equal(deck.slides.length, 25, 'The lesson deck should contain 25 slides.');
 assert.ok(deck.slides.every(slide => slide && typeof slide.title === 'string'), 'Every slide needs a title.');
-assert.equal(deck.slides.filter(slide => slide.classroomPrompt).length, 5, 'Keep all five classroom discussion prompts.');
+assert.equal(deck.slides.filter(slide => slide.classroomPrompt).length, 5, 'Keep one case question for each of the five diseases.');
+for (const slide of deck.slides.filter(item => item.classroomPrompt)) {
+  const prompt = slide.classroomPrompt;
+  assert.ok(Array.isArray(prompt.options) && prompt.options.length === 4, `Each disease case needs four answer choices: ${slide.title}`);
+  assert.ok(Number.isInteger(prompt.correctIndex) && prompt.correctIndex >= 0 && prompt.correctIndex < prompt.options.length, `Invalid case quiz answer: ${slide.title}`);
+  assert.ok(typeof prompt.explanation === 'string' && prompt.explanation.length > 20, `Case quiz needs explanatory feedback: ${slide.title}`);
+}
 assert.equal(deck.slides.filter(slide => slide.model3D).length, 5, 'Keep the five curated 3D scenes.');
 const quizSlides = deck.slides.filter(slide => slide.interactiveQuiz);
 assert.equal(quizSlides.length, 2, 'Keep the interactive review and final quiz.');
@@ -76,6 +82,11 @@ const assetVersions = ['styles.css', 'bai32-deck.js', 'app.js'].map(versionFor);
 assert.equal(new Set(assetVersions).size, 1, 'CSS, deck data and app code must use the same cache-busting version.');
 
 assert.match(app, /function safeHttpUrl\(/, 'Imported resource URLs must be protocol-checked.');
+assert.match(app, /function optimizeImageUrl\(/, 'Remote image sizes must be adapted to viewport and performance profile.');
+assert.ok(app.includes('source[data-src]') && app.includes('video.load()'), 'MP4 source URLs must be attached only when motion is eligible.');
+assert.ok(app.includes('lineBuckets') && app.includes('dotBuckets'), 'Canvas particles must batch draw calls instead of stroking each edge and dot independently.');
+assert.ok(app.includes("ghost.querySelectorAll('video, canvas, model-viewer"), 'Outgoing transitions must not clone live video or GPU-heavy models.');
+assert.ok(app.includes("target.matches('[data-case-answer]')"), 'Each disease case must support immediate interactive answer feedback.');
 assert.match(app, /function isValidDeckShape\(/, 'Imported deck structure must be validated.');
 assert.match(app, /threeLoadPromise = null;/, 'The Three.js loader should be retryable after a CDN failure.');
 assert.match(app, /modelViewerLoadPromise = null;/, 'The model-viewer loader should be retryable after a CDN failure.');
@@ -112,4 +123,4 @@ const toastEnd = app.indexOf('function renderDecks()', toastStart);
 const toastSource = app.slice(toastStart, toastEnd);
 assert.ok(app.includes('let toastTimer = 0;') && toastSource.includes("region.querySelector('.toast')") && toastSource.includes('clearTimeout(toastTimer)'), 'Rapid notifications must reuse one toast and clear its previous timer.');
 
-console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, ${quizSlides.length} quiz slides, ${Math.round(totalSourceBytes / 1024)} KiB combined JS/CSS/SW/deck source.`);
+console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, 5 disease case quizzes, ${quizSlides.length} class quiz slides, ${Math.round(totalSourceBytes / 1024)} KiB combined JS/CSS/SW/deck source.`);
