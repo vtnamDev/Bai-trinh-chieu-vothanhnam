@@ -2964,3 +2964,75 @@ html[data-performance-lite="true"] #presentationViewer .slide-content{backdrop-f
 @media(prefers-reduced-motion:reduce){
   #presentationViewer #slideStage > .slide-page:not(.slide-transition-ghost){animation:none!important}
 }
+
+
+/* BioSphere v12 — story palette, explicit idea hierarchy and linked cinematic transitions. */
+#slideStage[data-story-group="foundation"],#presentationViewer #slideStage .slide-page[data-story-group="foundation"]{--stage-accent:#70dfd0;--stage-secondary:#8ebaff;--editorial-accent:#70dfd0}
+#slideStage[data-story-group="tooth"],#presentationViewer #slideStage .slide-page[data-story-group="tooth"]{--stage-accent:#ff93aa;--stage-secondary:#ffca91;--editorial-accent:#ff93aa}
+#slideStage[data-story-group="stomach"],#presentationViewer #slideStage .slide-page[data-story-group="stomach"]{--stage-accent:#f49bb6;--stage-secondary:#ffc080;--editorial-accent:#f49bb6}
+#slideStage[data-story-group="diarrhea"],#presentationViewer #slideStage .slide-page[data-story-group="diarrhea"]{--stage-accent:#6fdee9;--stage-secondary:#82baff;--editorial-accent:#6fdee9}
+#slideStage[data-story-group="worms"],#presentationViewer #slideStage .slide-page[data-story-group="worms"]{--stage-accent:#c4e98a;--stage-secondary:#6ed9b3;--editorial-accent:#c4e98a}
+#slideStage[data-story-group="hepatitis"],#presentationViewer #slideStage .slide-page[data-story-group="hepatitis"]{--stage-accent:#ffd078;--stage-secondary:#ff9b79;--editorial-accent:#ffd078}
+#slideStage[data-story-group="recap"],#presentationViewer #slideStage .slide-page[data-story-group="recap"]{--stage-accent:#78e0c7;--stage-secondary:#91b8ff;--editorial-accent:#78e0c7}
+#slideStage[data-story-group="closing"],#presentationViewer #slideStage .slide-page[data-story-group="closing"]{--stage-accent:#f0d58b;--stage-secondary:#77e1cd;--editorial-accent:#f0d58b}
+#presentationViewer #slideStage .slide-page[data-story-group] .photo-scene{--photo-accent:var(--stage-accent);--photo-secondary:var(--stage-secondary)}
+#presentationViewer #slideStage .photo-frame{border:1px solid color-mix(in srgb,var(--stage-accent) 44%,#ffffff1c);box-shadow:0 24px 64px #0005,0 0 0 1px color-mix(in srgb,var(--stage-accent) 12%,transparent),0 0 44px color-mix(in srgb,var(--stage-accent) 12%,transparent)}
+#presentationViewer #slideStage .photo-frame:before{border-color:color-mix(in srgb,var(--stage-accent) 27%,#ffffff23);box-shadow:inset 0 0 22px color-mix(in srgb,var(--stage-accent) 7%,transparent)}
+#presentationViewer #slideStage .photo-color-wash{opacity:.23;mix-blend-mode:soft-light}
+#presentationViewer #slideStage .photo-topline i,#presentationViewer #slideStage .photo-credit-line i{background:var(--stage-accent);box-shadow:0 0 12px color-mix(in srgb,var(--stage-accent) 72%,transparent)}
+
+/* The core insight is one clear focal point; supporting details remain roomy and scannable. */
+#presentationViewer #slideStage .slide-key-idea{position:relative;margin-top:clamp(14px,1.65vh,22px);padding:clamp(14px,1.35vw,21px) clamp(15px,1.5vw,23px);overflow:hidden;border:1px solid color-mix(in srgb,var(--stage-accent) 48%,#ffffff17);border-radius:17px;background:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--stage-accent) 14%,transparent),transparent 58%),linear-gradient(125deg,color-mix(in srgb,var(--stage-accent) 8%,#0b1a21),#0b1720 70%);box-shadow:inset 0 1px #ffffff11,0 14px 32px #0002;animation:idea-focus-in .46s cubic-bezier(.2,.8,.2,1) both}
+#presentationViewer #slideStage .slide-key-idea:before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--stage-accent),color-mix(in srgb,var(--stage-secondary) 70%,var(--stage-accent)));box-shadow:0 0 18px color-mix(in srgb,var(--stage-accent) 28%,transparent)}
+#presentationViewer #slideStage .slide-key-idea-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+#presentationViewer #slideStage .slide-key-idea-top span{display:flex;align-items:center;gap:7px;color:var(--stage-accent);font-size:10px;font-weight:950;letter-spacing:.16em}
+#presentationViewer #slideStage .slide-key-idea-top span:before{content:"";width:7px;height:7px;border-radius:2px;background:var(--stage-accent);box-shadow:0 0 11px color-mix(in srgb,var(--stage-accent) 52%,transparent);transform:rotate(45deg)}
+#presentationViewer #slideStage .slide-key-idea-top b{padding:5px 8px;border:1px solid color-mix(in srgb,var(--stage-accent) 32%,transparent);border-radius:999px;color:#b9d8cf;background:color-mix(in srgb,var(--stage-accent) 7%,#07171c);font-size:8px;letter-spacing:.12em;font-weight:800}
+#presentationViewer #slideStage .slide-key-idea p{margin:0;color:#f2fff9;font-size:clamp(16px,1.28vw,21px);font-weight:680;line-height:1.48;letter-spacing:-.012em;text-wrap:pretty}
+#presentationViewer #slideStage .slide-support-ideas{margin-top:clamp(17px,2vh,25px)}
+#presentationViewer #slideStage .slide-support-heading{display:flex;align-items:center;gap:11px;margin:0 0 10px}
+#presentationViewer #slideStage .slide-support-heading:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,color-mix(in srgb,var(--stage-accent) 52%,transparent),transparent)}
+#presentationViewer #slideStage .slide-support-heading strong{display:inline-flex;align-items:center;gap:8px;color:#dcefe8;font-size:10px;font-weight:900;letter-spacing:.16em}
+#presentationViewer #slideStage .slide-support-heading strong:before{content:"";width:18px;height:2px;background:var(--stage-accent);border-radius:3px}
+#presentationViewer #slideStage .slide-support-heading span{color:#8faea4;font-size:10px;line-height:1.3}
+#presentationViewer #slideStage .slide-points{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin-top:0!important;max-width:none!important}
+#presentationViewer #slideStage .slide-point.slide-point--support{min-width:0;min-height:65px;align-items:flex-start;gap:10px;padding:12px 13px!important;border-radius:13px;border:1px solid #d5fff01b;background:linear-gradient(130deg,#ffffff09,#ffffff03);box-shadow:inset 0 1px #ffffff08,0 7px 18px #0000000c;font-size:clamp(13px,.95vw,16px);line-height:1.5;transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,background .24s ease,box-shadow .24s ease;animation:supporting-idea-in .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--idea-order,0) * 38ms)}
+#presentationViewer #slideStage .slide-point--support:nth-child(1){--idea-order:0}
+#presentationViewer #slideStage .slide-point--support:nth-child(2){--idea-order:1}
+#presentationViewer #slideStage .slide-point--support:nth-child(3){--idea-order:2}
+#presentationViewer #slideStage .slide-point--support:nth-child(4){--idea-order:3}
+#presentationViewer #slideStage .slide-point--support:nth-child(5){--idea-order:4}
+#presentationViewer #slideStage .slide-point--support b{display:grid;place-items:center;flex:0 0 26px;width:26px;min-height:26px;padding:0!important;border:1px solid color-mix(in srgb,var(--stage-accent) 35%,transparent);border-radius:8px;color:var(--stage-accent)!important;background:color-mix(in srgb,var(--stage-accent) 10%,#09181d);font-size:9px;font-weight:900;font-variant-numeric:tabular-nums}
+#presentationViewer #slideStage .slide-point--support span{min-width:0;color:#d7e8e1;overflow-wrap:anywhere}
+#presentationViewer #slideStage .slide-point--support:after{display:none}
+@media(hover:hover) and (pointer:fine){#presentationViewer #slideStage .slide-point--support:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--stage-accent) 44%,#ffffff16);background:linear-gradient(130deg,color-mix(in srgb,var(--stage-accent) 8%,#0b1a20),#ffffff04);box-shadow:inset 0 1px #ffffff10,0 10px 24px #0002}}
+
+/* Motion is thematic, not random: keep the arc inside a chapter, rotate gently between chapters. */
+#presentationViewer #slideStage{perspective:1500px;transform-style:preserve-3d}
+.viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="continuity"]{transform-origin:50% 50%;animation:story-continuity-in .62s cubic-bezier(.2,.82,.16,1) both!important}
+.viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="chapter"]{transform-origin:12% 50%;transform-style:preserve-3d;animation:story-chapter-in .78s cubic-bezier(.16,.82,.2,1) both!important}
+.viewer .slide-transition-ghost.is-leaving[data-motion-bridge="continuity"]{transform-origin:50% 50%;animation:story-continuity-out .52s cubic-bezier(.65,0,.8,.25) both!important}
+.viewer .slide-transition-ghost.is-leaving[data-motion-bridge="chapter"]{transform-origin:88% 50%;transform-style:preserve-3d;animation:story-chapter-out .63s cubic-bezier(.65,0,.8,.25) both!important}
+@keyframes story-continuity-in{0%{opacity:0;transform:perspective(1500px) translate3d(3.2%,0,-48px) rotateY(-2.4deg) scale(.98)}75%{opacity:1;transform:perspective(1500px) translate3d(-.2%,0,0) rotateY(.25deg) scale(1.002)}100%{opacity:1;transform:perspective(1500px) translate3d(0,0,0) rotateY(0) scale(1)}}
+@keyframes story-continuity-out{0%{opacity:1;transform:perspective(1500px) translate3d(0,0,0) rotateY(0) scale(1)}100%{opacity:0;transform:perspective(1500px) translate3d(-3.8%,0,-55px) rotateY(2.4deg) scale(.975)}}
+@keyframes story-chapter-in{0%{opacity:0;transform:perspective(1500px) translate3d(2.5%,1.5%,-100px) rotateY(-5deg) rotateX(1.8deg) scale(.955)}62%{opacity:1;transform:perspective(1500px) translate3d(-.3%,0,0) rotateY(.45deg) rotateX(0) scale(1.004)}100%{opacity:1;transform:perspective(1500px) translate3d(0,0,0) rotateY(0) rotateX(0) scale(1)}}
+@keyframes story-chapter-out{0%{opacity:1;transform:perspective(1500px) translate3d(0,0,0) rotateY(0) rotateX(0) scale(1)}100%{opacity:0;transform:perspective(1500px) translate3d(-5%,0,-115px) rotateY(5deg) rotateX(-1deg) scale(.955)}}
+@keyframes idea-focus-in{from{opacity:0;transform:translateY(7px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes supporting-idea-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+html[data-performance-lite="true"] #presentationViewer #slideStage .slide-key-idea{animation-duration:.22s;box-shadow:inset 0 1px #ffffff0d}
+html[data-performance-lite="true"] #presentationViewer #slideStage .slide-point--support{animation-duration:.22s;transition-duration:.12s}
+html[data-performance-lite="true"] #presentationViewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="continuity"],html[data-performance-lite="true"] #presentationViewer .slide-transition-ghost.is-leaving[data-motion-bridge="continuity"]{animation-duration:.24s!important;filter:none!important}
+html[data-performance-lite="true"] #presentationViewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge="chapter"],html[data-performance-lite="true"] #presentationViewer .slide-transition-ghost.is-leaving[data-motion-bridge="chapter"]{animation-duration:.28s!important;filter:none!important}
+@media(max-width:800px){
+  #presentationViewer #slideStage .slide-key-idea{margin-top:14px;padding:14px 14px 14px 17px;border-radius:14px}
+  #presentationViewer #slideStage .slide-key-idea p{font-size:clamp(16px,4vw,19px);line-height:1.5}
+  #presentationViewer #slideStage .slide-key-idea-top b{font-size:7px}
+  #presentationViewer #slideStage .slide-support-ideas{margin-top:17px}
+  #presentationViewer #slideStage .slide-support-heading{gap:8px;margin-bottom:9px}
+  #presentationViewer #slideStage .slide-support-heading span{font-size:9px}
+  #presentationViewer #slideStage .slide-points{grid-template-columns:1fr!important;gap:7px!important}
+  #presentationViewer #slideStage .slide-point.slide-point--support{min-height:0;padding:12px!important;font-size:clamp(14px,3.55vw,16px);line-height:1.5;border-radius:12px}
+  #presentationViewer #slideStage .slide-point--support b{flex-basis:25px;width:25px;min-height:25px}
+}
+@media(max-width:420px){#presentationViewer #slideStage .slide-support-heading span{display:none}#presentationViewer #slideStage .slide-key-idea{padding:13px 12px 13px 15px}}
+@media(prefers-reduced-motion:reduce){#presentationViewer #slideStage .slide-key-idea,#presentationViewer #slideStage .slide-point--support,.viewer .slide-page:not(.slide-transition-ghost)[data-motion-bridge],.viewer .slide-transition-ghost.is-leaving[data-motion-bridge]{animation:none!important;transition:none!important;transform:none!important;filter:none!important}}
