@@ -1502,7 +1502,8 @@
     atmosphereWidth = Math.max(1, viewer.clientWidth);
     atmosphereHeight = Math.max(1, viewer.clientHeight);
     const profile = getPerformanceProfile();
-    atmosphereDpr = Math.min(window.devicePixelRatio || 1, profile.maxPixelRatio);
+    const canvasPixelRatioLimit = profile.projectorMode && atmosphereWidth >= 3000 ? 1 : profile.maxPixelRatio;
+    atmosphereDpr = Math.min(window.devicePixelRatio || 1, canvasPixelRatioLimit);
     canvas.width = Math.round(atmosphereWidth * atmosphereDpr);
     canvas.height = Math.round(atmosphereHeight * atmosphereDpr);
     atmosphereCanvasContext.setTransform(atmosphereDpr, 0, 0, atmosphereDpr, 0, 0);
@@ -1873,7 +1874,7 @@
     if (projectorButton) {
       projectorButton.setAttribute('aria-pressed', String(isProjector));
       projectorButton.setAttribute('aria-label', isProjector ? 'Thoát chế độ chiếu TV' : 'Bật chế độ chiếu TV');
-      projectorButton.title = isProjector ? 'Trở lại giao diện thường (P)' : 'Tối ưu HDMI/TV, 16:9, chế độ điện ảnh (P)';
+      projectorButton.title = isProjector ? 'Trở lại giao diện thường (P)' : 'Tối ưu HDMI/TV, 16:9, chế độ điện ảnh (P). Chuyển cửa sổ trình duyệt sang TV trước khi bật.';
       const label = projectorButton.querySelector('.projector-label');
       if (label) label.textContent = isProjector ? 'Thoát chiếu' : 'Chiếu TV';
     }
@@ -1883,6 +1884,7 @@
     const viewer = $('#presentationViewer');
     viewer.classList.remove('projector-mode');
     delete document.documentElement.dataset.projectorMode;
+    $('#viewerProjector')?.setAttribute('aria-pressed', 'false');
     setViewerUIHidden(false);
     projectorWasFullscreen = false;
     const restoreMode = projectorPreviousPerformanceMode;
@@ -1926,6 +1928,7 @@
     projectorPreviousPerformanceMode = performanceMode;
     viewer.classList.add('projector-mode');
     document.documentElement.dataset.projectorMode = 'true';
+    $('#viewerProjector')?.setAttribute('aria-pressed', 'true');
     setViewerUIHidden(false);
     setPerformanceMode('cinema', false);
     if (!motionEnabled && !reducedMotion.matches) setMotion(true);
