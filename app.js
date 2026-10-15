@@ -1892,6 +1892,26 @@
     if (!viewer.hidden) requestAnimationFrame(resizeStageAtmosphere);
   }
 
+  function upgradeProjectorImages() {
+    if (document.documentElement.dataset.projectorMode !== 'true') return;
+    $('.live-photo', $('#slideStage')).forEach(image => {
+      const url = optimizeImageUrl(safeHttpUrl(image.currentSrc || image.src, ''));
+      if (!url || url === image.src || image.dataset.projectorSource === url) return;
+      image.dataset.projectorSource = url;
+      const candidate = new Image();
+      candidate.decoding = 'async';
+      try { candidate.fetchPriority = 'high'; } catch { /* older browsers */ }
+      candidate.src = url;
+      const apply = () => {
+        if (!image.isConnected || document.documentElement.dataset.projectorMode !== 'true' || image.dataset.projectorSource !== url) return;
+        image.src = url;
+        image.dataset.projectorSourceApplied = url;
+      };
+      if (typeof candidate.decode === 'function') candidate.decode().then(apply).catch(() => {});
+      else candidate.onload = apply;
+    });
+  }
+
   async function toggleProjectorMode() {
     const viewer = $('#presentationViewer');
     if (viewer.classList.contains('projector-mode')) {
@@ -1909,6 +1929,7 @@
     setViewerUIHidden(false);
     setPerformanceMode('cinema', false);
     if (!motionEnabled && !reducedMotion.matches) setMotion(true);
+    upgradeProjectorImages();
     syncFullscreenControls();
 
     let enteredFullscreen = document.fullscreenElement === viewer;
