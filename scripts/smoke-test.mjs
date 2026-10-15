@@ -44,6 +44,9 @@ for (const slide of deck.slides.filter(item => item.classroomPrompt)) {
   assert.ok(typeof prompt.explanation === 'string' && prompt.explanation.length > 20, `Case quiz needs explanatory feedback: ${slide.title}`);
 }
 assert.equal(deck.slides.filter(slide => slide.model3D).length, 5, 'Keep the five curated 3D scenes.');
+const flowSlides = deck.slides.filter(slide => slide.flowVisual);
+assert.equal(flowSlides.length, 5, 'Each disease scene should include a lightweight process diagram.');
+assert.ok(flowSlides.every(slide => typeof slide.flowVisual.label === 'string' && Array.isArray(slide.flowVisual.steps) && slide.flowVisual.steps.length === 3 && slide.flowVisual.steps.every(step => typeof step === 'string')), 'Process diagram data must contain three labeled steps.');
 const quizSlides = deck.slides.filter(slide => slide.interactiveQuiz);
 assert.equal(quizSlides.length, 2, 'Keep the interactive review and final quiz.');
 assert.equal(quizSlides.reduce((total, slide) => total + (slide.quizQuestions?.length || 0), 0), 8, 'Quiz question count changed; review the teaching flow.');
@@ -83,6 +86,8 @@ assert.equal(new Set(assetVersions).size, 1, 'CSS, deck data and app code must u
 
 assert.match(app, /function safeHttpUrl\(/, 'Imported resource URLs must be protocol-checked.');
 assert.match(app, /function optimizeImageUrl\(/, 'Remote image sizes must be adapted to viewport and performance profile.');
+assert.match(app, /function renderPhotoProcessFlow\(/, 'Disease images should carry a lightweight visual process flow when configured.');
+assert.ok(css.includes('.photo-process-flow') && css.includes('.photo-process-node'), 'The visual process flow must have dedicated responsive styling.');
 assert.ok(app.includes('source[data-src]') && app.includes('video.load()'), 'MP4 source URLs must be attached only when motion is eligible.');
 assert.ok(app.includes('lineBuckets') && app.includes('dotBuckets'), 'Canvas particles must batch draw calls instead of stroking each edge and dot independently.');
 assert.ok(app.includes("ghost.querySelectorAll('video, canvas, model-viewer"), 'Outgoing transitions must not clone live video or GPU-heavy models.');
@@ -123,4 +128,4 @@ const toastEnd = app.indexOf('function renderDecks()', toastStart);
 const toastSource = app.slice(toastStart, toastEnd);
 assert.ok(app.includes('let toastTimer = 0;') && toastSource.includes("region.querySelector('.toast')") && toastSource.includes('clearTimeout(toastTimer)'), 'Rapid notifications must reuse one toast and clear its previous timer.');
 
-console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, 5 disease case quizzes, ${quizSlides.length} class quiz slides, ${Math.round(totalSourceBytes / 1024)} KiB combined JS/CSS/SW/deck source.`);
+console.log(`BioSphere static validation passed: ${deck.slides.length} slides, ${resources.length} checked URLs, ${flowSlides.length} process diagrams, 5 disease case quizzes, ${quizSlides.length} class quiz slides, ${Math.round(totalSourceBytes / 1024)} KiB combined JS/CSS/SW/deck source.`);
