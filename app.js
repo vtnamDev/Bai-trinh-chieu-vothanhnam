@@ -1896,7 +1896,7 @@
 
   function upgradeProjectorImages() {
     if (document.documentElement.dataset.projectorMode !== 'true') return;
-    $('.live-photo', $('#slideStage')).forEach(image => {
+    $$('.live-photo', $('#slideStage')).forEach(image => {
       const url = optimizeImageUrl(safeHttpUrl(image.currentSrc || image.src, ''));
       if (!url || url === image.src || image.dataset.projectorSource === url) return;
       image.dataset.projectorSource = url;
