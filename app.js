@@ -1545,7 +1545,7 @@
     stage.dataset.slideIndex = String(slideIndex + 1);
     stage.dataset.slideCount = String(slides.length);
     // Stop outgoing video before replacing the slide; otherwise decoders may overlap during transitions.
-    $('.live-video', stage).forEach(video => {
+    $$('.live-video', stage).forEach(video => {
       video.pause();
       video.querySelectorAll('source').forEach(source => source.removeAttribute('src'));
       video.removeAttribute('src');
