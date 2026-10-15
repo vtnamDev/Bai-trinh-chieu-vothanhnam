@@ -106,3 +106,11 @@ GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính
 - Ảnh không còn bị tăng tương phản, bão hòa và phóng to liên tục; độ rộng ảnh được tính theo pixel density màn hình, chất lượng ảnh cao hơn trên mạng bình thường, tự giảm dung lượng khi máy báo kết nối chậm.
 - Ảnh trang kế tiếp được bắt đầu tải trước sau 80 ms, ưu tiên thấp và giải mã trước khi cần; giữ cache ảnh ở mức 1 ảnh trên máy yếu và 2 ảnh trên desktop chế độ Cinema.
 - Browser smoke test xác nhận có đúng một trang hoạt động trong stage, không có outgoing ghost, thời lượng chuyển cảnh bị giới hạn và URL ảnh yêu cầu đủ độ phân giải.
+
+
+## v14 — HDMI / TV projector mode
+- Trên máy tính màn hình rộng có nút **Chiếu TV** riêng. Nút bật bố cục máy chiếu, yêu cầu Fullscreen API ẩn UI trình duyệt khi được hỗ trợ và chuyển sang hiệu năng Điện ảnh. Có thể thoát bằng cùng nút; phím `P` bật/tắt chế độ máy chiếu, `F` bật/tắt toàn màn hình, `H` ẩn/hiện thanh điều khiển.
+- Thanh công cụ chuyển sang lớp kính trong nổi phía trên, thanh tiến độ nổi phía dưới; slide dùng toàn vùng 16:9, hai cột lớn và ảnh minh họa giữ chiều cao riêng thay vì thu nhỏ do thanh công cụ chiếm chỗ.
+- Khi đang ở chế độ chiếu, ảnh Unsplash/Pexels hiện tại được nâng cấp sang URL độ phân giải cao và chỉ thay ảnh sau khi bản mới giải mã xong; 3D/video vẫn được tải theo yêu cầu.
+- Máy tính ở chế độ Điện ảnh có thể vẽ nền canvas tới 60 FPS, với ngân sách hạt tăng theo màn hình desktop/projector. Trên kết nối chậm hoặc chế độ Mượt, nội dung/ảnh tự giảm tải; Reduced Motion vẫn được tôn trọng.
+- Kiểm thử Chromium xác nhận nút máy chiếu, trạng thái fullscreen, bố cục stage/toolbar, chỉ có một slide trong DOM, và khôi phục preset trước đó khi thoát.
