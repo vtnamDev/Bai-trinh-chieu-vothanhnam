@@ -17,6 +17,7 @@
   let motionEnabled = !reducedMotion.matches;
   let performanceMode = readPerformanceMode();
   let photoWarmTimer = 0;
+  let warmedPhotoAssets = new Map();
   let toastTimer = 0;
   let soundEnabled = true;
   let previousFocus = null;
@@ -161,9 +162,13 @@
       const url = new URL(safe, window.location.href);
       if (!['images.unsplash.com', 'images.pexels.com'].includes(url.hostname.toLowerCase())) return safe;
       const profile = getPerformanceProfile();
-      const dpr = Math.min(Math.max(Number(window.devicePixelRatio) || 1, 1), profile.maxPixelRatio || 1);
-      const width = Math.round(Math.min(1920, Math.max(640, (Number(window.innerWidth) || 960) * dpr * 1.35)));
-      const quality = profile.lite ? 74 : performanceMode === 'cinema' ? 88 : 80;
+      // Image detail follows the physical screen, not the lower pixel-ratio budget for canvas effects.
+      const dprLimit = profile.slowConnection ? 1.5 : 2.25;
+      const dpr = Math.min(Math.max(Number(window.devicePixelRatio) || 1, 1), dprLimit);
+      const viewportWidth = Math.max(320, Number(window.innerWidth) || 960);
+      const widthLimit = profile.slowConnection ? 1100 : 1920;
+      const width = Math.round(Math.min(widthLimit, Math.max(768, viewportWidth * dpr * 1.12)));
+      const quality = profile.saveData ? 78 : profile.slowConnection ? 80 : profile.lite ? 82 : performanceMode === 'cinema' ? 90 : 86;
       url.searchParams.set('w', String(width));
       url.searchParams.set('q', String(quality));
       if (!url.searchParams.has('auto')) url.searchParams.set('auto', 'format');
@@ -1288,21 +1293,39 @@
     if (photoWarmTimer) window.clearTimeout(photoWarmTimer);
     if (!currentDeck || typeof Image === 'undefined') return;
     const profile = getPerformanceProfile();
-    if (!profile.online || profile.saveData || profile.slowConnection || profile.lite) return;
+    if (!profile.online || profile.saveData || profile.slowConnection) return;
     const slides = Array.isArray(currentDeck.slides) ? currentDeck.slides : [];
+    // Warm the next image early; retain at most one decoded image on phones and two on desktop cinema.
+    const capacity = profile.lite ? 1 : (performanceMode === 'cinema' && window.innerWidth >= 900 ? 2 : 1);
     photoWarmTimer = window.setTimeout(() => {
       photoWarmTimer = 0;
       if (!currentDeck || currentDeck.slides !== slides) return;
-      const indexes = performanceMode === 'cinema' ? [slideIndex + 1, slideIndex - 1] : [slideIndex + 1];
+      const indexes = [slideIndex + 1];
+      if (capacity > 1) indexes.push(slideIndex + 2);
       indexes.forEach(index => {
+        if (index < 0 || index >= slides.length) return;
         const url = optimizeImageUrl(safeHttpUrl(slides[index]?.image || ''));
-        if (!url || index < 0 || index >= slides.length) return;
+        if (!url) return;
+        if (warmedPhotoAssets.has(url)) {
+          const cached = warmedPhotoAssets.get(url);
+          warmedPhotoAssets.delete(url);
+          warmedPhotoAssets.set(url, cached);
+          return;
+        }
         const preload = new Image();
         preload.decoding = 'async';
+        preload.loading = 'eager';
         try { preload.fetchPriority = 'low'; } catch { /* older browsers */ }
+        warmedPhotoAssets.set(url, preload);
+        while (warmedPhotoAssets.size > capacity) {
+          const oldestUrl = warmedPhotoAssets.keys().next().value;
+          if (!oldestUrl) break;
+          warmedPhotoAssets.delete(oldestUrl);
+        }
         preload.src = url;
+        if (typeof preload.decode === 'function') preload.decode().catch(() => {});
       });
-    }, 260);
+    }, 80);
   }
 
   function renderQuiz(slide) {
@@ -1616,26 +1639,17 @@
     const previousPage = stage.querySelector(':scope > .slide-page:not(.slide-transition-ghost)');
     const storyGroup = String(slide.storyGroup || slide.palette || 'foundation');
     const previousStoryGroup = previousPage?.dataset.storyGroup || previousPage?.dataset.palette || '';
-    const motionBridge = !previousPage ? 'opening' : (previousStoryGroup === storyGroup ? 'continuity' : 'chapter');
-    // Reuse a restrained depth transition within a chapter; reserve the stronger 3D hinge for chapter changes.
-    const motionPreset = slide.motionPreset || (slide.interactiveQuiz ? 'focus' : (motionBridge === 'continuity' ? 'depth' : 'rise'));
-    let ghost = null;
+    const motionBridge = !animate || direction === 'reveal' || !previousPage
+      ? 'opening'
+      : (previousStoryGroup === storyGroup ? 'continuity' : 'chapter');
+    const motionPreset = slide.motionPreset || (motionBridge === 'continuity' ? 'depth' : 'rise');
 
+    // The previous page will be removed immediately by the stage replacement below.
+    // Never clone a full slide or leave a second image/media decoder alive during transitions.
     if (transitionCleanupTimer) window.clearTimeout(transitionCleanupTimer);
+    transitionCleanupTimer = 0;
     if (activeTransitionGhost?.isConnected) activeTransitionGhost.remove();
     activeTransitionGhost = null;
-
-    if (animate && motionEnabled && previousPage && direction !== 'reveal') {
-      ghost = previousPage.cloneNode(true);
-      // Preserve the cinematic outgoing frame, but don't clone live media or GPU-backed layers.
-      ghost.querySelectorAll('video, canvas, model-viewer, .anatomy3d-panel, .photo-support-stack, .photo-scanline').forEach(node => node.remove());
-      ghost.classList.add('slide-transition-ghost');
-      ghost.dataset.direction = direction;
-      ghost.dataset.preset = motionPreset;
-      ghost.dataset.motionBridge = motionBridge;
-      ghost.setAttribute('aria-hidden', 'true');
-      ghost.inert = true;
-    }
 
     const points = Array.isArray(slide.points) ? slide.points.filter(point => typeof point === 'string' && point.trim()) : [];
     const keyIdea = typeof slide.keyIdea === 'string' && slide.keyIdea.trim()
@@ -1718,19 +1732,7 @@
         '</div>' +
       '</article>';
 
-    if (ghost) {
-      stage.appendChild(ghost);
-      activeTransitionGhost = ghost;
-      requestAnimationFrame(() => {
-        if (ghost.isConnected) ghost.classList.add('is-leaving');
-      });
-      transitionCleanupTimer = window.setTimeout(() => {
-        if (ghost.isConnected) ghost.remove();
-        if (activeTransitionGhost === ghost) activeTransitionGhost = null;
-        transitionCleanupTimer = 0;
-      }, 760);
-    }
-
+    // There is no outgoing ghost to clean up: the old page was removed immediately above.
     attachLiveImageFallbacks(stage);
     attachVideoBackgrounds(stage);
     initInteractiveModels(stage);
