@@ -1,13 +1,13 @@
 # BioSphere Slides — Bài 32 KHTN 8
 
-Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có chế độ xem di động dự phòng. Bài mẫu hiện có 32 trang về **5 bệnh liên quan đến hệ tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
+Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có chế độ xem di động dự phòng. Bài mẫu hiện có 25 trang về **5 bệnh liên quan đến hệ tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
 
 ## Cấu trúc
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
 - `styles.css` — giao diện responsive nhiều bảng màu, bố cục ảnh editorial, hiệu ứng chiều sâu và chuyển động.
 - `app.js` — thư viện, tìm kiếm, nhập/xuất JSON, điều hướng slide, chia sẻ link, toàn màn hình; dữ liệu nhập được kiểm tra cấu trúc và URL tài nguyên chỉ chấp nhận HTTP(S).
 - `scripts/smoke-test.mjs` và `.github/workflows/static-validation.yml` — kiểm tra tự động cú pháp, cấu trúc bài, URL tài nguyên và phiên bản cache của các tệp tĩnh.
-- `bai32-deck.js` — dữ liệu 32 slide, kịch bản 5 bệnh, tình huống hỏi đáp, URL hình ảnh/video, chú thích và nguồn tham khảo.
+- `bai32-deck.js` — dữ liệu 25 slide, kịch bản 5 bệnh, tình huống hỏi đáp, URL hình ảnh/video, chú thích và nguồn tham khảo.
 - `assets/mark.svg` — biểu tượng BioSphere.
 - `vercel.json` — cấu hình hosting tĩnh.
 
@@ -29,7 +29,7 @@ Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có c
 - Âm báo đúng/sai và chuyển slide có thể bật/tắt; chế độ giảm chuyển động vẫn được tôn trọng.
 
 ## Hình ảnh và thiết kế
-- Mỗi trang trong bài Bài 32 có một URL ảnh thực riêng (32 trang có ảnh minh họa và nguồn ghi kèm), mô tả thay thế, ghi nguồn và liên kết mở nguồn; một số trang có thêm thẻ ảnh phụ.
+- Mỗi trang trong bài Bài 32 có một URL ảnh thực riêng (25 trang có ảnh minh họa và nguồn ghi kèm), mô tả thay thế, ghi nguồn và liên kết mở nguồn; một số trang có thêm thẻ ảnh phụ.
 - Ảnh được tải trực tiếp từ nguồn trực tuyến khi mở trang. Nguồn sử dụng gồm Wikimedia Commons (sơ đồ giải phẫu/ảnh y khoa có giấy phép ghi trên trang file), Unsplash, Pexels và một số nguồn y tế/giáo dục như WHO. Ví dụ: [sơ đồ hệ tiêu hóa trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg), [ảnh răng sâu trên Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Dental_Caries_Cavity_1.JPG), [ảnh nội soi ổ loét dạ dày](https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg), [ảnh trẻ chải răng trên Pexels](https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/).
 - Vì ảnh tải trực tiếp từ máy chủ nguồn, thiết bị cần Internet; chất lượng/tốc độ có thể thay đổi theo nguồn ảnh. Trình chiếu sẽ thử dùng ảnh dự phòng nếu một URL không tải được.
 
@@ -58,7 +58,7 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 - NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes).
 
 ## Kiểm tra tự động
-Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript và bộ smoke test cho 32 slide, 5 tình huống thảo luận, 5 cảnh 3D, các câu hỏi tương tác, 156 URL tài nguyên hiện tại và cache key thống nhất. Các kiểm tra này bắt lỗi dữ liệu/cấu trúc cơ bản; chúng không thay thế kiểm thử trực quan trên trình duyệt hoặc kiểm tra khả dụng theo thời gian thực của máy chủ ảnh/video.
+Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript và bộ smoke test cho 25 slide, 5 câu hỏi tình huống có trắc nghiệm, 5 cảnh 3D, các câu hỏi tương tác, 156 URL tài nguyên hiện tại và cache key thống nhất. Các kiểm tra này bắt lỗi dữ liệu/cấu trúc cơ bản; chúng không thay thế kiểm thử trực quan trên trình duyệt hoặc kiểm tra khả dụng theo thời gian thực của máy chủ ảnh/video.
 
 ## Deploy
 GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính sẽ tạo deployment mới.
@@ -75,3 +75,11 @@ GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính
 - Trên HTTPS (hoặc localhost), service worker lưu vỏ ứng dụng cùng domain: HTML, CSS, JavaScript, dữ liệu bài học và logo. Lượt mở lại có thể dùng bộ nhớ đệm và trang chính có thể tải lại khi mất mạng sau lần truy cập trực tuyến đầu tiên.
 - Bộ đệm được phiên bản hóa và xóa bản shell cũ khi cập nhật. Không tải trước hay lưu hàng loạt ảnh, video, CDN hoặc mô hình 3D bên ngoài; các tài nguyên đó vẫn cần mạng, còn ảnh mặc định và giao diện dự phòng vẫn được giữ.
 - Nếu trình duyệt chặn service worker, website vẫn hoạt động bình thường khi trực tuyến.
+
+
+## Bản 25 trang — nội dung dày hơn, chuyển cảnh nhẹ hơn
+- Bản bài học gộp các trang mở đầu và phần giải thích trùng lặp, còn 25 trang; phần cốt lõi về cả năm bệnh, nguồn tham khảo và hai vòng ôn tập vẫn được giữ.
+- Mỗi bệnh có một câu hỏi tình huống chọn đáp án ngay trên trang bệnh. Sau lựa chọn, các phương án bị khóa, đáp án đúng và lời giải hiện ra để cả lớp thảo luận; cuối bài vẫn có hai vòng quiz tổng hợp.
+- Ảnh từ Unsplash/Pexels được yêu cầu ở kích thước phù hợp hơn với viewport và cấu hình hiệu năng; ảnh phụ được tải ưu tiên thấp. Ảnh chính vẫn là lớp hiển thị trước, video nền chỉ được gắn nguồn khi chế độ chuyển động/thiết bị/mạng cho phép.
+- Hiệu ứng hạt canvas giữ chuyển động và màu sắc nhưng gom thao tác vẽ vào ít lần gọi hơn; chuyển cảnh không nhân bản video, canvas hoặc mô hình 3D đang hoạt động.
+- Bộ kiểm tra tự động kiểm tra 25 trang, năm câu hỏi tình huống, tài nguyên 3D và các quy tắc tối ưu hóa. Browser smoke test kiểm tra câu hỏi chọn đáp án trên Chromium di động cùng điều hướng, 3D và offline shell.
