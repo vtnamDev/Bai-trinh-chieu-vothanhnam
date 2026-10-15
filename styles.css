@@ -2652,3 +2652,113 @@ html[data-performance-lite="true"] #presentationViewer .photo-process-node{
   #presentationViewer .photo-process-flow,
   #presentationViewer .photo-process-node{animation:none!important}
 }
+
+
+/* BioSphere editorial redesign v9 — give the content and the visual equal importance.
+   Full-width information canvas; responsive art direction; no tiny centered text column. */
+#presentationViewer #slideStage{overflow:auto!important;overscroll-behavior:contain}
+#presentationViewer .slide-page{
+  width:100%;min-height:100%;height:auto;overflow:visible;
+  padding:clamp(12px,1.65vw,26px);
+  display:grid;place-items:stretch;
+}
+#presentationViewer .slide-layout{
+  width:100%;max-width:1720px;min-height:calc(100% - 1px);height:auto;margin-inline:auto;
+  display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
+  align-items:stretch;gap:clamp(16px,2vw,30px);
+}
+#presentationViewer .slide-content{
+  min-width:0;width:100%;max-width:none;height:auto;max-height:none;overflow:visible;
+  align-self:stretch;display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(18px,2.4vw,38px);
+  border:1px solid #d5fff018;border-radius:clamp(18px,2vw,30px);
+  background:linear-gradient(145deg,#091a1adf,#0a111bdc 66%,#101727e8);
+  box-shadow:0 24px 64px #0003,inset 0 1px #ffffff0d;
+  backdrop-filter:blur(12px);
+}
+#presentationViewer .slide-kicker{font-size:clamp(10px,.78vw,13px);letter-spacing:.16em;margin-bottom:clamp(12px,1.5vh,22px)}
+#presentationViewer .slide-title{max-width:18ch;font-size:clamp(36px,4.25vw,72px);line-height:.99;letter-spacing:-.052em;text-wrap:balance}
+#presentationViewer .slide-subtitle{max-width:65ch;margin-top:clamp(14px,1.8vh,24px);font-size:clamp(16px,1.28vw,21px);line-height:1.58;color:#e0eee9}
+#presentationViewer .slide-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:clamp(18px,2.2vh,30px)}
+#presentationViewer .slide-point{min-width:0;min-height:68px;padding:clamp(12px,1.2vw,18px);font-size:clamp(14px,1.02vw,17px);line-height:1.48;border-radius:15px}
+#presentationViewer .slide-point b{flex:0 0 29px;width:29px;height:29px;font-size:11px}
+#presentationViewer .classroom-prompt{margin-top:clamp(14px,1.8vh,22px);padding:clamp(14px,1.45vw,22px);border-radius:18px}
+#presentationViewer .classroom-scenario{font-size:clamp(13px,.94vw,16px);line-height:1.5}
+#presentationViewer .classroom-question{font-size:clamp(17px,1.35vw,22px);line-height:1.32}
+#presentationViewer .classroom-prompt-kicker{font-size:10px}
+#presentationViewer .case-quiz-options{gap:8px;margin-top:12px}
+#presentationViewer .case-quiz-answer{font-size:clamp(12px,.9vw,15px);line-height:1.5}
+#presentationViewer .slide-source{margin-top:15px;font-size:10px;line-height:1.5}
+#presentationViewer .slide-side-content{
+  min-width:0;width:100%;height:100%;min-height:0;max-height:none;
+  display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:12px;
+}
+#presentationViewer .photo-scene{width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto}
+#presentationViewer .photo-frame{width:100%;height:100%;min-height:420px;max-height:none;border-radius:clamp(18px,2vw,30px)}
+#presentationViewer .photo-process-flow{bottom:clamp(70px,8vh,104px);left:clamp(12px,1.4vw,22px);right:clamp(12px,1.4vw,22px)}
+#presentationViewer .media-experience{width:100%;height:100%;min-height:0;display:flex;flex-direction:column}
+#presentationViewer .media-mode-bar--desktop{width:100%;flex:0 0 auto}
+#presentationViewer .media-image-view,#presentationViewer .media-3d-view{flex:1 1 auto;min-height:0}
+#presentationViewer .media-image-view .photo-scene,#presentationViewer .media-image-view .photo-frame{height:100%;min-height:420px}
+#presentationViewer .anatomy3d-panel{height:100%;min-height:520px;max-height:none}
+#presentationViewer .ending-actions{display:flex;flex-wrap:wrap;gap:10px}
+#presentationViewer .ending-action{min-height:46px;padding-inline:18px}
+
+/* Wide displays: visual panel is a real editorial column, not a full-slide wallpaper. */
+@media(min-width:1100px){
+  #presentationViewer .slide-page{padding:clamp(18px,2.1vw,34px)}
+  #presentationViewer .slide-layout{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr)}
+  #presentationViewer .slide-content{padding:clamp(24px,2.6vw,44px)}
+  #presentationViewer .slide-point{min-height:78px}
+}
+
+/* Portrait/mobile: art first, then a spacious readable article; scroll inside the slide. */
+@media(max-width:800px){
+  #presentationViewer #slideStage{overflow-y:auto!important;overflow-x:hidden!important}
+  #presentationViewer .slide-page{display:block;min-height:100%;height:auto;padding:10px;overflow:visible}
+  #presentationViewer .slide-layout{display:flex;flex-direction:column;gap:12px;min-height:0;height:auto}
+  #presentationViewer .slide-side-content{order:0;width:100%;height:auto;min-height:0;max-height:none}
+  #presentationViewer .photo-scene{height:auto;min-height:0;aspect-ratio:16/10}
+  #presentationViewer .photo-frame{height:auto;min-height:0;aspect-ratio:16/10;border-radius:18px}
+  #presentationViewer .media-experience{height:auto;min-height:0}
+  #presentationViewer .media-mode-bar--desktop{display:none!important}
+  #presentationViewer .media-image-view{height:auto;min-height:0}
+  #presentationViewer .media-image-view .photo-scene,
+  #presentationViewer .media-image-view .photo-frame{height:auto;min-height:0;aspect-ratio:16/10}
+  #presentationViewer .media-3d-view{height:auto;min-height:0}
+  #presentationViewer .anatomy3d-panel{height:clamp(300px,48svh,480px);min-height:300px}
+  #presentationViewer .slide-content{
+    order:1;width:100%;max-width:none;height:auto;max-height:none;overflow:visible;
+    padding:clamp(17px,4.2vw,28px);border-radius:18px;
+    background:linear-gradient(145deg,#091b1bea,#0a111bf0 66%,#101727f2);
+    backdrop-filter:blur(9px);
+  }
+  #presentationViewer .slide-kicker{font-size:10px;margin-bottom:13px}
+  #presentationViewer .slide-title{max-width:22ch;font-size:clamp(32px,7.6vw,54px);line-height:1.02}
+  #presentationViewer .slide-subtitle{max-width:unset;margin-top:13px;font-size:clamp(15px,3.8vw,18px);line-height:1.58}
+  #presentationViewer .slide-points{grid-template-columns:1fr;gap:8px;margin-top:18px}
+  #presentationViewer .slide-point{min-height:0;padding:13px 14px;font-size:clamp(14px,3.5vw,16px);line-height:1.52;border-radius:13px}
+  #presentationViewer .slide-point b{flex-basis:27px;width:27px;height:27px}
+  #presentationViewer .classroom-prompt{margin-top:14px;padding:14px;border-radius:15px}
+  #presentationViewer .classroom-prompt-kicker{font-size:9px}
+  #presentationViewer .classroom-scenario{font-size:13px;line-height:1.55}
+  #presentationViewer .classroom-question{font-size:17px;line-height:1.35;margin-top:7px}
+  #presentationViewer .case-quiz-options{grid-template-columns:1fr;gap:7px;margin-top:11px}
+  #presentationViewer .case-quiz-answer{padding:12px;font-size:13px;line-height:1.5}
+  #presentationViewer .slide-source{font-size:10px;margin-top:14px}
+  #presentationViewer .photo-process-flow{bottom:clamp(54px,8vh,80px);padding:9px}
+  #presentationViewer .photo-process-node strong{font-size:clamp(9px,2.7vw,12px)}
+}
+@media(max-width:420px){
+  #presentationViewer .slide-page{padding:7px}
+  #presentationViewer .slide-layout{gap:9px}
+  #presentationViewer .slide-content{padding:16px 14px}
+  #presentationViewer .slide-title{font-size:clamp(30px,8vw,39px)}
+  #presentationViewer .photo-process-track{gap:8px}
+  #presentationViewer .photo-process-node{padding:6px 4px}
+}
+/* Low-power mode preserves the layout and clarity while reducing expensive glass effects. */
+html[data-performance-lite="true"] #presentationViewer .slide-content{backdrop-filter:none!important;box-shadow:inset 0 1px #ffffff0d}
+@media(prefers-reduced-motion:reduce){
+  #presentationViewer .slide-content,#presentationViewer .photo-frame{scroll-behavior:auto!important;transition:none!important}
+}
