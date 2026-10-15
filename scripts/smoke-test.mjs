@@ -156,7 +156,7 @@ const warmupStart = app.indexOf('function warmAdjacentPhotos()');
 const warmupEnd = app.indexOf('\n  function renderQuiz', warmupStart);
 const warmupSource = app.slice(warmupStart, warmupEnd);
 assert.ok(warmupSource.includes('profile.saveData') && warmupSource.includes('profile.slowConnection'), 'Image preloading must respect bandwidth limits.');
-assert.ok(app.includes('getPerformanceProfile().lite) {\n      atmosphereFrame = 0;\n      return;'), 'The background render loop must stop rather than spin while hidden.');
+assert.ok(app.includes('if (document.hidden || !motionEnabled || reducedMotion.matches || $('#presentationViewer').hidden || profile.lite) {\n      atmosphereFrame = 0;\n      return;'), 'The background render loop must stop rather than spin while hidden.');
 assert.ok(css.includes('html[data-performance-lite="true"]'), 'Low-power mode must reduce expensive visual effects.');
 const toastStart = app.indexOf('function toast(message)');
 const toastEnd = app.indexOf('function renderDecks()', toastStart);
