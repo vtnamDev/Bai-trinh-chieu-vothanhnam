@@ -50,9 +50,9 @@ try {
   await page.locator('#mainNav [data-view="library"]').click();
   await page.locator('#heroSample').click();
   await page.locator('#presentationViewer').waitFor({ state: 'visible', timeout: 10000 });
-  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 32');
+  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 25');
   // The counter is intentionally visually hidden on narrow phones to preserve slide space.
-  assert.equal((await page.locator('#viewerSlideCaption').textContent()).trim(), '01 / 32');
+  assert.equal((await page.locator('#viewerSlideCaption').textContent()).trim(), '01 / 25');
   assert.equal(await page.evaluate(() => Boolean(document.querySelector('script[data-biosphere-three]'))), false,
     'The 3D library must not load before a user selects a 3D scene.');
   const stage = page.locator('#slideStage');
@@ -60,9 +60,9 @@ try {
   assert.ok(stageBounds && stageBounds.width > 0 && stageBounds.height > 0, 'The mobile slide stage must have a measurable tap surface.');
   // Side arrows are hidden on phones by design; use the tap-on-either-half interaction instead.
   await stage.click({ position: { x: Math.round(stageBounds.width * 0.84), y: Math.round(stageBounds.height * 0.5) } });
-  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '02 / 32');
+  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '02 / 25');
   await stage.click({ position: { x: Math.round(stageBounds.width * 0.16), y: Math.round(stageBounds.height * 0.5) } });
-  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 32');
+  await page.waitForFunction(() => document.querySelector('#viewerSlideCaption')?.textContent?.trim() === '01 / 25');
   const presentationWidth = await page.evaluate(() => ({
     viewport: window.innerWidth,
     document: document.documentElement.scrollWidth,
@@ -71,14 +71,33 @@ try {
     `Horizontal overflow in mobile presentation: ${JSON.stringify(presentationWidth)}`);
   await page.screenshot({ path: `${outputDir}/mobile-presenter.png` });
 
+  // Every disease has a clickable multiple-choice case quiz; verify instant feedback and lockout.
+  let caseAnswer = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .case-quiz-answer:visible');
+  for (let index = 0; index < 25 && await caseAnswer.count() === 0; index += 1) {
+    await page.keyboard.press('ArrowRight');
+    await page.waitForTimeout(90);
+    caseAnswer = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .case-quiz-answer:visible');
+  }
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .classroom-prompt[data-case-correct-index]').count(), 1,
+    'Reached a disease slide with an interactive case question.');
+  assert.equal(await caseAnswer.count(), 4, 'Each disease case should expose four answer choices.');
+  await caseAnswer.nth(1).click();
+  await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .classroom-answer:not([hidden])').waitFor({ state: 'visible' });
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .classroom-prompt').getAttribute('data-case-answered'), 'true');
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .case-quiz-answer.is-correct').count(), 1);
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .case-quiz-answer:disabled').count(), 4,
+    'Case answers must be locked after the first choice.');
+  await page.screenshot({ path: `${outputDir}/mobile-disease-case-quiz.png` });
+  await page.keyboard.press('ArrowRight');
+
   // Reach a curated 3D scene, then verify the image/model switch exposes the 3D panel.
   let modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) button[data-media-mode="model"]:visible');
-  for (let index = 0; index < 32 && await modelToggle.count() === 0; index += 1) {
+  for (let index = 0; index < 25 && await modelToggle.count() === 0; index += 1) {
     const unansweredQuizChoices = page.locator('#slideStage [data-quiz-answer]:not([disabled])');
     if (await unansweredQuizChoices.count() > 0) {
       // Answer each question so keyboard navigation can progress through interactive lesson slides.
       await unansweredQuizChoices.first().click();
-    } else if ((await page.locator('#viewerSlideCaption').textContent()).trim() === '32 / 32') {
+    } else if ((await page.locator('#viewerSlideCaption').textContent()).trim() === '25 / 25') {
       break;
     }
     await page.keyboard.press('ArrowRight');
