@@ -1639,9 +1639,9 @@
     const previousPage = stage.querySelector(':scope > .slide-page:not(.slide-transition-ghost)');
     const storyGroup = String(slide.storyGroup || slide.palette || 'foundation');
     const previousStoryGroup = previousPage?.dataset.storyGroup || previousPage?.dataset.palette || '';
-    const motionBridge = !animate || direction === 'reveal' || !previousPage
-      ? 'opening'
-      : (previousStoryGroup === storyGroup ? 'continuity' : 'chapter');
+    const motionBridge = !animate || direction === 'reveal'
+      ? 'instant'
+      : (!previousPage ? 'opening' : (previousStoryGroup === storyGroup ? 'continuity' : 'chapter'));
     const motionPreset = slide.motionPreset || (motionBridge === 'continuity' ? 'depth' : 'rise');
 
     // The previous page will be removed immediately by the stage replacement below.
