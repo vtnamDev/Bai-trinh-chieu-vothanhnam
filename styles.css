@@ -2459,3 +2459,132 @@ html[data-performance-mode="smooth"] .photo-frame.video-playing .photo-still{opa
     pointer-events:auto!important;
   }
 }
+
+
+/* BioSphere content-rich / low-jank pass · 2026-10-15 */
+#presentationViewer .slide-page{
+  contain:layout paint;
+  isolation:isolate;
+}
+#presentationViewer .slide-content{
+  min-width:0;
+}
+#presentationViewer .slide-points{
+  gap:clamp(7px,.85vh,11px);
+  margin-top:clamp(14px,1.9vh,24px);
+}
+#presentationViewer .slide-point{
+  padding:clamp(9px,.8vw,13px) clamp(11px,1vw,16px);
+  line-height:1.48;
+  background:linear-gradient(120deg,#ffffff09,#ffffff04);
+  border-color:#d9fff019;
+}
+#presentationViewer .slide-point b{
+  flex:0 0 auto;
+  padding-top:2px;
+}
+#presentationViewer .slide-transition-ghost{
+  contain:layout paint;
+  pointer-events:none;
+}
+#presentationViewer .slide-transition-ghost *{
+  animation-play-state:paused!important;
+  caret-color:transparent!important;
+}
+#presentationViewer .case-quiz-options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:11px;
+}
+#presentationViewer .case-quiz-answer{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  width:100%;
+  min-width:0;
+  min-height:42px;
+  padding:9px 10px;
+  text-align:left;
+  color:#e7f6ee;
+  font:inherit;
+  font-size:clamp(11px,.95vw,14px);
+  line-height:1.4;
+  border:1px solid #d9fff025;
+  border-radius:11px;
+  background:linear-gradient(135deg,#ffffff0b,#a8ffdf05);
+  box-shadow:inset 0 1px #ffffff0b;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+#presentationViewer .case-quiz-answer:not(:disabled):hover{
+  transform:translateY(-1px);
+  border-color:color-mix(in srgb,var(--stage-accent,#8be1bd) 65%,#ffffff22);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--stage-accent,#8be1bd) 12%,#0c1a1b),#ffffff08);
+}
+#presentationViewer .case-quiz-answer:focus-visible{
+  outline:2px solid var(--stage-accent,#8be1bd);
+  outline-offset:2px;
+}
+#presentationViewer .case-quiz-answer:disabled{
+  cursor:default;
+  opacity:1;
+}
+#presentationViewer .case-quiz-letter{
+  display:grid;
+  place-items:center;
+  flex:0 0 21px;
+  width:21px;
+  height:21px;
+  border-radius:7px;
+  font-size:10px;
+  font-weight:850;
+  color:#a5f1cb;
+  background:#94e7ba18;
+  border:1px solid #94e7ba33;
+}
+#presentationViewer .case-quiz-answer.is-correct{
+  border-color:#73e0ad9c;
+  background:linear-gradient(120deg,#38b77b2b,#a5f4cc10);
+  box-shadow:inset 0 0 0 1px #73e0ad1b;
+}
+#presentationViewer .case-quiz-answer.is-correct .case-quiz-letter{
+  color:#06180f;background:#9beac0;border-color:#9beac0;
+}
+#presentationViewer .case-quiz-answer.is-wrong{
+  border-color:#ff9c9c99;
+  background:linear-gradient(120deg,#e9646423,#ffffff05);
+}
+#presentationViewer .case-quiz-answer.is-wrong .case-quiz-letter{
+  color:#351010;background:#ffb1b1;border-color:#ffb1b1;
+}
+#presentationViewer .classroom-answer[hidden]{
+  display:none!important;
+}
+#presentationViewer .classroom-answer:not([hidden]){
+  animation:case-answer-in .28s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes case-answer-in{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* Keep the cinematic layers; avoid replaying all child animations in the outgoing frame. */
+#presentationViewer .slide-transition-ghost .photo-frame,
+#presentationViewer .slide-transition-ghost .photo-scene{
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+@media(max-width:700px){
+  #presentationViewer .slide-points{gap:7px;margin-top:13px}
+  #presentationViewer .slide-point{padding:9px 10px;font-size:clamp(12px,3.2vw,14px);line-height:1.43}
+  #presentationViewer .case-quiz-options{gap:6px;margin-top:9px}
+  #presentationViewer .case-quiz-answer{padding:8px;font-size:11px;gap:6px;border-radius:9px}
+  #presentationViewer .case-quiz-letter{flex-basis:19px;width:19px;height:19px}
+}
+@media(prefers-reduced-motion:reduce){
+  #presentationViewer .case-quiz-answer,
+  #presentationViewer .classroom-answer:not([hidden]){
+    transition:none!important;animation:none!important;transform:none!important;
+  }
+}
