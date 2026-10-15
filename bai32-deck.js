@@ -179,7 +179,18 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageCredit": "Suyash.dwivedi · Wikimedia Commons · CC BY-SA 4.0",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Dental_Caries_Cavity_1.JPG",
       "palette": "coral",
-      "supportImages": [],
+      "supportImages": [
+        {
+          "url": "https://images.pexels.com/photos/7979784/pexels-photo-7979784.jpeg?auto=compress&cs=tinysrgb&w=1600",
+          "sourceUrl": "https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/",
+          "alt": "Chăm sóc răng miệng hằng ngày"
+        },
+        {
+          "url": "https://images.pexels.com/photos/7979784/pexels-photo-7979784.jpeg?auto=compress&cs=tinysrgb&w=700",
+          "sourceUrl": "https://images.pexels.com/photos/7979784/pexels-photo-7979784.jpeg?auto=compress&cs=tinysrgb&w=700",
+          "alt": "Trẻ chải răng"
+        }
+      ],
       "interactiveQuiz": false,
       "video": "https://videos.pexels.com/video-files/5099678/5099678-hd_1920_1080_30fps.mp4",
       "videoProvider": "Pexels",
@@ -307,7 +318,14 @@ window.BIOSPHERE_BAI32_SEED = {
           "Niêm mạc tổn thương",
           "Khám và đánh giá"
         ]
-      }
+      },
+      "supportImages": [
+        {
+          "url": "https://images.pexels.com/photos/5215008/pexels-photo-5215008.jpeg?auto=compress&cs=tinysrgb&w=1600",
+          "sourceUrl": "https://www.pexels.com/photo/woman-consulting-a-doctor-5215008/",
+          "alt": "Trao đổi với nhân viên y tế"
+        }
+      ]
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -360,7 +378,14 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-explaining-the-medical-condition-to-patient-13040/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Bác sĩ giải thích tình trạng sức khỏe cho bệnh nhân"
+      "videoAlt": "Bác sĩ giải thích tình trạng sức khỏe cho bệnh nhân",
+      "supportImages": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gastric_Ulcer_Antrum.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg",
+          "alt": "Ảnh nội soi minh họa ổ loét dạ dày"
+        }
+      ]
     },
     {
       "kicker": "TÌNH HUỐNG 02 · DẠ DÀY – TÁ TRÀNG",
@@ -418,7 +443,18 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageCredit": "Unsplash · ảnh nước uống",
       "imageSourceUrl": "https://unsplash.com/license",
       "palette": "orange",
-      "supportImages": [],
+      "supportImages": [
+        {
+          "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+          "sourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
+          "alt": "Rửa tay bằng xà phòng"
+        },
+        {
+          "url": "https://suckhoedoisong.qltns.mediacdn.vn/Images/thuha/2021/07/16/pha%20osesol%20voi%20luong%20nuoc%20vua%20dung%20huong%20dan.jpg",
+          "sourceUrl": "https://suckhoedoisong.vn/",
+          "alt": "Pha dung dịch bù nước theo hướng dẫn"
+        }
+      ],
       "interactiveQuiz": false,
       "video": "https://videos.pexels.com/video-files/4731190/4731190-hd_1080_1920_30fps.mp4",
       "video4k": "https://videos.pexels.com/video-files/9058198/9058198-uhd_3840_2160_25fps.mp4",
@@ -459,10 +495,10 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "NGUỒN: WHO · DIARRHOEAL DISEASE",
       "visual": "watercare",
-      "image": "https://suckhoedoisong.qltns.mediacdn.vn/Images/thuha/2021/07/16/pha%20osesol%20voi%20luong%20nuoc%20vua%20dung%20huong%20dan.jpg",
-      "imageAlt": "Rửa tay bằng xà phòng dưới vòi nước",
-      "imageCredit": "Báo Sức khỏe & Đời sống",
-      "imageSourceUrl": "https://suckhoedoisong.vn/cach-bu-dien-giai-dung-cho-tre-khi-bi-tieu-chay-cap-169197419.htm",
+      "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "imageAlt": "Rửa tay bằng xà phòng dưới vòi nước để ngăn mầm bệnh.",
+      "imageCredit": "Ivan S / Pexels · Free to use",
+      "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
       "palette": "lime",
       "video": "https://videos.pexels.com/video-files/4333840/4333840-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
@@ -471,7 +507,19 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Rửa tay với xà phòng ở bồn rửa"
+      "videoAlt": "Rửa tay với xà phòng ở bồn rửa",
+      "supportImages": [
+        {
+          "url": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85",
+          "sourceUrl": "https://unsplash.com/license",
+          "alt": "Thực phẩm đa dạng được làm sạch và chế biến an toàn"
+        },
+        {
+          "url": "https://suckhoedoisong.qltns.mediacdn.vn/Images/thuha/2021/07/16/pha%20osesol%20voi%20luong%20nuoc%20vua%20dung%20huong%20dan.jpg",
+          "sourceUrl": "https://suckhoedoisong.vn/",
+          "alt": "Minh họa pha ORS đúng hướng dẫn"
+        }
+      ]
     },
     {
       "kicker": "TÌNH HUỐNG 03 · TIÊU CHẢY",
@@ -489,7 +537,18 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageCredit": "Báo Sức khỏe & Đời sống · hình minh họa",
       "imageSourceUrl": "https://suckhoedoisong.vn/",
       "palette": "teal",
-      "supportImages": [],
+      "supportImages": [
+        {
+          "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+          "sourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
+          "alt": "Rửa tay bằng xà phòng"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=1600&q=85",
+          "sourceUrl": "https://unsplash.com/license",
+          "alt": "Nước uống an toàn"
+        }
+      ],
       "interactiveQuiz": false,
       "video": null,
       "video4k": null,
@@ -529,7 +588,18 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageCredit": "CDC DPDx · Ascaris life cycle · hình ảnh giáo dục y tế",
       "imageSourceUrl": "https://www.cdc.gov/dpdx/ascariasis/",
       "palette": "gold",
-      "supportImages": [],
+      "supportImages": [
+        {
+          "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+          "sourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
+          "alt": "Rửa tay trước khi ăn"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85",
+          "sourceUrl": "https://unsplash.com/license",
+          "alt": "Thực phẩm cần được làm sạch và chế biến an toàn"
+        }
+      ],
       "interactiveQuiz": false,
       "video": null,
       "video4k": null,
@@ -630,7 +700,18 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFit": "contain",
       "videoAlt": null,
       "imageFallback": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
-      "supportImages": [],
+      "supportImages": [
+        {
+          "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+          "sourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
+          "alt": "Vệ sinh tay giúp giảm nguy cơ lây truyền"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85",
+          "sourceUrl": "https://unsplash.com/license",
+          "alt": "Thực phẩm an toàn giúp giảm nguy cơ lây virus qua đường phân–miệng"
+        }
+      ],
       "interactiveQuiz": false,
       "model3D": "liver",
       "modelTitle": "Mô hình gan",
@@ -662,12 +743,23 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "NGUỒN BỔ SUNG · WHO: HEPATITIS A",
       "visual": "fiber",
-      "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Rửa tay với xà phòng; minh họa một phần của vệ sinh giúp giảm lây truyền qua đường phân–miệng.",
-      "imageCredit": "Ivan S / Pexels · Free to use",
-      "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
+      "image": "https://images.pexels.com/photos/3992806/pexels-photo-3992806.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "imageAlt": "Bác sĩ thăm khám và tư vấn, minh họa thời điểm cần tìm đánh giá y tế.",
+      "imageCredit": "CDC Images / Pexels · Free to use",
+      "imageSourceUrl": "https://www.pexels.com/photo/woman-having-a-check-up-3992806/",
       "palette": "teal",
-      "supportImages": [],
+      "supportImages": [
+        {
+          "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+          "sourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
+          "alt": "Vệ sinh tay đúng cách"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85",
+          "sourceUrl": "https://unsplash.com/license",
+          "alt": "Chọn thực phẩm an toàn"
+        }
+      ],
       "interactiveQuiz": false,
       "video": null,
       "videoProvider": null,
