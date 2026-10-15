@@ -81,12 +81,13 @@
     const lowPower = (memory > 0 && memory <= 4) || (cores > 0 && cores <= 4);
     const lite = performanceMode === 'smooth' ||
       (performanceMode === 'auto' && (slowConnection || lowPower));
+    const highCapability = memory >= 8 && cores >= 6;
     const allowVideo = performanceMode !== 'smooth' && online && !saveData &&
       !['slow-2g', '2g', '3g'].includes(effectiveType) &&
       motionEnabled && !reducedMotion.matches &&
-      (performanceMode === 'cinema' || !lowPower);
+      (performanceMode === 'cinema' || (highCapability && !lowPower));
     const maxPixelRatio = lite ? 1 : (performanceMode === 'cinema' ? 1.5 : 1.25);
-    return { connection, effectiveType, online, saveData, slowConnection, memory, cores, lowPower, lite, allowVideo, maxPixelRatio };
+    return { connection, effectiveType, online, saveData, slowConnection, memory, cores, highCapability, lowPower, lite, allowVideo, maxPixelRatio };
   }
 
   function updatePerformanceUI() {
@@ -177,6 +178,16 @@
           question.options.every(option => typeof option === 'string') &&
           Number.isInteger(question.correctIndex) && question.correctIndex >= 0 && question.correctIndex < question.options.length &&
           typeof question.explanation === 'string'
+        )) return false;
+      }
+      if (slide.classroomPrompt != null) {
+        const prompt = slide.classroomPrompt;
+        if (!prompt || typeof prompt !== 'object' || Array.isArray(prompt) ||
+            !['scenario', 'question', 'answer', 'explanation'].every(key => typeof prompt[key] === 'string')) return false;
+        if (prompt.options != null && (
+          !Array.isArray(prompt.options) || prompt.options.length < 2 || prompt.options.length > 4 ||
+          !prompt.options.every(option => typeof option === 'string') ||
+          !Number.isInteger(prompt.correctIndex) || prompt.correctIndex < 0 || prompt.correctIndex >= prompt.options.length
         )) return false;
       }
       return true;
@@ -981,8 +992,8 @@
       ? slide.supportImages.filter(item => item && typeof item === 'object' && !Array.isArray(item)).slice(0, 2)
       : [];
     const videoMarkup = selectedVideo
-      ? '<video class="live-video" muted playsinline autoplay loop preload="metadata" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
-          '<source src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
+      ? '<video class="live-video" muted playsinline autoplay loop preload="none" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
+          '<source data-src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
         '</video>'
       : '';
     const supportMarkup = supports.length ? '<div class="photo-support-stack">' + supports.map((item, i) =>
@@ -1059,6 +1070,14 @@
         }
       };
       video.addEventListener('loadeddata', startVideo, { once: true });
+      // The poster image paints first. Attach the MP4 only after the active slide is eligible for motion.
+      if (canShowVideo()) {
+        const deferredSource = video.querySelector('source[data-src]');
+        if (deferredSource && !deferredSource.getAttribute('src')) {
+          deferredSource.setAttribute('src', deferredSource.dataset.src || '');
+          video.load();
+        }
+      }
       startVideo();
     });
   }
@@ -1300,7 +1319,7 @@
     canvas.height = Math.round(atmosphereHeight * atmosphereDpr);
     atmosphereCanvasContext.setTransform(atmosphereDpr, 0, 0, atmosphereDpr, 0, 0);
     const mobile = window.matchMedia('(max-width: 650px)').matches;
-    const count = profile.lite ? 0 : performanceMode === 'cinema' ? (mobile ? 32 : 68) : (mobile ? 18 : 42);
+    const count = profile.lite ? 0 : performanceMode === 'cinema' ? (mobile ? 22 : 38) : (mobile ? 12 : 24);
     atmosphereParticles = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * atmosphereWidth,
       y: Math.random() * atmosphereHeight,
@@ -1341,34 +1360,71 @@
     context.clearRect(0, 0, atmosphereWidth, atmosphereHeight);
     const time = timestamp * 0.00025;
     const mobile = atmosphereWidth < 700;
-    const linkDistance = mobile ? 74 : 116;
-    for (let i = 0; i < atmosphereParticles.length; i++) {
-      const particle = atmosphereParticles[i];
+    const linkDistance = mobile ? 74 : 108;
+    const linkDistanceSquared = linkDistance * linkDistance;
+    const lineBuckets = Array.from({ length: 6 }, () => []);
+    const dotBuckets = [[], []];
+
+    // Update all particles before measuring edges; keep motion smooth with fewer, batched canvas calls.
+    for (const particle of atmosphereParticles) {
       particle.x += particle.vx + (atmospherePointer.x * atmosphereWidth - particle.x) * 0.000008;
       particle.y += particle.vy + Math.sin(time + particle.phase) * 0.12;
       if (particle.x < -8) particle.x = atmosphereWidth + 8;
       if (particle.x > atmosphereWidth + 8) particle.x = -8;
       if (particle.y < -8) particle.y = atmosphereHeight + 8;
       if (particle.y > atmosphereHeight + 8) particle.y = -8;
+    }
+
+    for (let i = 0; i < atmosphereParticles.length; i++) {
+      const particle = atmosphereParticles[i];
       for (let j = i + 1; j < atmosphereParticles.length; j++) {
         const other = atmosphereParticles[j];
         const dx = particle.x - other.x;
         const dy = particle.y - other.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < linkDistance) {
-          context.strokeStyle = 'rgba(' + pair[(i + j) % 2] + ',' + ((1 - distance / linkDistance) * 0.14).toFixed(3) + ')';
-          context.lineWidth = 0.6;
-          context.beginPath();
-          context.moveTo(particle.x, particle.y);
-          context.lineTo(other.x, other.y);
-          context.stroke();
-        }
+        const distanceSquared = dx * dx + dy * dy;
+        if (distanceSquared >= linkDistanceSquared) continue;
+        const distance = Math.sqrt(distanceSquared);
+        const alpha = 1 - distance / linkDistance;
+        const band = alpha > 0.66 ? 2 : alpha > 0.33 ? 1 : 0;
+        const bucket = lineBuckets[((i + j) % 2) * 3 + band];
+        bucket.push(particle.x, particle.y, other.x, other.y);
       }
+      dotBuckets[particle.index % 2].push(particle);
+    }
+
+    const alphaValues = [0.035, 0.075, 0.12];
+    context.lineWidth = 0.6;
+    for (let hue = 0; hue < 2; hue++) {
+      for (let band = 0; band < 3; band++) {
+        const coords = lineBuckets[hue * 3 + band];
+        if (!coords.length) continue;
+        context.beginPath();
+        for (let i = 0; i < coords.length; i += 4) {
+          context.moveTo(coords[i], coords[i + 1]);
+          context.lineTo(coords[i + 2], coords[i + 3]);
+        }
+        context.strokeStyle = 'rgba(' + pair[hue] + ',' + alphaValues[band] + ')';
+        context.stroke();
+      }
+    }
+
+    // Batch particles by tone to avoid a fill operation per dot.
+    for (let hue = 0; hue < 2; hue++) {
+      const dots = dotBuckets[hue];
+      if (!dots.length) continue;
       context.beginPath();
-      context.fillStyle = 'rgba(' + pair[particle.index % 2] + ',' + (0.38 + Math.sin(time * 3 + particle.phase) * 0.12).toFixed(3) + ')';
-      context.arc(particle.x + (atmospherePointer.x - 0.5) * 5, particle.y + (atmospherePointer.y - 0.5) * 5, particle.r, 0, Math.PI * 2);
+      for (const particle of dots) {
+        const pulse = 0.9 + Math.sin(time * 3 + particle.phase) * 0.1;
+        const radius = particle.r * pulse;
+        const x = particle.x + (atmospherePointer.x - 0.5) * 5;
+        const y = particle.y + (atmospherePointer.y - 0.5) * 5;
+        context.moveTo(x + radius, y);
+        context.arc(x, y, radius, 0, Math.PI * 2);
+      }
+      context.fillStyle = 'rgba(' + pair[hue] + ',0.42)';
       context.fill();
     }
+
     atmosphereFrame = window.requestAnimationFrame(drawStageAtmosphere);
   }
 
@@ -1405,6 +1461,8 @@
 
     if (animate && motionEnabled && previousPage && direction !== 'reveal') {
       ghost = previousPage.cloneNode(true);
+      // Preserve the cinematic outgoing frame, but don't clone live media or GPU-backed layers.
+      ghost.querySelectorAll('video, canvas, model-viewer, .anatomy3d-panel, .photo-support-stack, .photo-scanline').forEach(node => node.remove());
       ghost.classList.add('slide-transition-ghost');
       ghost.dataset.direction = direction;
       ghost.dataset.preset = motionPreset;
@@ -1423,13 +1481,19 @@
       '</div>'
       : '';
     const prompt = slide.classroomPrompt;
+    const hasCaseQuiz = Array.isArray(prompt?.options) && prompt.options.length >= 2;
+    const caseOptionsHtml = hasCaseQuiz
+      ? '<div class="case-quiz-options" role="group" aria-label="Chọn đáp án cho tình huống">' + prompt.options.map((option, i) =>
+          '<button type="button" class="case-quiz-answer" data-case-answer="' + i + '" aria-pressed="false"><span class="case-quiz-letter">' + String.fromCharCode(65 + i) + '</span><span>' + escapeHTML(option) + '</span></button>'
+        ).join('') + '</div>'
+      : '<button type="button" class="reveal-answer-btn" data-reveal-answer aria-expanded="false">Hiện đáp án gợi ý <span aria-hidden="true">＋</span></button>';
     const promptHtml = prompt
-      ? '<section class="classroom-prompt" aria-label="Tình huống thảo luận">' +
-        '<div class="classroom-prompt-kicker"><span>THẢO LUẬN CÙNG LỚP</span><b>SUY LUẬN · KHÔNG TỰ CHẨN ĐOÁN</b></div>' +
+      ? '<section class="classroom-prompt" aria-label="Tình huống thảo luận"' + (hasCaseQuiz ? ' data-case-correct-index="' + prompt.correctIndex + '"' : '') + '>' +
+        '<div class="classroom-prompt-kicker"><span>' + (hasCaseQuiz ? 'CÂU HỎI TƯƠNG TÁC' : 'THẢO LUẬN CÙNG LỚP') + '</span><b>SUY LUẬN · KHÔNG TỰ CHẨN ĐOÁN</b></div>' +
         '<p class="classroom-scenario">' + escapeHTML(prompt.scenario) + '</p>' +
         '<h2 class="classroom-question">' + escapeHTML(prompt.question) + '</h2>' +
-        '<button type="button" class="reveal-answer-btn" data-reveal-answer aria-expanded="false">Hiện đáp án gợi ý <span aria-hidden="true">＋</span></button>' +
-        '<div class="classroom-answer" hidden><strong>Gợi ý trả lời</strong><p>' + escapeHTML(prompt.answer) + '</p><small>' + escapeHTML(prompt.explanation) + '</small></div>' +
+        caseOptionsHtml +
+        '<div class="classroom-answer"' + (hasCaseQuiz ? ' hidden' : '') + '><strong class="case-quiz-result">Gợi ý trả lời</strong><p>' + escapeHTML(prompt.answer) + '</p><small>' + escapeHTML(prompt.explanation) + '</small></div>' +
       '</section>'
       : '';
     const sourceHtml = slide.note && !slide.interactiveQuiz ? '<div class="slide-source">' + escapeHTML(slide.note) + '</div>' : '';
@@ -1445,6 +1509,13 @@
     stage.dataset.preset = motionPreset;
     stage.dataset.slideIndex = String(slideIndex + 1);
     stage.dataset.slideCount = String(slides.length);
+    // Stop outgoing video before replacing the slide; otherwise decoders may overlap during transitions.
+    $('.live-video', stage).forEach(video => {
+      video.pause();
+      video.querySelectorAll('source').forEach(source => source.removeAttribute('src'));
+      video.removeAttribute('src');
+      try { video.load(); } catch { /* ignore media cleanup errors */ }
+    });
     stage.innerHTML =
       '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
         '<div class="slide-layout">' +
@@ -1745,6 +1816,25 @@
       return;
     }
     if (target.id === 'viewerFinalContents') { openContents(); return; }
+    if (target.matches('[data-case-answer]')) {
+      const panel = target.closest('.classroom-prompt');
+      if (!panel || panel.dataset.caseAnswered === 'true') return;
+      const selected = Number(target.dataset.caseAnswer);
+      const correct = Number(panel.dataset.caseCorrectIndex);
+      if (!Number.isInteger(selected) || !Number.isInteger(correct)) return;
+      panel.dataset.caseAnswered = 'true';
+      panel.querySelectorAll('[data-case-answer]').forEach((button, index) => {
+        button.disabled = true;
+        button.setAttribute('aria-pressed', String(index === selected));
+        if (index === correct) button.classList.add('is-correct');
+        if (index === selected && selected !== correct) button.classList.add('is-wrong');
+      });
+      const feedback = panel.querySelector('.classroom-answer');
+      const label = feedback?.querySelector('.case-quiz-result');
+      if (label) label.textContent = selected === correct ? 'Chính xác — em đã chọn đúng!' : 'Chưa đúng — cùng ghi nhớ đáp án';
+      if (feedback) feedback.hidden = false;
+      return;
+    }
     if (target.matches('[data-reveal-answer]')) {
       const panel = target.closest('.classroom-prompt');
       const answer = panel?.querySelector('.classroom-answer');
