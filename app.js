@@ -997,6 +997,140 @@
     '</div>';
   }
 
+  function renderSlideVisualBoard(slide) {
+    const visual = String(slide.visual || 'editorial');
+    const title = String(slide.title || '');
+    let label = 'BẢN ĐỒ KIẾN THỨC';
+    let heading = 'Nhìn nhanh — hiểu sâu';
+    let subline = 'Các ý chính được nối thành một hình để dễ ghi nhớ.';
+    let nodes = [];
+    let mode = 'cards';
+
+    if (slide.flowVisual && Array.isArray(slide.flowVisual.steps)) {
+      label = slide.flowVisual.label || 'QUY TRÌNH KHOA HỌC';
+      heading = title;
+      subline = 'Theo dõi từng bước theo thứ tự, rồi liên hệ với phần giải thích.';
+      nodes = slide.flowVisual.steps.map((text, i) => ({ label: text, detail: ['Điểm khởi đầu', 'Quá trình trung gian', 'Kết quả hoặc việc cần làm'][i] || '' }));
+      mode = 'process';
+    } else if (visual === 'digestive' || /5 bệnh liên quan đến hệ tiêu hóa/i.test(title)) {
+      label = 'LỘ TRÌNH BÀI HỌC'; heading = 'Năm bệnh · năm cơ chế khác nhau'; subline = 'Chọn góc nhìn đúng: nguyên nhân, dấu hiệu, phòng ngừa và thời điểm cần trợ giúp.';
+      nodes = [
+        {label:'Sâu răng',detail:'Mảng bám · axit'},
+        {label:'Loét dạ dày',detail:'H. pylori · một số thuốc'},
+        {label:'Tiêu chảy',detail:'Mất nước'},
+        {label:'Nhiễm giun',detail:'Đường lây qua môi trường'},
+        {label:'Viêm gan A',detail:'Virus HAV'}
+      ];
+      mode = 'disease-map';
+    } else if (visual === 'pathway' || /hành trình của thức ăn/i.test(title)) {
+      label = 'SƠ ĐỒ HỆ TIÊU HÓA'; heading = 'Đường đi của thức ăn'; subline = 'Mỗi cơ quan làm một việc; gan, túi mật và tuyến tụy hỗ trợ bằng dịch tiêu hóa.';
+      nodes = [
+        {label:'Miệng',detail:'Nhai · nước bọt'},
+        {label:'Thực quản',detail:'Đưa thức ăn xuống'},
+        {label:'Dạ dày',detail:'Nhào trộn'},
+        {label:'Ruột non',detail:'Tiêu hóa · hấp thụ'},
+        {label:'Ruột già',detail:'Hấp thụ thêm nước'}
+      ];
+      mode = 'route';
+    } else if (visual === 'balance') {
+      label = 'DINH DƯỠNG CÂN BẰNG'; heading = 'Bốn vai trò cần nhớ'; subline = 'Ăn đa dạng để cơ thể có năng lượng, nguyên liệu xây dựng và chất cần thiết để điều hòa hoạt động.';
+      nodes = [
+        {label:'Năng lượng',detail:'Carbohydrate · chất béo'},
+        {label:'Xây dựng',detail:'Protein · tăng trưởng'},
+        {label:'Điều hòa',detail:'Vitamin · chất khoáng'},
+        {label:'Hỗ trợ',detail:'Nước · chất xơ'}
+      ];
+      mode = 'cards';
+    } else if (visual === 'overview' || /năm bệnh — năm góc nhìn/i.test(title)) {
+      label = 'BẢN ĐỒ TỔNG QUAN'; heading = 'Một mục tiêu chung: phòng bệnh'; subline = 'Nguyên nhân khác nhau, nhưng vệ sinh và quyết định đúng lúc đều quan trọng.';
+      nodes = [
+        {label:'Răng miệng',detail:'Giảm mảng bám'},
+        {label:'Dạ dày',detail:'Không tự điều trị'},
+        {label:'Tiêu chảy',detail:'Chú ý mất nước'},
+        {label:'Giun đường ruột',detail:'Cắt đường lây'},
+        {label:'Viêm gan A',detail:'Nước sạch · vệ sinh'}
+      ];
+      mode = 'mind-map';
+    } else if (visual === 'comparison') {
+      label = 'SO SÁNH DẤU HIỆU'; heading = 'Dấu hiệu là manh mối, không phải chẩn đoán'; subline = 'Nếu biểu hiện nặng hoặc kéo dài, báo người lớn và tìm đánh giá y tế.';
+      nodes = [
+        {label:'Sâu răng',detail:'Ê buốt · đau răng'},
+        {label:'Loét dạ dày',detail:'Đau bụng trên · dấu hiệu chảy máu rất nguy hiểm'},
+        {label:'Tiêu chảy',detail:'Phân lỏng · theo dõi mất nước'},
+        {label:'Nhiễm giun',detail:'Có thể ít dấu hiệu rõ'},
+        {label:'Viêm gan A',detail:'Vàng da · nước tiểu sẫm cần đánh giá'}
+      ];
+      mode = 'comparison';
+    } else if (visual === 'habits') {
+      label = 'BẢN ĐỒ THÓI QUEN'; heading = 'Sáu hành động nhỏ, lợi ích lâu dài'; subline = 'Chọn các hành động có thể duy trì hằng ngày; khi có dấu hiệu cảnh báo thì tìm trợ giúp.';
+      nodes = [
+        {label:'Rửa tay',detail:'Trước khi ăn · sau đi vệ sinh'},
+        {label:'Nước an toàn',detail:'Dùng nước sạch'},
+        {label:'Thực phẩm sạch',detail:'Rửa · nấu chín · bảo quản'},
+        {label:'Chăm sóc răng',detail:'Chải răng với fluoride'},
+        {label:'Ăn đa dạng',detail:'Rau quả · chất xơ · nước'},
+        {label:'Tìm trợ giúp',detail:'Báo người lớn khi đáng lo'}
+      ];
+      mode = 'cards';
+    } else if (visual === 'greeting' || visual === 'team') {
+      label = visual === 'team' ? 'HOẠT ĐỘNG NHÓM' : 'MỤC TIÊU HỌC TẬP';
+      heading = visual === 'team' ? 'Cùng suy luận, không chỉ đoán đáp án' : 'Ba việc sẽ làm trong bài học';
+      subline = 'Quan sát bằng chứng, chọn cách xử trí an toàn và giải thích lý do bằng kiến thức khoa học.';
+      nodes = visual === 'team'
+        ? [{label:'Đọc tình huống',detail:'Tìm chi tiết quan trọng'},{label:'Chọn đáp án',detail:'Cân nhắc mức độ an toàn'},{label:'Giải thích',detail:'Nêu bằng chứng'}]
+        : [{label:'Hiểu cơ chế',detail:'Nguyên nhân và đường lây'},{label:'Nhận biết',detail:'Dấu hiệu cần chú ý'},{label:'Phòng ngừa',detail:'Hành động hằng ngày'}];
+      mode = 'cards';
+    } else if (visual === 'sources' || /ba điều cần ghi nhớ/i.test(title)) {
+      label = 'SƠ ĐỒ GHI NHỚ'; heading = 'Hiểu đúng · phòng ngừa · tìm trợ giúp'; subline = 'Không tự chẩn đoán và không tự dùng kháng sinh; hãy dựa vào hướng dẫn y tế đáng tin cậy.';
+      nodes = [{label:'Hiểu đúng',detail:'Nguyên nhân khác nhau'},{label:'Phòng ngừa',detail:'Vệ sinh và thực phẩm an toàn'},{label:'Tìm trợ giúp',detail:'Báo người lớn khi đáng lo'}];
+      mode = 'cards';
+    } else if (visual === 'closing') {
+      label = 'MANG KIẾN THỨC VÀO ĐỜI SỐNG'; heading = 'Bắt đầu từ một việc hôm nay'; subline = 'Thói quen đều đặn, kiến thức đúng và việc tìm trợ giúp đúng lúc đi cùng nhau.';
+      nodes = [{label:'Làm sạch răng',detail:'Giảm nguy cơ sâu răng'},{label:'Rửa tay',detail:'Cắt một phần đường lây'},{label:'Dùng nước an toàn',detail:'Bảo vệ cả gia đình'}];
+      mode = 'cards';
+    } else if (visual === 'tooth' || visual === 'toothcare') {
+      label = 'CƠ CHẾ VÀ PHÒNG NGỪA'; heading = 'Bảo vệ men răng'; subline = 'Đồ có đường, mảng bám và axit liên quan đến quá trình mất khoáng.';
+      nodes = [{label:'Làm sạch mảng bám',detail:'Chải răng đúng cách'},{label:'Giảm tần suất đường',detail:'Ưu tiên nước lọc'},{label:'Dùng fluoride',detail:'Theo hướng dẫn phù hợp'},{label:'Khám nha khoa',detail:'Khi đau hoặc ê buốt lặp lại'}];
+      mode = 'cards';
+    } else if (visual === 'stomach' || visual === 'stomachcare') {
+      label = 'NGUYÊN NHÂN VÀ XỬ TRÍ'; heading = 'Không tự kết luận từ cơn đau'; subline = 'Cần đánh giá nguyên nhân, nhất là khi có dấu hiệu cảnh báo.';
+      nodes = [{label:'H. pylori',detail:'Một nguyên nhân thường gặp'},{label:'Một số NSAID',detail:'Có thể làm tăng nguy cơ loét'},{label:'Đánh giá y tế',detail:'Báo triệu chứng và thuốc đang dùng'}];
+      mode = 'cards';
+    } else if (/viêm gan A/i.test(title)) {
+      label = 'ĐƯỜNG LÂY VÀ DẤU HIỆU'; heading = 'Từ nguồn nhiễm đến gan'; subline = 'Đây là sơ đồ giải thích đường lây, không phải công cụ tự chẩn đoán.';
+      nodes = [{label:'Nước / thực phẩm bẩn',detail:'Có thể mang virus HAV'},{label:'Virus vào cơ thể',detail:'Đường phân–miệng'},{label:'Gan bị viêm',detail:'Vàng da cần được đánh giá'}];
+      mode = 'process';
+    } else if (/nhiễm giun/i.test(title) || visual === 'food' || visual === 'foodsafety' || visual === 'fiber') {
+      label = 'CẮT ĐƯỜNG LÂY'; heading = 'Tay sạch · nước sạch · thực phẩm an toàn'; subline = 'Không thể nhận biết mọi trường hợp bằng mắt; phòng ngừa cần được duy trì đều đặn.';
+      nodes = [{label:'Môi trường bẩn',detail:'Đất · nước · thực phẩm'},{label:'Mầm bệnh vào miệng',detail:'Qua tay hoặc thức ăn'},{label:'Giảm nguy cơ',detail:'Rửa tay · làm sạch thực phẩm'}];
+      mode = 'process';
+    } else if (visual === 'water' || visual === 'watercare') {
+      label = 'ƯU TIÊN AN TOÀN'; heading = 'Ngăn nhiễm trùng, chú ý mất nước'; subline = 'Pha dung dịch ORS đúng lượng nước hướng dẫn trên gói và tìm giúp đỡ khi có dấu hiệu nặng.';
+      nodes = [{label:'Nước an toàn',detail:'Rửa tay · thực phẩm sạch'},{label:'Theo dõi',detail:'Khát nhiều · tiểu ít · mệt'},{label:'Bù nước',detail:'ORS đúng hướng dẫn'}];
+      mode = 'process';
+    } else {
+      const points = Array.isArray(slide.points) ? slide.points.slice(0, 4) : [];
+      if (!points.length) return '';
+      label = 'Ý CHÍNH CẦN NHỚ'; heading = title; subline = 'Các ý chính được chia thành từng mảnh thông tin dễ quan sát.';
+      nodes = points.map((point, index) => ({label:'Ý '+String(index+1).padStart(2,'0'),detail:String(point)}));
+      mode = 'cards';
+    }
+
+    if (!nodes.length) return '';
+    const nodeHtml = nodes.map((node, index) =>
+      '<div class="editorial-diagram-node" style="--node-index:' + index + '">' +
+        '<span class="editorial-diagram-index">' + String(index + 1).padStart(2, '0') + '</span>' +
+        '<div><strong>' + escapeHTML(node.label) + '</strong>' +
+        (node.detail ? '<p>' + escapeHTML(node.detail) + '</p>' : '') + '</div>' +
+      '</div>'
+    ).join('');
+    return '<section class="editorial-diagram editorial-diagram--' + mode + '" aria-label="' + escapeHTML(label) + '" data-diagram="' + mode + '">' +
+      '<div class="editorial-diagram-heading"><span>' + escapeHTML(label) + '</span><h2>' + escapeHTML(heading) + '</h2>' +
+      (subline ? '<p>' + escapeHTML(subline) + '</p>' : '') + '</div>' +
+      '<div class="editorial-diagram-nodes">' + nodeHtml + '</div>' +
+    '</section>';
+  }
+
   function renderPhoto(slide) {
     const fallback = optimizeImageUrl(safeHttpUrl(slide.imageFallback, 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85'));
     const url = optimizeImageUrl(safeHttpUrl(slide.image || ''));
@@ -1024,7 +1158,7 @@
     const supports = Array.isArray(slide.supportImages)
       ? slide.supportImages.filter(item => item && typeof item === 'object' && !Array.isArray(item)).slice(0, 2)
       : [];
-    const flowMarkup = renderPhotoProcessFlow(slide.flowVisual);
+    const flowMarkup = '';
     const videoMarkup = selectedVideo
       ? '<video class="live-video" muted playsinline autoplay loop preload="none" poster="' + escapeHTML(url) + '" aria-hidden="true" data-video-provider="' + escapeHTML(provider) + '">' +
           '<source data-src="' + escapeHTML(selectedVideo) + '" type="video/mp4">' +
@@ -1045,7 +1179,6 @@
         '<div class="photo-topline"><span><i></i> ' + (selectedVideo ? 'VIDEO THỰC / ' + escapeHTML(provider.toUpperCase()) + (use4k ? ' · 4K' : '') : 'ẢNH THỰC / LIVE SOURCE') + '</span><b>' + photoNo + '</b></div>' +
         '<div class="photo-bottomline"><div class="photo-caption-copy"><span>' + (selectedVideo ? 'LIVE FOOTAGE · ' + escapeHTML(provider.toUpperCase()) : 'FIELD VISUAL') + '</span><strong>' + escapeHTML(mediaAlt) + '</strong></div>' +
         '<a class="photo-source-link" href="' + escapeHTML(source) + '" target="_blank" rel="noopener noreferrer" aria-label="Mở nguồn ' + (selectedVideo ? 'video' : 'ảnh') + ': ' + escapeHTML(credit) + '">' + (selectedVideo ? 'Nguồn video' : 'Nguồn ảnh') + ' <span>↗</span></a></div>' +
-        flowMarkup +
         '<div class="photo-focus-ring"></div>' +
       '</div>' + supportMarkup +
       '<div class="photo-credit-line"><span><i></i> ' + (selectedVideo ? 'VIDEO SOURCE / LICENSE' : 'SOURCE / ATTRIBUTION') + '</span><strong>' + escapeHTML(credit) + '</strong></div>' +
@@ -1552,12 +1685,13 @@
       try { video.load(); } catch { /* ignore media cleanup errors */ }
     });
     stage.innerHTML =
-      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
+      '<article class="slide-page" data-palette="' + escapeHTML(palette) + '" data-visual="' + escapeHTML(slide.visual || 'editorial') + '" data-direction="' + escapeHTML(direction) + '" data-preset="' + escapeHTML(motionPreset) + '">' +
         '<div class="slide-layout">' +
           '<section class="slide-content">' +
             '<div class="slide-kicker">' + escapeHTML(slide.kicker || 'BIOSPHERE / SLIDE') + '</div>' +
             '<h1 class="slide-title">' + escapeHTML(slide.title || currentDeck.title) + '</h1>' +
             '<p class="slide-subtitle">' + escapeHTML(slide.subtitle || 'Bổ sung sau khi kiểm chứng tài liệu.') + '</p>' +
+            renderSlideVisualBoard(slide) +
             (slide.model3D ? renderMediaModeBar('media-mode-bar--mobile') : '') +
             pointHtml + promptHtml + quizHtml + endingHtml + sourceHtml + linksHtml +
           '</section>' +
