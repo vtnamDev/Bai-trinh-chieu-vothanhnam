@@ -1,6 +1,6 @@
 # BioSphere Slides — Bài 32 KHTN 8
 
-Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có chế độ xem di động dự phòng. Bài mẫu hiện có 25 trang về **5 bệnh liên quan đến hệ tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
+Website trình chiếu khoa học có bố cục biên tập riêng cho máy tính/TV ngang và điện thoại dọc; nội dung cùng ảnh được thiết kế thành hai vùng độc lập. Bài mẫu hiện có 25 trang về **5 bệnh liên quan đến hệ tiêu hóa** theo chủ đề “Dinh dưỡng và tiêu hóa ở người” — SGK Khoa học Tự nhiên 8, tập 1, Bài 32.
 
 ## Cấu trúc
 - `index.html` — thư viện bài trình chiếu, mẫu, thiết lập và khung trình chiếu.
@@ -17,14 +17,14 @@ Website trình chiếu khoa học ưu tiên màn hình máy tính/TV 16:9, có c
 - Các video dẫn về trang nguồn để ghi công. Pexels và Mixkit có điều kiện sử dụng riêng; kiểm tra giấy phép của từng video trước khi tái sử dụng ngoài mục đích bài thuyết trình học tập.
 
 ## Responsive presentation
-- Desktop and TV use a full-width 16:9-style two-column layout with large text on the left and media on the right. Touch devices held in portrait mode force a full-screen portrait layout even if a browser requests a desktop viewport.
+- Màn hình ngang dùng hai cột rộng: nội dung và sơ đồ ở một bên, ảnh/video và ảnh phụ có ghi nhãn ở bên còn lại. Điện thoại dọc xếp ảnh ở trên và nội dung rộng ở dưới; ảnh không còn phủ sau chữ như nền toàn màn hình. Phần nội dung dài có thể cuộn trong vùng trình chiếu.
 - Real footage uses stable framing without continuous zoom/rotation; movement comes from the clip itself and the slide transition. True 4K masters only load on wide landscape screens (1800px+), never on coarse-pointer portrait screens; slower networks and data-saver mode prefer lower resolution.
 - Video descriptions are distinct from poster-image descriptions, so captions reflect the footage that actually plays.
-- Media mapping was reviewed by subject. A Wikimedia Commons digestive-system diagram is used for the anatomy slide; abdominal discomfort, dental care, drinking water, handwashing, food preparation and classroom clips are assigned to matching topics. Các cảnh hướng dẫn ORS, nhiễm giun và viêm gan A dùng tài nguyên tĩnh/video được chọn theo nội dung; ảnh dự phòng có thể thay đổi theo nguồn.
+- Hình được chọn theo chủ đề: sâu răng, tư vấn dạ dày, cốc nước, vệ sinh tay, thực phẩm an toàn, sơ đồ vòng đời giun và giải phẫu gan. Ảnh phụ hiển thị dạng thẻ có nhãn, mở nguồn riêng; sơ đồ y khoa được giữ tỉ lệ bằng `contain` khi cần đọc đầy đủ.
 
 ## Chuyển cảnh và hỏi đáp
 - Chuyển trang theo hướng tiến/lùi với bốn preset CSS riêng: wipe, depth, focus và rise; tiêu đề, phần mô tả, từng ý chính và ảnh có nhịp xuất hiện riêng.
-- Mỗi bệnh có một tình huống và câu hỏi ở cuối phần; đáp án gợi ý được giấu cho đến khi người thuyết trình bấm nút hiện đáp án.
+- Mỗi bệnh có một tình huống trắc nghiệm ngay trong phần bệnh; sau khi chọn, đáp án và giải thích được hiện để cả lớp thảo luận.
 - Các cảnh có mô hình giữ nguyên ảnh gốc làm chế độ mặc định; chỉ khi chọn **Mô hình 3D** mới tải trình xem và GLB. Mô hình tham chiếu gan/ruột non thuộc Human Reference Atlas / HuBMAP (CC BY 4.0); răng, dạ dày và giun dùng mô hình sơ đồ BioSphere. Nếu WebGL/CDN hoặc GLB không tải được, giao diện chuyển sang mô hình sơ đồ dự phòng; ảnh gốc vẫn luôn có thể mở lại.
 - Âm báo đúng/sai và chuyển slide có thể bật/tắt; chế độ giảm chuyển động vẫn được tôn trọng.
 
@@ -58,7 +58,7 @@ Website là bản tĩnh. Bài Bài 32 đã đóng gói cùng website nên liên 
 - NIDDK: [Peptic ulcers](https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes).
 
 ## Kiểm tra tự động
-Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript và bộ smoke test cho 25 slide, 5 câu hỏi tình huống có trắc nghiệm, 5 cảnh 3D, các câu hỏi tương tác, 130 URL tài nguyên hiện tại và cache key thống nhất. Các kiểm tra này bắt lỗi dữ liệu/cấu trúc cơ bản; chúng không thay thế kiểm thử trực quan trên trình duyệt hoặc kiểm tra khả dụng theo thời gian thực của máy chủ ảnh/video.
+Mỗi pull request hướng vào `main` chạy kiểm tra cú pháp JavaScript và bộ smoke test cho 25 slide, 5 câu hỏi tình huống có trắc nghiệm, 5 cảnh 3D, các câu hỏi tương tác, các URL tài nguyên trong deck và cache key thống nhất. Các kiểm tra này bắt lỗi dữ liệu/cấu trúc cơ bản; chúng không thay thế kiểm thử trực quan trên trình duyệt hoặc kiểm tra khả dụng theo thời gian thực của máy chủ ảnh/video.
 
 ## Deploy
 GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính sẽ tạo deployment mới.
@@ -85,7 +85,8 @@ GitHub `main` được kết nối với Vercel; thay đổi trên nhánh chính
 - Bộ kiểm tra tự động kiểm tra 25 trang, năm câu hỏi tình huống, tài nguyên 3D và các quy tắc tối ưu hóa. Browser smoke test kiểm tra câu hỏi chọn đáp án trên Chromium di động cùng điều hướng, 3D và offline shell.
 
 
-## Sơ đồ trực quan tại mỗi phần bệnh
-- Năm cảnh chính có thêm dải sơ đồ quy trình ba bước đặt trên ảnh: cơ chế sâu răng, yếu tố liên quan đến loét dạ dày, mất nước khi tiêu chảy, đường lây nhiễm giun và đường lây viêm gan A.
-- Các sơ đồ được dựng bằng HTML/CSS nhẹ, không tải thư viện đồ họa bổ sung. Chuyển động theo từng nút tôn trọng cài đặt giảm chuyển động và dùng một số lớp màu trong suốt thay cho ảnh động/video riêng.
-- URL ảnh Unsplash/Pexels được điều chỉnh theo bề rộng màn hình và giới hạn pixel ratio; ảnh phụ tải ưu tiên thấp, ảnh chính được hiển thị trước. Chất lượng cuối cùng vẫn phụ thuộc CDN nguồn và kết nối.
+## Hệ bố cục biên tập v10
+- Mỗi trang có thứ bậc tiêu đề, mô tả, sơ đồ, ý chính, câu hỏi và nguồn. Sơ đồ được chọn theo loại nội dung: tuyến tiêu hóa, bản đồ năm bệnh, nhóm chất dinh dưỡng, quy trình ba bước, so sánh dấu hiệu hoặc thói quen phòng bệnh.
+- Năm phần bệnh có sơ đồ riêng đặt ngay trong vùng nội dung, không phủ trên ảnh. Sơ đồ được dựng bằng HTML/CSS, không tải thêm thư viện đồ họa.
+- Thẻ ảnh phụ có nhãn đọc được, tải ưu tiên thấp; hình giải phẫu hoặc sơ đồ vòng đời dùng chế độ giữ toàn khung để tránh cắt mất nhãn.
+- Kiểm thử Chromium xác nhận vùng chữ và ảnh tách nhau trên điện thoại, kiểm tra hai cột trên màn hình ngang, đồng thời tiếp tục kiểm tra quiz, 3D và shell ngoại tuyến.

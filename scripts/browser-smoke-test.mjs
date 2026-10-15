@@ -64,6 +64,36 @@ try {
     `Presentation did not render the first slide. State: ${JSON.stringify(initialPresentationState)}. Page errors: ${pageErrors.join(' | ') || 'none'}`);
   // The counter is intentionally visually hidden on narrow phones to preserve slide space.
   assert.equal((await page.locator('#viewerSlideCaption').textContent()).trim(), '01 / 25');
+  await page.locator('#slideStage .photo-frame').waitFor({ state: 'visible' });
+  const mobileEditorialLayout = await page.evaluate(() => {
+    const stage = document.querySelector('#slideStage');
+    const image = stage?.querySelector('.photo-frame');
+    const content = stage?.querySelector('.slide-content');
+    const diagram = stage?.querySelector('.editorial-diagram');
+    const rect = element => {
+      if (!element) return null;
+      const r = element.getBoundingClientRect();
+      return { top:r.top, bottom:r.bottom, left:r.left, right:r.right, width:r.width, height:r.height };
+    };
+    return {
+      viewportWidth:window.innerWidth,
+      image:rect(image),
+      content:rect(content),
+      diagram:diagram?.dataset.diagram || null,
+      mediaPosition:image ? getComputedStyle(image).position : null,
+      contentWidth:content?.getBoundingClientRect().width || 0,
+    };
+  });
+  assert.ok(mobileEditorialLayout.image && mobileEditorialLayout.content,
+    `Mobile slide must have separate media and text regions: ${JSON.stringify(mobileEditorialLayout)}`);
+  assert.ok(mobileEditorialLayout.content.top >= mobileEditorialLayout.image.bottom - 1,
+    `Photo and text overlap on mobile instead of stacking: ${JSON.stringify(mobileEditorialLayout)}`);
+  assert.ok(mobileEditorialLayout.contentWidth >= mobileEditorialLayout.viewportWidth - 34,
+    `The editorial content column is too narrow on a phone: ${JSON.stringify(mobileEditorialLayout)}`);
+  assert.ok(mobileEditorialLayout.diagram,
+    `The first slide must show a knowledge-map visual, got ${JSON.stringify(mobileEditorialLayout)}`);
+  assert.equal(mobileEditorialLayout.mediaPosition, 'relative',
+    'The photo frame must be a panel, not an absolutely positioned full-slide background.');
   assert.equal(await page.evaluate(() => Boolean(document.querySelector('script[data-biosphere-three]'))), false,
     'The 3D library must not load before a user selects a 3D scene.');
   const stage = page.locator('#slideStage');
@@ -116,8 +146,8 @@ try {
     modelToggle = page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) button[data-media-mode="model"]:visible');
   }
   assert.ok(await modelToggle.count() > 0, 'At least one curated 3D scene must expose the model switch.');
-  assert.equal(await page.locator('#slideStage .photo-process-flow').count(), 1,
-    'The five core disease scenes should show the matching three-step process diagram.');
+  assert.equal(await page.locator('#slideStage > .slide-page:not(.slide-transition-ghost) .editorial-diagram--process').count(), 1,
+    'The disease scene should show a readable process diagram in the content column, not over the photo.');
   await modelToggle.click();
   await page.locator('#slideStage .media-3d-view:not([hidden])').waitFor({ state: 'visible', timeout: 5000 });
   await page.screenshot({ path: `${outputDir}/mobile-model-view.png` });
@@ -132,6 +162,38 @@ try {
   }));
   assert.deepEqual(interactionLayers, { copy: 'none', media: 'auto', controls: 'auto' },
     'Mobile 3D gestures must reach the model, while the foreground mode switch remains tappable.');
+
+  // Validate the landscape editorial layout too: text and image must occupy separate columns.
+  await page.locator('#slideStage .media-mode-bar--mobile button[data-media-mode="image"]').click();
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.waitForTimeout(220);
+  await page.evaluate(() => { const stage = document.querySelector('#slideStage'); if (stage) stage.scrollTop = 0; });
+  const landscapeEditorialLayout = await page.evaluate(() => {
+    const stage = document.querySelector('#slideStage');
+    const content = stage?.querySelector('.slide-content');
+    const media = stage?.querySelector('.slide-side-content');
+    const image = stage?.querySelector('.photo-frame');
+    const rect = element => {
+      if (!element) return null;
+      const r = element.getBoundingClientRect();
+      return { top:r.top,bottom:r.bottom,left:r.left,right:r.right,width:r.width,height:r.height };
+    };
+    return {
+      stage:rect(stage),content:rect(content),media:rect(media),image:rect(image),
+      grid:content ? getComputedStyle(stage.querySelector('.slide-layout')).display : null,
+      viewportWidth:window.innerWidth,
+    };
+  });
+  assert.equal(landscapeEditorialLayout.grid, 'grid',
+    `Landscape presenter must use a grid layout: ${JSON.stringify(landscapeEditorialLayout)}`);
+  assert.ok(landscapeEditorialLayout.content && landscapeEditorialLayout.media &&
+    landscapeEditorialLayout.media.left >= landscapeEditorialLayout.content.right - 2,
+    `Landscape image and text columns overlap or collapse: ${JSON.stringify(landscapeEditorialLayout)}`);
+  assert.ok(landscapeEditorialLayout.image?.width >= 350,
+    `Landscape image column should be visually substantial: ${JSON.stringify(landscapeEditorialLayout)}`);
+  await page.screenshot({ path: `${outputDir}/landscape-editorial-layout.png` });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(120);
 
   // The shell should reload without network by caching only same-origin app files, not remote media.
   const workerReady = await page.evaluate(async () => {
@@ -153,7 +215,7 @@ try {
   }
 
   assert.deepEqual(pageErrors, [], `Unexpected JavaScript errors: ${pageErrors.join(' | ')}`);
-  console.log('BioSphere browser smoke test passed: mobile layout, settings persistence, slide navigation, lazy 3D loading, and model view.');
+  console.log('BioSphere browser smoke test passed: mobile/landscape editorial geometry, rich diagrams, settings persistence, slide navigation, lazy 3D loading, model view, and offline shell.');
 } finally {
   await browser.close();
 }

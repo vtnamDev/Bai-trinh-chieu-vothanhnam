@@ -83,11 +83,19 @@ const versionFor = asset => {
 };
 const assetVersions = ['styles.css', 'bai32-deck.js', 'app.js'].map(versionFor);
 assert.equal(new Set(assetVersions).size, 1, 'CSS, deck data and app code must use the same cache-busting version.');
+const workerVersion = serviceWorker.match(/const SHELL_VERSION = '([^']+)'/)?.[1];
+assert.equal(workerVersion, assetVersions[0], 'The service-worker shell cache must match the current HTML asset version.');
+assert.equal((css.match(/\{/g) || []).length, (css.match(/\}/g) || []).length, 'CSS block braces must remain balanced.');
 
 assert.match(app, /function safeHttpUrl\(/, 'Imported resource URLs must be protocol-checked.');
 assert.match(app, /function optimizeImageUrl\(/, 'Remote image sizes must be adapted to viewport and performance profile.');
-assert.match(app, /function renderPhotoProcessFlow\(/, 'Disease images should carry a lightweight visual process flow when configured.');
-assert.ok(css.includes('.photo-process-flow') && css.includes('.photo-process-node'), 'The visual process flow must have dedicated responsive styling.');
+assert.match(app, /function renderSlideVisualBoard\(/, 'Every lesson page should have an editorial visual board renderer.');
+assert.ok(css.includes('.editorial-diagram') && css.includes('.editorial-diagram-node'), 'The lesson diagrams must have dedicated responsive styling.');
+assert.ok(css.includes('BioSphere v10 — editorial slide system'), 'The consolidated responsive slide system must be active.');
+assert.ok(!css.includes('The actual webview in the supplied screenshot is ~720 CSS px wide.'), 'The obsolete mobile rule that turns the photo into a full-slide background must stay removed.');
+assert.ok(!/\.viewer \.slide-side-content\s*\{\s*position:absolute!important;z-index:0/.test(css), 'Mobile media must remain a separate layout column instead of a background layer.');
+assert.ok(app.includes('photo-support-label'), 'Related images need visible labels, not only hidden alt text.');
+assert.ok(app.includes('editorial-map-core'), 'The overview slide needs a real central-node mind map.');
 assert.ok(app.includes('source[data-src]') && app.includes('video.load()'), 'MP4 source URLs must be attached only when motion is eligible.');
 assert.ok(app.includes('lineBuckets') && app.includes('dotBuckets'), 'Canvas particles must batch draw calls instead of stroking each edge and dot independently.');
 assert.ok(app.includes("ghost.querySelectorAll('video, canvas, model-viewer"), 'Outgoing transitions must not clone live video or GPU-heavy models.');
