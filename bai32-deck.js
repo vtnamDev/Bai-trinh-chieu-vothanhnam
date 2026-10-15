@@ -1,11 +1,11 @@
-/* BioSphere Slides · KHTN 8 Bài 32 · 25-slide researched and interactive edition */
+/* BioSphere Slides · KHTN 8 Bài 32 · 25-slide editorial edition */
 window.BIOSPHERE_BAI32_SEED = {
   "id": "khtn8-bai32-scaffold",
   "title": "5 bệnh liên quan đến hệ tiêu hóa",
   "subject": "biology",
   "status": "ready",
   "date": "2026-10-15",
-  "description": "KHTN 8 · Bài 32 · 25 trang · nội dung bám SGK, phần y tế mở rộng có nguồn đối chiếu; ảnh thật và 3D theo yêu cầu, hỏi đáp tương tác cho từng bệnh.",
+  "description": "KHTN 8 · Bài 32 · 25 trang · màu theo từng chủ đề bệnh, ý chính và ý phụ có phân cấp, ảnh khoa học có nguồn, sơ đồ trực quan và câu hỏi tương tác.",
   "isSeed": true,
   "slides": [
     {
@@ -40,7 +40,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
       "videoAlt": "Cận cảnh nhiều loại rau, đậu và hạt trong bữa ăn lành mạnh",
-      "description": "KHTN 8 · Bài 32 · 25 trang · nội dung bám SGK, phần y tế mở rộng có nguồn đối chiếu; ảnh thật và 3D theo yêu cầu, hỏi đáp tương tác cho từng bệnh."
+      "description": "KHTN 8 · Bài 32 · 25 trang · nội dung bám SGK, phần y tế mở rộng có nguồn đối chiếu; ảnh thật và 3D theo yêu cầu, hỏi đáp tương tác cho từng bệnh.",
+      "storyGroup": "foundation",
+      "keyIdea": "Hệ tiêu hóa có thể gặp nhiều nhóm bệnh; hiểu đúng nguyên nhân và đường lây là nền tảng của phòng bệnh."
     },
     {
       "kicker": "MỞ ĐẦU · NHÓM THỰC HIỆN",
@@ -59,7 +61,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Cô giáo và học sinh trong một tiết học",
       "imageCredit": "Walton Family Foundation",
       "imageSourceUrl": "https://opportunity.waltonfamilyfoundation.org/",
-      "palette": "amber",
+      "palette": "teal",
       "video": "https://videos.pexels.com/video-files/8196812/8196812-hd_1920_1080_25fps.mp4",
       "video4k": "https://videos.pexels.com/video-files/8508459/8508459-uhd_3840_2160_25fps.mp4",
       "videoProvider": "Pexels",
@@ -69,7 +71,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageFit": "cover",
       "videoAlt": "Giáo viên và học sinh trong giờ học",
       "supportImages": [],
-      "links": []
+      "links": [],
+      "storyGroup": "foundation",
+      "keyIdea": "Bài học đi từ cơ chế khoa học đến lựa chọn phòng ngừa có thể áp dụng mỗi ngày."
     },
     {
       "kicker": "KIẾN THỨC NỀN · HÀNH TRÌNH CỦA THỨC ĂN",
@@ -83,21 +87,24 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "NỀN TẢNG THEO SGK KHTN 8 · BÀI 32 · TR. 128–130",
       "visual": "pathway",
-      "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=85",
-      "imageAlt": "Thực phẩm được chế biến trong chảo",
-      "imageCredit": "Unsplash · ảnh thực",
-      "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "cyan",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Digestive_system_diagram_en.svg",
+      "imageAlt": "Sơ đồ hệ tiêu hóa người, thể hiện các cơ quan theo đường đi của thức ăn.",
+      "imageCredit": "Mariana Ruiz / Jmarchn · Wikimedia Commons · Public domain",
+      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg",
+      "palette": "teal",
       "video": "https://assets.mixkit.co/videos/49231/49231-720.mp4",
       "videoProvider": "Mixkit",
       "videoCredit": "Mixkit · Vegetables into the pan in slow motion",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/vegetables-into-the-pan-in-slow-motion-49231/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover",
+      "imageFit": "contain",
       "video4k": null,
       "videoAlt": "Rau củ đang được chế biến trong chảo",
       "supportImages": [],
-      "links": []
+      "links": [],
+      "storyGroup": "foundation",
+      "keyIdea": "Thức ăn đi qua các cơ quan theo trình tự; mỗi cơ quan thực hiện chức năng riêng để tiêu hóa và hấp thụ.",
+      "imageFallback": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80"
     },
     {
       "kicker": "LIÊN HỆ KIẾN THỨC",
@@ -115,7 +122,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Bữa ăn cân bằng với thực phẩm đa dạng",
       "imageCredit": "Unsplash · ảnh thực phẩm",
       "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "blue",
+      "palette": "teal",
       "video": "https://videos.pexels.com/video-files/5866263/5866263-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
       "videoCredit": "Pexels · Vanessa Loring · healthy foods",
@@ -123,7 +130,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5866263/5866263-uhd_3840_2160_25fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Các loại thực phẩm tươi trong chế độ ăn cân bằng"
+      "videoAlt": "Các loại thực phẩm tươi trong chế độ ăn cân bằng",
+      "storyGroup": "foundation",
+      "keyIdea": "Dinh dưỡng đa dạng, nước an toàn và vệ sinh đúng cách cùng hỗ trợ sức khỏe hệ tiêu hóa."
     },
     {
       "kicker": "NỘI DUNG CHÍNH",
@@ -142,7 +151,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Đĩa thức ăn tươi với nhiều loại rau củ",
       "imageCredit": "Unsplash · ảnh thực",
       "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "gold",
+      "palette": "teal",
       "supportImages": [
         {
           "url": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80",
@@ -160,7 +169,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/high-angle-shot-of-healthy-foods-5866263/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Bữa ăn nhiều màu sắc với rau và thực phẩm tươi"
+      "videoAlt": "Bữa ăn nhiều màu sắc với rau và thực phẩm tươi",
+      "storyGroup": "foundation",
+      "keyIdea": "Năm bệnh khác nhau nhưng đều cần hiểu cơ chế, nhận biết dấu hiệu và phòng ngừa sớm."
     },
     {
       "kicker": "BỆNH 01 · SÂU RĂNG · CƠ CHẾ HÌNH THÀNH",
@@ -213,7 +224,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Axit từ vi khuẩn",
           "Men răng mất khoáng"
         ]
-      }
+      },
+      "storyGroup": "tooth",
+      "keyIdea": "Mảng bám, đường và axit khiến men răng mất khoáng; các đợt lặp lại có thể tạo thành lỗ sâu."
     },
     {
       "kicker": "BỆNH 01 · PHÒNG NGỪA",
@@ -231,7 +244,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Trẻ đánh răng trước gương",
       "imageCredit": "Kindel Media / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/",
-      "palette": "aqua",
+      "palette": "coral",
       "video": "https://videos.pexels.com/video-files/4554224/4554224-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
       "videoCredit": "Pexels · Ketut Subiyanto · brushing teeth",
@@ -239,7 +252,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/5892119/5892119-uhd_3840_2160_30fps.mp4",
       "imageFit": "cover",
-      "videoAlt": "Trẻ đánh răng trước gương"
+      "videoAlt": "Trẻ đánh răng trước gương",
+      "storyGroup": "tooth",
+      "keyIdea": "Phòng sâu răng tập trung vào làm sạch mảng bám, giảm tần suất dùng đường và chăm sóc răng đều đặn."
     },
     {
       "kicker": "TÌNH HUỐNG 01 · SÂU RĂNG",
@@ -256,7 +271,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Khám răng giúp phát hiện vấn đề sớm",
       "imageCredit": "Kindel Media / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/a-kid-brushing-her-teeth-7979784/",
-      "palette": "lime",
+      "palette": "coral",
       "supportImages": [],
       "interactiveQuiz": false,
       "video": "https://videos.pexels.com/video-files/5099678/5099678-hd_1920_1080_30fps.mp4",
@@ -279,7 +294,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Chờ đến khi đau dữ dội mới cần nói với người lớn."
         ],
         "correctIndex": 1
-      }
+      },
+      "storyGroup": "tooth",
+      "keyIdea": "Đau hoặc ê buốt lặp lại cần được kiểm tra; không tự đặt thuốc hay trì hoãn khám nha khoa."
     },
     {
       "kicker": "BỆNH 02 · VIÊM LOÉT DẠ DÀY – TÁ TRÀNG",
@@ -325,7 +342,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "sourceUrl": "https://www.pexels.com/photo/woman-consulting-a-doctor-5215008/",
           "alt": "Trao đổi với nhân viên y tế"
         }
-      ]
+      ],
+      "storyGroup": "stomach",
+      "keyIdea": "Loét dạ dày–tá tràng có nguyên nhân y khoa cụ thể, không thể kết luận chỉ từ thói quen ăn uống."
     },
     {
       "kicker": "BỆNH 02 · NHẬN BIẾT",
@@ -339,11 +358,7 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "NGUỒN: NIDDK · PEPTIC ULCERS",
       "visual": "stomach",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gastric_Ulcer_Antrum.jpg",
-      "imageAlt": "Người có biểu hiện đau vùng bụng",
-      "imageCredit": "Med_Chaos / Wikimedia Commons · public domain",
-      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg",
-      "palette": "blue",
+      "palette": "coral",
       "supportImages": [],
       "interactiveQuiz": false,
       "video": "https://videos.pexels.com/video-files/7297871/7297871-hd_1920_1080_30fps.mp4",
@@ -352,8 +367,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-touching-his-stomach-7297871/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/7297871/7297871-uhd_3840_2160_30fps.mp4",
-      "imageFit": "cover",
-      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng"
+      "videoAlt": "Người ôm vùng bụng, minh họa cảm giác đau bụng",
+      "storyGroup": "stomach",
+      "keyIdea": "Đau bụng là triệu chứng không đặc hiệu; nôn ra máu, phân đen hoặc đau đột ngột dữ dội là dấu hiệu nguy hiểm."
     },
     {
       "kicker": "BỆNH 02 · NGUYÊN NHÂN VÀ XỬ TRÍ",
@@ -371,7 +387,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Bác sĩ trao đổi về tình trạng sức khỏe",
       "imageCredit": "Antoni Shkraba / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/woman-consulting-a-doctor-5215008/",
-      "palette": "aqua",
+      "palette": "coral",
       "video": "https://assets.mixkit.co/videos/13040/13040-720.mp4",
       "videoProvider": "Mixkit",
       "videoCredit": "Mixkit · Doctor explaining a medical condition",
@@ -385,7 +401,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gastric_Ulcer_Antrum.jpg",
           "alt": "Ảnh nội soi minh họa ổ loét dạ dày"
         }
-      ]
+      ],
+      "storyGroup": "stomach",
+      "keyIdea": "Điều trị cần dựa trên đánh giá nguyên nhân; không tự dùng kháng sinh hoặc tự điều chỉnh thuốc."
     },
     {
       "kicker": "TÌNH HUỐNG 02 · DẠ DÀY – TÁ TRÀNG",
@@ -402,7 +420,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Bác sĩ chăm sóc và tư vấn người bệnh",
       "imageCredit": "Antoni Shkraba / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/woman-consulting-a-doctor-5215008/",
-      "palette": "teal",
+      "palette": "coral",
       "supportImages": [],
       "interactiveQuiz": false,
       "video": "https://assets.mixkit.co/videos/35956/35956-720.mp4",
@@ -424,7 +442,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Uống thuốc giảm đau bất kỳ mà không cần hỏi người lớn."
         ],
         "correctIndex": 1
-      }
+      },
+      "storyGroup": "stomach",
+      "keyIdea": "Một cơn đau hay việc bỏ bữa không đủ để chẩn đoán loét; cần báo người lớn khi triệu chứng tái diễn."
     },
     {
       "kicker": "BỆNH 03 · TIÊU CHẢY · NHẬN BIẾT MẤT NƯỚC",
@@ -442,7 +462,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Nước uống sạch trong ly, minh họa việc bù nước",
       "imageCredit": "Unsplash · ảnh nước uống",
       "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "orange",
+      "palette": "cyan",
       "supportImages": [
         {
           "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
@@ -481,7 +501,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Mất nước",
           "Bù nước đúng cách"
         ]
-      }
+      },
+      "storyGroup": "diarrhea",
+      "keyIdea": "Với tiêu chảy, nguy cơ cần chú ý nhất là mất nước và chất điện giải."
     },
     {
       "kicker": "BỆNH 03 · PHÒNG NGỪA",
@@ -499,7 +521,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Rửa tay bằng xà phòng dưới vòi nước để ngăn mầm bệnh.",
       "imageCredit": "Ivan S / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
-      "palette": "lime",
+      "palette": "cyan",
       "video": "https://videos.pexels.com/video-files/4333840/4333840-hd_1920_1080_25fps.mp4",
       "videoProvider": "Pexels",
       "videoCredit": "Pexels · Ketut Subiyanto · hand hygiene",
@@ -519,7 +541,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "sourceUrl": "https://suckhoedoisong.vn/",
           "alt": "Minh họa pha ORS đúng hướng dẫn"
         }
-      ]
+      ],
+      "storyGroup": "diarrhea",
+      "keyIdea": "Bàn tay sạch, nước an toàn và thực phẩm được rửa/chế biến đúng cách tạo thành ba lớp phòng ngừa."
     },
     {
       "kicker": "TÌNH HUỐNG 03 · TIÊU CHẢY",
@@ -536,7 +560,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Minh họa pha Oresol đúng lượng nước hướng dẫn",
       "imageCredit": "Báo Sức khỏe & Đời sống · hình minh họa",
       "imageSourceUrl": "https://suckhoedoisong.vn/",
-      "palette": "teal",
+      "palette": "cyan",
       "supportImages": [
         {
           "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
@@ -569,7 +593,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Chỉ nghỉ ngơi, không nói với ai nếu chưa sốt."
         ],
         "correctIndex": 1
-      }
+      },
+      "storyGroup": "diarrhea",
+      "keyIdea": "Dung dịch ORS phải được pha đúng lượng nước ghi trên gói; dấu hiệu mất nước nặng cần trợ giúp y tế."
     },
     {
       "kicker": "BỆNH 04 · NHIỄM GIUN ĐƯỜNG RUỘT · ĐƯỜNG LÂY",
@@ -587,7 +613,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Sơ đồ vòng đời giun đũa Ascaris lumbricoides do CDC DPDx công bố; dùng để giải thích chu trình lây nhiễm.",
       "imageCredit": "CDC DPDx · Ascaris life cycle · hình ảnh giáo dục y tế",
       "imageSourceUrl": "https://www.cdc.gov/dpdx/ascariasis/",
-      "palette": "gold",
+      "palette": "lime",
       "supportImages": [
         {
           "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
@@ -621,7 +647,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Trứng vào miệng",
           "Nhiễm giun"
         ]
-      }
+      },
+      "storyGroup": "worms",
+      "keyIdea": "Vòng đời giun cho thấy mầm bệnh có thể đi từ môi trường vào cơ thể; hiểu đường lây giúp chọn cách phòng."
     },
     {
       "kicker": "TÌNH HUỐNG 04 · NHIỄM GIUN",
@@ -672,7 +700,9 @@ window.BIOSPHERE_BAI32_SEED = {
         "correctIndex": 1
       },
       "interactiveQuiz": false,
-      "imageFallback": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600"
+      "imageFallback": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "storyGroup": "worms",
+      "keyIdea": "Thói quen vệ sinh đều đặn giảm cơ hội mầm bệnh đi vào miệng qua tay, nước hoặc thực phẩm."
     },
     {
       "kicker": "BỆNH 05 · VIÊM GAN A · ĐƯỜNG LÂY VÀ DẤU HIỆU",
@@ -690,7 +720,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Sơ đồ giải phẫu gan người, dùng để định vị cơ quan; không phải ảnh tổn thương viêm gan A.",
       "imageCredit": "Mikael Häggström · Wikimedia Commons · Public domain",
       "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Liver.svg",
-      "palette": "coral",
+      "palette": "amber",
       "video": null,
       "videoProvider": null,
       "videoCredit": null,
@@ -730,7 +760,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Nuốt phải HAV",
           "Gan bị viêm"
         ]
-      }
+      },
+      "storyGroup": "hepatitis",
+      "keyIdea": "Virus HAV lây chủ yếu qua đường phân–miệng và gây viêm gan; vệ sinh và nước sạch giúp giảm nguy cơ."
     },
     {
       "kicker": "TÌNH HUỐNG 05 · VIÊM GAN A",
@@ -747,7 +779,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Bác sĩ thăm khám và tư vấn, minh họa thời điểm cần tìm đánh giá y tế.",
       "imageCredit": "CDC Images / Pexels · Free to use",
       "imageSourceUrl": "https://www.pexels.com/photo/woman-having-a-check-up-3992806/",
-      "palette": "teal",
+      "palette": "amber",
       "supportImages": [
         {
           "url": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
@@ -782,7 +814,9 @@ window.BIOSPHERE_BAI32_SEED = {
           "Tự uống kháng sinh còn thừa ở nhà."
         ],
         "correctIndex": 1
-      }
+      },
+      "storyGroup": "hepatitis",
+      "keyIdea": "Vàng da hoặc nước tiểu sẫm cần được nhân viên y tế đánh giá; không tự xác định bệnh hay tự dùng thuốc."
     },
     {
       "kicker": "SO SÁNH NHANH · BIẾT KHI NÀO CẦN TRỢ GIÚP",
@@ -797,11 +831,7 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "KHI CÓ DẤU HIỆU NẶNG, HÃY BÁO NGƯỜI LỚN VÀ TÌM TRỢ GIÚP Y TẾ",
       "visual": "comparison",
-      "image": "https://images.pexels.com/photos/3992806/pexels-photo-3992806.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Bác sĩ thăm khám khi có dấu hiệu đáng lo",
-      "imageCredit": "CDC Images / Pexels · Free to use",
-      "imageSourceUrl": "https://www.pexels.com/photo/woman-having-a-check-up-3992806/",
-      "palette": "gold",
+      "palette": "teal",
       "supportImages": [
         {
           "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Dental_Caries_Cavity_1.JPG/960px-Dental_Caries_Cavity_1.JPG",
@@ -819,9 +849,10 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": "Mixkit · Doctor examining a patient",
       "videoSourceUrl": "https://mixkit.co/free-stock-video/doctor-examining-a-patient-7632/",
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover",
       "videoAlt": "Bác sĩ thăm khám bệnh nhân",
-      "links": []
+      "links": [],
+      "storyGroup": "recap",
+      "keyIdea": "Dấu hiệu bệnh chỉ là manh mối để quyết định khi nào cần tìm trợ giúp, không thay thế chẩn đoán y tế."
     },
     {
       "kicker": "VẬN DỤNG VÀO ĐỜI SỐNG",
@@ -836,10 +867,6 @@ window.BIOSPHERE_BAI32_SEED = {
       ],
       "note": "LIÊN HỆ SGK BÀI 32 · TR. 128–134",
       "visual": "habits",
-      "image": "https://images.pexels.com/photos/4491156/pexels-photo-4491156.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "imageAlt": "Rửa tay kỹ bằng xà phòng",
-      "imageCredit": "Ivan S / Pexels · Free to use",
-      "imageSourceUrl": "https://www.pexels.com/photo/hand-washing-with-soap-in-a-sink-4491156/",
       "palette": "teal",
       "supportImages": [
         {
@@ -857,8 +884,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/a-man-washing-his-hands-in-the-kitchen-sink-4333840/",
       "imageMotionStyle": "cinematic",
       "video4k": "https://videos.pexels.com/video-files/4333840/4333840-uhd_3840_2160_25fps.mp4",
-      "imageFit": "cover",
-      "videoAlt": "Rửa tay với xà phòng dưới vòi nước"
+      "videoAlt": "Rửa tay với xà phòng dưới vòi nước",
+      "storyGroup": "recap",
+      "keyIdea": "Phòng bệnh tốt dựa trên nhiều thói quen nhỏ: vệ sinh tay, thực phẩm an toàn, dinh dưỡng đa dạng và chăm sóc răng."
     },
     {
       "kicker": "TƯƠNG TÁC CẢ LỚP · THẢO LUẬN NHÓM",
@@ -871,7 +899,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Học sinh tương tác và thảo luận trong lớp",
       "imageCredit": "Soshin Academy · ảnh lớp học",
       "imageSourceUrl": "https://soshin.ac.jp/jogakko/",
-      "palette": "cyan",
+      "palette": "teal",
       "supportImages": [],
       "interactiveQuiz": true,
       "quizQuestions": [
@@ -916,7 +944,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Học sinh tương tác trong giờ học"
+      "videoAlt": "Học sinh tương tác trong giờ học",
+      "storyGroup": "recap",
+      "keyIdea": "Đọc tình huống, cân nhắc lựa chọn an toàn và giải thích bằng bằng chứng khoa học thay vì đoán."
     },
     {
       "kicker": "THỬ THÁCH TƯƠNG TÁC · CẢ LỚP CÙNG CHƠI",
@@ -929,7 +959,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Học sinh trao đổi câu trả lời cùng nhau",
       "imageCredit": "Unsplash · ảnh lớp học",
       "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "amber",
+      "palette": "teal",
       "interactiveQuiz": true,
       "quizQuestions": [
         {
@@ -994,7 +1024,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/students-in-a-classroom-5676150/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Các bạn học sinh thảo luận trong lớp"
+      "videoAlt": "Các bạn học sinh thảo luận trong lớp",
+      "storyGroup": "recap",
+      "keyIdea": "Ôn tập không chỉ để chọn đáp án mà còn để giải thích vì sao lựa chọn đó đúng."
     },
     {
       "kicker": "KẾT LUẬN · NGUỒN THAM KHẢO",
@@ -1011,7 +1043,7 @@ window.BIOSPHERE_BAI32_SEED = {
       "imageAlt": "Kệ sách và tài liệu tham khảo",
       "imageCredit": "Unsplash · thư viện",
       "imageSourceUrl": "https://unsplash.com/license",
-      "palette": "orange",
+      "palette": "teal",
       "links": [
         {
           "label": "WHO · Bệnh tiêu chảy",
@@ -1040,7 +1072,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoCredit": null,
       "videoSourceUrl": null,
       "imageMotionStyle": "cinematic",
-      "imageFit": "cover"
+      "imageFit": "cover",
+      "storyGroup": "recap",
+      "keyIdea": "Ba nguyên tắc xuyên suốt: hiểu đúng, phòng ngừa có căn cứ và tìm trợ giúp khi có dấu hiệu cảnh báo."
     },
     {
       "kicker": "LỜI KẾT",
@@ -1065,7 +1099,9 @@ window.BIOSPHERE_BAI32_SEED = {
       "videoSourceUrl": "https://www.pexels.com/video/students-having-a-lecture-in-their-classroom-8196812/",
       "imageMotionStyle": "cinematic",
       "imageFit": "cover",
-      "videoAlt": "Học sinh và giáo viên trong lớp học"
+      "videoAlt": "Học sinh và giáo viên trong lớp học",
+      "storyGroup": "closing",
+      "keyIdea": "Mỗi người có thể bắt đầu từ một việc thực tế hôm nay để bảo vệ sức khỏe hệ tiêu hóa."
     }
   ]
 };
